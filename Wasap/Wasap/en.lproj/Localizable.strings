@@ -14,5 +14,5 @@
 "가 실제와 다를 수 있어요.\n아래 버튼을 누르면 비밀번호를 복사합니다." = "may differ from the actual network. Press the button below to copy the password.";
 "설정에서 연결하기" = "Go To Setting";
 "스캔 완료!" = "Scan Complete!";
-"잘못된 부분이 있나봐요!" = "It's Wrong";
+"잘못된 부분이 있나봐요!" = "Something went wrong!";
 "다시 연결하기" = "Reconnect";
