@@ -48,7 +48,7 @@ class GoToSettingView: BaseView {
     
     lazy var subLabel: UILabel = {
         let label = UILabel()
-        label.text = "연결 실패"
+        label.text = "연결 실패".localized()
         label.textColor = .neutral400
         label.font = FontStyle.subTitle.font
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
@@ -72,7 +72,7 @@ class GoToSettingView: BaseView {
     
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
-        label.text = "와이파이 ID"
+        label.text = "와이파이 ID".localized()
         label.textColor = .neutral200
         label.font = FontStyle.subTitle.font.withSize(10)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
@@ -101,7 +101,7 @@ class GoToSettingView: BaseView {
     
     lazy var pwLabel: UILabel = {
         let label = UILabel()
-        label.text = "비밀번호"
+        label.text = "비밀번호".localized()
         label.textColor = .neutral200
         label.font = FontStyle.subTitle.font.withSize(10)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
@@ -118,7 +118,6 @@ class GoToSettingView: BaseView {
         label.layer.cornerRadius = 13
         label.layer.masksToBounds = true
         label.textAlignment = .center
-        label.text = "PW" // 기본 텍스트 설정 (예시)
         return label
     }()
 
@@ -136,8 +135,9 @@ class GoToSettingView: BaseView {
         label.textAlignment = .center
         label.font = FontStyle.subTitle.font.withSize(16)
 
-        let wifiID = "와이파이 ID"
-        let description = "\(wifiID)가 실제와 다를 수 있어요.\n아래 버튼을 누르면 비밀번호를 복사합니다."
+        let wifiID = "와이파이 ID".localized()
+        let description = "\(wifiID) "+"가 실제와 다를 수 있어요.\n아래 버튼을 누르면 비밀번호를 복사합니다.".localized()
+
         // 글자 색깔 넣기
         let attributedString = NSMutableAttributedString(string: description)
         if let wifiIDRange = description.range(of: wifiID) {
@@ -151,7 +151,7 @@ class GoToSettingView: BaseView {
     
     lazy var settingBtn: UIButton = {
         let button = UIButton()
-        button.setTitle("설정에서 연결하기", for: .normal)
+        button.setTitle("설정에서 연결하기".localized(), for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = FontStyle.button.font
         button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)

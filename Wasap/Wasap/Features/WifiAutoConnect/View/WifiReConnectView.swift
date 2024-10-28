@@ -48,7 +48,7 @@ class WifiReConnectView: BaseView {
 
     lazy var subLabel: UILabel = {
         let label = UILabel()
-        label.text = "잘못된 부분이 있나봐요!"
+        label.text = "잘못된 부분이 있나봐요!".localized()
         label.textColor = .neutral400
         label.font = FontStyle.subTitle.font
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
@@ -74,7 +74,7 @@ class WifiReConnectView: BaseView {
 
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
-        label.text = "와이파이 ID"
+        label.text = "와이파이 ID".localized()
         label.textColor = .neutral200
         label.font = FontStyle.caption.font
         label.addLabelSpacing(fontStyle: FontStyle.caption)
@@ -105,7 +105,7 @@ class WifiReConnectView: BaseView {
 
     lazy var pwLabel: UILabel = {
         let label = UILabel()
-        label.text = "비밀번호"
+        label.text = "비밀번호".localized()
         label.textColor = .neutral200
         label.font = FontStyle.caption.font
         label.addLabelSpacing(fontStyle: FontStyle.caption)
@@ -136,7 +136,7 @@ class WifiReConnectView: BaseView {
 
     lazy var reConnectButton: UIButton = {
         let button = UIButton()
-        button.setTitle("다시 연결하기", for: .normal)
+        button.setTitle("다시 연결하기".localized(), for: .normal)
         button.setTitleColor(.neutral200, for: .normal)
         button.titleLabel?.font = FontStyle.button.font
         button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)

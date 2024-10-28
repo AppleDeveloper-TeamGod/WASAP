@@ -41,10 +41,11 @@ class ScanView: BaseView {
     
     lazy var subLabel: UILabel = {
         let label = UILabel()
-        label.text = "스캔 완료!"
+        label.text = "스캔 완료!".localized()
         label.textColor = .textNeutralHigh
         label.font = FontStyle.subTitle.font
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.textAlignment = .center
         return label
     }()
     
@@ -80,7 +81,7 @@ class ScanView: BaseView {
         subLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(7)
-            $0.width.equalTo(71)
+            $0.trailing.leading.equalToSuperview().inset(20)
             $0.height.equalTo(22)
         }
 
