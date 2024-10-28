@@ -60,7 +60,7 @@ class ScanView: BaseView {
         previewView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().offset(249)
-            $0.width.equalTo(330)
+            $0.width.equalTo(331)
             $0.height.equalTo(216)
         }
         

@@ -11,10 +11,10 @@ import AVFoundation
 
 enum Dimension {
     enum Mask { // Mask 배율
-        static let leftPadding: CGFloat = 0.1
-        static let topPadding: CGFloat = 0.35
-        static let width: CGFloat = 0.8
-        static let height: CGFloat = 0.3
+        static let leftPadding: CGFloat = (1.0 - (331.0 / 393.0)) / 2
+        static let topPadding: CGFloat = (1.0 - (216.0 / 852.0)) / 2
+        static let width: CGFloat = 331.0 / 393.0
+        static let height: CGFloat = 216.0 / 852.0
     }
 }
 
