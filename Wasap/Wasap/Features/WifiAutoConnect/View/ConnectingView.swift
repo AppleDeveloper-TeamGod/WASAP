@@ -39,10 +39,10 @@ class ConnectingView: BaseView {
     
     lazy var subStatusLabel: UILabel = {
         let label = UILabel()
-        label.text = "연결중"
         label.textColor = .neutralWhite
         label.font = FontStyle.subTitle.font
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.textAlignment = .center
         return label
     }()
     
@@ -78,8 +78,8 @@ class ConnectingView: BaseView {
         subStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(mainStatusLabel.snp.bottom).offset(6)
-            $0.width.equalTo(71)
-            $0.height.equalTo(16)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(30)
         }
 
         doneSignIcon.snp.makeConstraints {

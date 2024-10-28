@@ -41,7 +41,7 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
             .filter { $0 }
             .drive { [weak self] _ in
                 self?.connectingView.mainStatusLabel.text = "ASAP!"
-                self?.connectingView.subStatusLabel.text = "연결중"
+                self?.connectingView.subStatusLabel.text = "연결중".localized()
                 self?.connectingView.doneSignIcon.isHidden = true
                 self?.connectingView.quitButton.isHidden = true
             }
@@ -51,7 +51,7 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
             .filter { $0 }
             .drive { [weak self] _ in
                 self?.connectingView.mainStatusLabel.text = "Done!"
-                self?.connectingView.subStatusLabel.text = "연결 완료!"
+                self?.connectingView.subStatusLabel.text = "연결 완료!".localized()
                 self?.connectingView.doneSignIcon.isHidden = false
                 self?.connectingView.quitButton.isHidden = false
             }
