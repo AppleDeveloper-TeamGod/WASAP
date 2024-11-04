@@ -25,7 +25,9 @@ public class CameraCoordinator: NavigationCoordinator {
     public func start() {
         let cameraRepository = wifiAutoConnectDIContainer.makeCameraRepository()
         let cameraUseCase = wifiAutoConnectDIContainer.makeCameraUseCase(cameraRepository)
-        let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, coordinatorcontroller: self)
+        let imageAnalysisRepository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
+        let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
+        let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, coordinatorcontroller: self)
         let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
 
         self.navigationController.pushViewController(cameraViewController, animated: true)

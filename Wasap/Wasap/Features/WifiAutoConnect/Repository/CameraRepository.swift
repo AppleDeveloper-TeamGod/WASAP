@@ -27,6 +27,11 @@ public protocol CameraRepository {
     /// capturePhoto() : 캡쳐를 수행합니다. 그 결과를 Single로 받습니다.
     func capturePhoto() -> Single<Data>
 
+    /// getPreviewSampleBufferStream() : 프리뷰 레이어로 가져오는 샘플버퍼 정보가 담깁니다.
+    func getPreviewSampleBufferStream() -> Observable<CMSampleBuffer>
+
+    func getQRDataStream() -> Observable<String>
+
     /// zoom() : 줌을 수행합니다.
     func zoom(_ factor: CGFloat)
 
@@ -41,8 +46,14 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
 
-    private var stillImageOutput: AVCapturePhotoOutput?
+    private var photoOutput: AVCapturePhotoOutput?
+    private var captureVideoOutput: AVCaptureVideoDataOutput?
+    private var captureQROutput: AVCaptureMetadataOutput?
+
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
+
+    private var capturedVideoDataStream = PublishSubject<CMSampleBuffer>()
+    private var capturedQRDataStream = PublishSubject<String>()
 
     public func requestAuthorization() -> Single<Void> {
         return Single.create { single in
@@ -85,9 +96,22 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
                 let input = try AVCaptureDeviceInput(device: backCamera)
                 session.addInput(input)
 
-                self?.stillImageOutput = AVCapturePhotoOutput()
-                if session.canAddOutput((self?.stillImageOutput!)!) {
-                    session.addOutput((self?.stillImageOutput!)!)
+                self?.photoOutput = AVCapturePhotoOutput()
+                if session.canAddOutput((self?.photoOutput!)!) {
+                    session.addOutput((self?.photoOutput!)!)
+                }
+
+                self?.captureVideoOutput = AVCaptureVideoDataOutput()
+                self?.captureVideoOutput?.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
+                if session.canAddOutput((self?.captureVideoOutput!)!) {
+                    session.addOutput((self?.captureVideoOutput!)!)
+                }
+
+                self?.captureQROutput = AVCaptureMetadataOutput()
+                if session.canAddOutput((self?.captureQROutput!)!) {
+                    session.addOutput((self?.captureQROutput!)!)
+                    self?.captureQROutput?.setMetadataObjectsDelegate(self, queue: DispatchQueue(label: "qrQueue"))
+                    self?.captureQROutput?.metadataObjectTypes = [.qr]
                 }
 
                 self?.captureSession = session
@@ -139,7 +163,7 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
                 single(.failure(CameraErrors.unknown))
                 return Disposables.create()
             }
-            guard let stillImageOutput = self.stillImageOutput else {
+            guard let stillImageOutput = self.photoOutput else {
                 single(.failure(CameraErrors.imageOutputNotAvailable))
                 return Disposables.create()
             }
@@ -157,6 +181,14 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
 
             return Disposables.create()
         }
+    }
+
+    public func getPreviewSampleBufferStream() -> Observable<CMSampleBuffer> {
+        self.capturedVideoDataStream.asObservable()
+    }
+
+    public func getQRDataStream() -> Observable<String> {
+        self.capturedQRDataStream.asObservable()
     }
 
     public func startRunning() -> Single<Void> {
@@ -237,6 +269,22 @@ extension DefaultCameraRepository: AVCapturePhotoCaptureDelegate {
             photoCaptureCompletion?(.success(imageData))
         } else {
             photoCaptureCompletion?(.failure(CameraErrors.photoProcessingError))
+        }
+    }
+}
+
+extension DefaultCameraRepository: AVCaptureVideoDataOutputSampleBufferDelegate {
+    public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        self.capturedVideoDataStream.onNext(sampleBuffer)
+    }
+}
+
+extension DefaultCameraRepository: AVCaptureMetadataOutputObjectsDelegate {
+    public func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        for metadataObject in metadataObjects {
+            if let qrCodeObject = metadataObject as? AVMetadataMachineReadableCodeObject, let qrCodeString = qrCodeObject.stringValue {
+                self.capturedQRDataStream.onNext(qrCodeString)
+            }
         }
     }
 }
