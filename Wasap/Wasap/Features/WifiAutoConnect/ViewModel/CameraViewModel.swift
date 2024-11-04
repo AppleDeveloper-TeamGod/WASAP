@@ -16,6 +16,7 @@ public class CameraViewModel: BaseViewModel {
 
     // MARK: - UseCase
     private let cameraUseCase: CameraUseCase
+    private let imageAnalysisUseCase: ImageAnalysisUseCase
 
     // MARK: - Input
     public var zoomValue = BehaviorRelay<CGFloat>(value: 1.0)
@@ -30,8 +31,9 @@ public class CameraViewModel: BaseViewModel {
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
 
     // MARK: - Init & Binding
-    public init(cameraUseCase: CameraUseCase, coordinatorController: CameraCoordinatorController) {
+    public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorController: CameraCoordinatorController) {
         self.cameraUseCase = cameraUseCase
+        self.imageAnalysisUseCase = imageAnalysisUseCase
         self.coordinatorController = coordinatorController
 
         let previewLayerRelay = PublishRelay<AVCaptureVideoPreviewLayer>()
@@ -78,6 +80,33 @@ public class CameraViewModel: BaseViewModel {
                 owner.isCameraRunning.accept(true)
             } onError: { error in
                 Log.error(error.localizedDescription)
+            }
+            .disposed(by: disposeBag)
+
+        isCameraConfigured
+            .withUnretained(self)
+            .flatMapLatest { owner, _ in
+                owner.cameraUseCase.getPreviewImageDataStream()
+            }
+            .withUnretained(self)
+            .flatMapLatest { owner, image in
+                owner.imageAnalysisUseCase.performOCR(on: image)
+            }
+            .withUnretained(self)
+            .subscribe { owner, ocrResult in
+                let (image, ssid, password) = ocrResult
+                Log.debug("image: \(image), ssid : \(ssid), password : \(password)")
+            }
+            .disposed(by: disposeBag)
+
+        isCameraConfigured
+            .withUnretained(self)
+            .flatMapLatest { owner, _ in
+                owner.cameraUseCase.getQRDataStream()
+            }
+            .withUnretained(self)
+            .subscribe { owner, qrString in
+                Log.debug("QR Code String : \(qrString)")
             }
             .disposed(by: disposeBag)
 

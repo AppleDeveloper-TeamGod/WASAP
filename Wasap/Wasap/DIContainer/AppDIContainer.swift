@@ -67,8 +67,8 @@ final public class WifiAutoConnectDIContainer {
         return ConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller,image: imageData, ssid: ssid, password: password)
     }
 
-    public func makeCameraViewModel(cameraUseCase: CameraUseCase, coordinatorcontroller: CameraCoordinatorController) -> CameraViewModel {
-        return CameraViewModel(cameraUseCase: cameraUseCase, coordinatorController: coordinatorcontroller)
+    public func makeCameraViewModel(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorcontroller: CameraCoordinatorController) -> CameraViewModel {
+        return CameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller)
     }
 
     public func makeGoToSettingViewModel(goToSettingUseCase: GoToSettingUseCase, coordinatorcontroller: GoToSettingCoordinatorController,
