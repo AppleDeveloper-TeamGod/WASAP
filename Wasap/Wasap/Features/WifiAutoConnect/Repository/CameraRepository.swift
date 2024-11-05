@@ -7,6 +7,7 @@
 
 import RxSwift
 import AVFoundation
+import UIKit
 
 public protocol CameraRepository {
 
@@ -30,7 +31,7 @@ public protocol CameraRepository {
     /// getPreviewSampleBufferStream() : 프리뷰 레이어로 가져오는 샘플버퍼 정보가 담깁니다.
     func getPreviewSampleBufferStream() -> Observable<CMSampleBuffer>
 
-    func getQRDataStream() -> Observable<String>
+    func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?>
 
     /// zoom() : 줌을 수행합니다.
     func zoom(_ factor: CGFloat)
@@ -53,7 +54,7 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
 
     private var capturedVideoDataStream = PublishSubject<CMSampleBuffer>()
-    private var capturedQRDataStream = PublishSubject<String>()
+    private var capturedQRDataStream = PublishSubject<(qrString: String, corners: [CGPoint])?>()
 
     public func requestAuthorization() -> Single<Void> {
         return Single.create { single in
@@ -187,7 +188,7 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
         self.capturedVideoDataStream.asObservable()
     }
 
-    public func getQRDataStream() -> Observable<String> {
+    public func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?> {
         self.capturedQRDataStream.asObservable()
     }
 
@@ -283,7 +284,18 @@ extension DefaultCameraRepository: AVCaptureMetadataOutputObjectsDelegate {
     public func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         for metadataObject in metadataObjects {
             if let qrCodeObject = metadataObject as? AVMetadataMachineReadableCodeObject, let qrCodeString = qrCodeObject.stringValue {
-                self.capturedQRDataStream.onNext(qrCodeString)
+                guard let videoPreviewLayer = self.previewLayer else { return }
+
+                // QR 코드 corners 값을 화면 좌표에 맞는 CGPoint로 변환
+                let convertedCorners = qrCodeObject.corners.map { corner in
+                    videoPreviewLayer.layerPointConverted(fromCaptureDevicePoint: corner)
+                }
+
+                if convertedCorners.filter({ point in
+                    point.x <= 0 || point.y <= 0 || point.x >= videoPreviewLayer.bounds.width || point.y >= videoPreviewLayer.bounds.height
+                }).isEmpty {
+                    self.capturedQRDataStream.onNext((qrCodeString, convertedCorners))
+                }
             }
         }
     }

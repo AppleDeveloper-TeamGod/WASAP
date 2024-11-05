@@ -60,11 +60,32 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             }
             .disposed(by: disposeBag)
 
-        cameraView.takePhotoButton.rx.tap
-            .compactMap { [weak self] _ in self?.cameraView.maskRect }
-            .bind(to: viewModel.shutterButtonDidTapWithMask)
-            .disposed(by: disposeBag)
+//        cameraView.takePhotoButton.rx.tap
+//            .compactMap { [weak self] _ in self?.cameraView.maskRect }
+//            .bind(to: viewModel.shutterButtonDidTapWithMask)
+//            .disposed(by: disposeBag)
 
+        viewModel.qrCodeCorners
+            .drive { [weak self] corners in
+                print("corners : \(corners)")
+                if let corners, !corners.isEmpty {
+                    guard !corners.isEmpty else { return }
+
+                    let minX = corners.map { $0.x }.min() ?? 0
+                    let minY = corners.map { $0.y }.min() ?? 0
+                    let maxX = corners.map { $0.x }.max() ?? 0
+                    let maxY = corners.map { $0.y }.max() ?? 0
+
+                    let width = maxX - minX
+                    let height = maxY - minY
+
+                    let rect = CGRect(x: minX, y: minY, width: width, height: height)
+                    self?.cameraView.frameRectLayer.frame = rect
+                } else {
+                    self?.cameraView.frameRectLayer.frame = CGRect(x: 50, y: 100, width: 300, height: 200)
+                }
+            }
+            .disposed(by: disposeBag)
     }
 
 }

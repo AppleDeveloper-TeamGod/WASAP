@@ -26,6 +26,7 @@ public class CameraViewModel: BaseViewModel {
     // MARK: - Output
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
     public var isZoomControlButtonHidden: Driver<Bool>
+    public var qrCodeCorners: Driver<[CGPoint]?>
 
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
@@ -41,6 +42,9 @@ public class CameraViewModel: BaseViewModel {
 
         let isZoomControlButtonHiddenRelay = BehaviorRelay<Bool>(value: false)
         self.isZoomControlButtonHidden = isZoomControlButtonHiddenRelay.asDriver(onErrorDriveWith: .empty())
+
+        let qrCodeCornersRelay = BehaviorRelay<[CGPoint]?>(value: nil)
+        self.qrCodeCorners = qrCodeCornersRelay.asDriver(onErrorDriveWith: .empty())
 
         super.init()
         let isCameraConfigured = PublishRelay<Void>()
@@ -105,8 +109,10 @@ public class CameraViewModel: BaseViewModel {
                 owner.cameraUseCase.getQRDataStream()
             }
             .withUnretained(self)
-            .subscribe { owner, qrString in
-                Log.debug("QR Code String : \(qrString)")
+            .subscribe { owner, qrData in
+                Log.debug("QR Code String : \(qrData?.qrString)")
+                Log.debug("QR Code Corners : \(qrData?.corners)")
+                qrCodeCornersRelay.accept(qrData?.corners ?? nil)
             }
             .disposed(by: disposeBag)
 
