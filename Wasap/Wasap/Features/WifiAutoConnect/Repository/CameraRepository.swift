@@ -28,8 +28,8 @@ public protocol CameraRepository {
     /// capturePhoto() : 캡쳐를 수행합니다. 그 결과를 Single로 받습니다.
     func capturePhoto() -> Single<Data>
 
-    /// getPreviewSampleBufferStream() : 프리뷰 레이어로 가져오는 샘플버퍼 정보가 담깁니다.
-    func getPreviewSampleBufferStream() -> Observable<CMSampleBuffer>
+    /// getPreviewImageStream() : 프리뷰 레이어로 가져오는 UIImage 정보가 담깁니다.
+    func getPreviewImageStream() -> Observable<UIImage>
 
     func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?>
 
@@ -53,7 +53,7 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
 
     private var photoCaptureCompletion: ((Result<Data, Error>) -> Void)?
 
-    private var capturedVideoDataStream = PublishSubject<CMSampleBuffer>()
+    private var capturedVideoDataStream = PublishSubject<UIImage>()
     private var capturedQRDataStream = PublishSubject<(qrString: String, corners: [CGPoint])?>()
 
     public func requestAuthorization() -> Single<Void> {
@@ -184,7 +184,7 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
         }
     }
 
-    public func getPreviewSampleBufferStream() -> Observable<CMSampleBuffer> {
+    public func getPreviewImageStream() -> Observable<UIImage> {
         self.capturedVideoDataStream.asObservable()
     }
 
@@ -276,7 +276,13 @@ extension DefaultCameraRepository: AVCapturePhotoCaptureDelegate {
 
 extension DefaultCameraRepository: AVCaptureVideoDataOutputSampleBufferDelegate {
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        self.capturedVideoDataStream.onNext(sampleBuffer)
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+
+        // CVPixelBuffer를 CIImage로 변환
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+        self.capturedVideoDataStream.onNext(UIImage(ciImage: ciImage))
     }
 }
 

@@ -65,9 +65,8 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
 //            .bind(to: viewModel.shutterButtonDidTapWithMask)
 //            .disposed(by: disposeBag)
 
-        viewModel.qrCodeCorners
+        viewModel.frameRectCorners
             .drive { [weak self] corners in
-                print("corners : \(corners)")
                 if let corners, !corners.isEmpty {
                     guard !corners.isEmpty else { return }
 
@@ -80,10 +79,17 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
                     let height = maxY - minY
 
                     let rect = CGRect(x: minX, y: minY, width: width, height: height)
+                    Log.print("frame rect : \(rect)")
                     self?.cameraView.frameRectLayer.frame = rect
                 } else {
                     self?.cameraView.frameRectLayer.frame = CGRect(x: 50, y: 100, width: 300, height: 200)
                 }
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.tempImage
+            .drive { [weak self] image in
+                self?.cameraView.tempImage.image = image
             }
             .disposed(by: disposeBag)
     }

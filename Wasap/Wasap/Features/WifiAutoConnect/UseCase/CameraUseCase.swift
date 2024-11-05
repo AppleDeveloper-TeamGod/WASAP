@@ -14,6 +14,7 @@ public protocol CameraUseCase {
     func configureCamera() -> Single<Void>
     func takePhoto(cropRect: CGRect) -> Single<UIImage>
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
+    func getCapturePreviewLayer() -> AVCaptureVideoPreviewLayer?
     func getPreviewImageDataStream() -> Observable<UIImage>
     func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?>
     func startRunning() -> Single<Void>
@@ -48,34 +49,21 @@ final class DefaultCameraUseCase: CameraUseCase {
     }
 
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer> {
-        Log.debug("Get Capture Preview Layer")
+        return repository.getPreviewLayer()
+    }
+
+    func getCapturePreviewLayer() -> AVCaptureVideoPreviewLayer? {
         return repository.getPreviewLayer()
     }
 
     func getPreviewImageDataStream() -> Observable<UIImage> {
-        return repository.getPreviewSampleBufferStream()
-            .throttle(.seconds(3), scheduler: MainScheduler.instance)
-            .compactMap { sampleBuffer in
-                guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-                    return nil
-                }
-
-                // CVPixelBuffer를 CIImage로 변환
-                let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-
-                // CIImage를 UIImage로 변환
-                let context = CIContext()
-                if let cgImage = context.createCGImage(ciImage, from: ciImage.extent) {
-                    return UIImage(cgImage: cgImage)
-                } else {
-                    return nil
-                }
-            }
+        return repository.getPreviewImageStream()
+            .throttle(.seconds(1), scheduler: MainScheduler.instance)
     }
 
     func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?> {
         return repository.getQRDataStream()
-            .throttle(.seconds(3), scheduler: MainScheduler.instance)
+            .throttle(.seconds(1), scheduler: MainScheduler.instance)
     }
 
     func startRunning() -> Single<Void> {
