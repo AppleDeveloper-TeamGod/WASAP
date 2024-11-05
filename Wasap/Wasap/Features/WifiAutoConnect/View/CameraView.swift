@@ -118,6 +118,14 @@ final class CameraView: BaseView {
         return layer
     }()
 
+    /// 임시
+    public var tempImage: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    ///
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -125,7 +133,7 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, takePhotoButton, zoomControlButton, zoomSliderStack)
+        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, takePhotoButton, zoomControlButton, zoomSliderStack, tempImage)
 
         self.previewContainerView.layer.addSublayer(frameRectLayer)
     }
@@ -170,6 +178,12 @@ final class CameraView: BaseView {
             $0.bottom.equalTo(takePhotoButton.snp.top).offset(-32)
             $0.width.equalToSuperview().multipliedBy(0.9)
             $0.height.equalTo(84)
+        }
+
+        tempImage.snp.makeConstraints {
+            $0.centerX.centerY.equalToSuperview()
+            $0.height.equalTo(300)
+            $0.width.equalTo(200)
         }
     }
 }

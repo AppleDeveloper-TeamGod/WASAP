@@ -11,7 +11,7 @@ import UIKit
 
 public protocol ImageAnalysisUseCase {
     func performOCR(on image: UIImage) -> Single<(UIImage, String, String)>
-
+    func performOCR(on image: UIImage) -> Single<(boxes: [CGRect], ssid: String, password: String)>
 }
 
 public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
@@ -66,5 +66,13 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
         }
 
         return renderedImage
+    }
+
+    public func performOCR(on image: UIImage) -> Single<(boxes: [CGRect], ssid: String, password: String)> {
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else {
+            return Single.error(ImageAnalysisError.invalidImage)
+        }
+        return imageAnalysisRepository.performOCR(from: imageData)
+            .map { $0 }
     }
 }
