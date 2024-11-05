@@ -28,9 +28,9 @@ final class CameraView: BaseView {
         self.frame.size.height
     }
 
-    public var maskRect: CGRect {
-        CGRect(origin: CGPoint(x: superViewWidth * Dimension.Mask.leftPadding, y: superViewHeight * Dimension.Mask.topPadding), size: CGSize(width: superViewWidth * Dimension.Mask.width, height: superViewHeight * Dimension.Mask.height))
-    }
+//    public lazy var maskRect: CGRect = {
+//        CGRect(origin: CGPoint(x: superViewWidth * Dimension.Mask.leftPadding, y: superViewHeight * Dimension.Mask.topPadding), size: CGSize(width: superViewWidth * Dimension.Mask.width, height: superViewHeight * Dimension.Mask.height))
+//    }()
 
     public lazy var previewContainerView: UIView = {
         UIView()
@@ -111,32 +111,11 @@ final class CameraView: BaseView {
         return slider
     }()
 
-    private lazy var opaqueBackgroundView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-
-        let maskLayer = CAShapeLayer()
-        let path = CGMutablePath()
-
-        path.addRects([
-            CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: superViewWidth, height: superViewHeight)),
-            maskRect
-        ])
-        maskLayer.path = path
-        maskLayer.fillRule = .evenOdd
-
-        view.layer.mask = maskLayer
-
-        let borderLayer = CAShapeLayer()
-        let borderPath = UIBezierPath(rect: maskRect)
-        borderLayer.path = borderPath.cgPath
-        borderLayer.strokeColor = UIColor.cameraFrameGreen.cgColor
-        borderLayer.lineWidth = 6.0
-        borderLayer.fillColor = UIColor.clear.cgColor
-
-        view.layer.addSublayer(borderLayer)
-
-        return view
+    public var frameRectLayer: CALayer = {
+        let layer = CALayer()
+        layer.borderColor = UIColor.red.cgColor
+        layer.borderWidth = 2
+        return layer
     }()
 
     override func layoutSubviews() {
@@ -146,15 +125,13 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, opaqueBackgroundView, wasapLabel, wifiIcon, takePhotoButton, zoomControlButton, zoomSliderStack)
+        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, takePhotoButton, zoomControlButton, zoomSliderStack)
+
+        self.previewContainerView.layer.addSublayer(frameRectLayer)
     }
 
     func setConstraints() {
         previewContainerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        opaqueBackgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
 

@@ -15,7 +15,7 @@ public protocol CameraUseCase {
     func takePhoto(cropRect: CGRect) -> Single<UIImage>
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
     func getPreviewImageDataStream() -> Observable<UIImage>
-    func getQRDataStream() -> Observable<String>
+    func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?>
     func startRunning() -> Single<Void>
     func stopRunning()
     func zoom(_ factor: CGFloat)
@@ -73,7 +73,7 @@ final class DefaultCameraUseCase: CameraUseCase {
             }
     }
 
-    func getQRDataStream() -> Observable<String> {
+    func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?> {
         return repository.getQRDataStream()
             .throttle(.seconds(3), scheduler: MainScheduler.instance)
     }
