@@ -14,8 +14,8 @@ public protocol ImageAnalysisRepository {
 }
 
 public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
-    let idKeywords: Set<String> = ["ID", "Id", "iD", "id", /*"WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi",*/ "Network", "NETWORK", "network", "ssid", "SSID", "와이파이", "네트워크", "I.D", "1D", "아이디"]
-    let pwKeywords: Set<String> = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "P.W", "PV", "P/W", "비밀번호", "비번"]
+    let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
+    let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
 
     var ssidText: String = ""
     var passwordText: String = ""
@@ -70,152 +70,40 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 
         let (idBoxes, pwBoxes, otherBoxes) = self.filterAndExtractTextBoxes(results)
 
-        // 1. ID 값이 비어 있을 경우 오른쪽에서 가장 가까운 텍스트를 찾기
-        var ssidBox = idBoxes.first?.1 == "" ? findClosestRightText(for: idBoxes.map { $0.0 }, in: otherBoxes) : idBoxes.first
+        // 1. ID(또는 PW) key와 value가 가로로 나란한 경우
+        var ssidBox = idBoxes.first?.1 == "" ? findClosestRightText(for: idBoxes.map { $0.2 }, in: otherBoxes) : idBoxes.first.map { ($0.0, $0.1) }
+        var passwordBox = pwBoxes.first?.1 == "" ? findClosestRightText(for: pwBoxes.map { $0.2 }, in: otherBoxes) : pwBoxes.first.map { ($0.0, $0.1) }
 
-        // 2. PW 값이 비어 있을 경우 오른쪽에서 가장 가까운 텍스트를 찾기
-        var passwordBox = pwBoxes.first?.1 == "" ? findClosestRightText(for: pwBoxes.map { $0.0 }, in: otherBoxes) : pwBoxes.first
-
-        // 3. 오른쪽에 텍스트가 없거나 비어 있는 경우 아래에서 가장 가까운 텍스트를 찾기
-        if ssidBox?.1 == "" {
-            ssidBox = findClosestBelowText(for: idBoxes.map { $0.0 }, in: otherBoxes)
+        // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
+        if (ssidBox == nil) || (ssidBox?.1 == "") {
+            ssidBox = findClosestBelowText(for: idBoxes.map { $0.2 }, in: otherBoxes)
+        }
+        if (passwordBox == nil) || (passwordBox?.1 == "") {
+            passwordBox = findClosestBelowText(for: pwBoxes.map { $0.2 }, in: otherBoxes)
         }
 
-        if passwordBox?.1 == "" {
-            passwordBox = findClosestBelowText(for: pwBoxes.map { $0.0 }, in: otherBoxes)
-        }
+        let delimiters = CharacterSet(charactersIn: "/,")
 
         if let ssidBox = ssidBox {
             boundingBoxes.append(ssidBox.0)
-            self.ssidText = ssidBox.1.replacingOccurrences(of: " ", with: "")
+            let ssidValue = ssidBox.1.components(separatedBy: delimiters).first ?? ssidBox.1
+            self.ssidText = ssidValue.replacingOccurrences(of: " ", with: "")
         }
 
         if let passwordBox = passwordBox {
             boundingBoxes.append(passwordBox.0)
-            self.passwordText = passwordBox.1.replacingOccurrences(of: " ", with: "")
+            let passwordValue = passwordBox.1.components(separatedBy: delimiters).first ?? passwordBox.1
+            self.passwordText = passwordValue.replacingOccurrences(of: " ", with: "")
         }
 
         DispatchQueue.main.async {
             single(.success((self.boundingBoxes, self.ssidText, self.passwordText)))
         }
-
-        /**
-         // observation별로 텍스트 정리하고 앞에 ID 또는 PW가 있는지 보고
-         // ID있으면,
-         // 그 전체 boundingBox(ID: 올레기가)를 idBoxes에 넣고
-         // (그 전체 boundingBox, "ID")를 boxes에 넣고
-         // boundingBox를 쪼개서
-         // (내용물 박스, 내용물 텍스트)를 boxes에 넣는다.
-         //
-         //
-         // 만약 ID, PW 없으면
-         // (그 전체 boundingBox, 그 전체 텍스트)를 boxes에 넣는다.
-         for observation in results {
-         print("--------------------------텍스트 분리----------------------------")
-         if let topCandidate = observation.topCandidates(1).first {
-         let originalString = topCandidate.string
-         let boundingBox = observation.boundingBox
-
-         // 1차: 공백 제거
-         let noSpaceString = originalString.replacingOccurrences(of: " ", with: "")
-
-         // 2차: 콜론(:) 및 하이픈(-) 제거
-         let cleanedString = noSpaceString.replacingOccurrences(of: "[:\\-]", with: " ", options: .regularExpression)
-
-         // 텍스트가 "ID" 또는 "PW"로 시작하는지 확인
-         let components = cleanedString.split(separator: " ", maxSplits: 1, omittingEmptySubsequences: true)
-         guard let firstWord = components.first.map(String.init) else { continue }
-
-         if self.idKeywords.contains(firstWord) {
-         // "ID" 부분을 분리하고 나머지 텍스트와 나눔
-         let idText = firstWord
-         let remainingText = components.count > 1 ? String(components[1]) : ""
-
-         // "ID" 부분에 대한 Bounding Box 분리
-         let idBox = boundingBox
-         let remainingBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(remainingText.count)/Double(noSpaceString.count)))
-
-         idBoxes.append(idBox)
-         boxes.append((idBox, "ID"))
-
-         if !remainingText.isEmpty {
-         boxes.append((remainingBox, remainingText))
-         }
-
-         Log.print("원본텍스트:\(originalString), 분리된텍스트:'\(idText)' + '\(remainingText)'")
-
-         } else if self.pwKeywords.contains(firstWord) {
-         // "PW" 부분을 분리하고 나머지 텍스트와 나눔
-         let pwText = firstWord
-         let remainingText = components.count > 1 ? String(components[1]) : ""
-
-         // "PW" 부분에 대한 Bounding Box 분리
-         let pwBox = boundingBox
-         let remainingBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(remainingText.count)/Double(noSpaceString.count)))
-
-         pwBoxes.append(pwBox)
-         boxes.append((pwBox, "PW"))
-
-         if !remainingText.isEmpty {
-         boxes.append((remainingBox, remainingText))
-         }
-
-         Log.print("원본텍스트:\(originalString), 분리된텍스트:'\(pwText)' + '\(remainingText)'")
-
-         } else {
-         boxes.append((boundingBox, originalString))
-         Log.print("원본텍스트:\(originalString), 기타텍스트:\(cleanedString)")
-         }
-         }
-         }
-         */
-
-        /**
-         var extractedBoxes: [CGRect] = []
-
-         // "ID"에 가장 가까운 Bounding Box(SSID 값, 보라색) 탐색 - PW는 제외
-         for idBox in idBoxes {
-         print("-----아이디박스----")
-         if let closestBox = self.closestBoundingBox(from: idBox, in: boxes.filter { $0.1 != "ID" && $0.1 != "PW" }) {
-
-         extractedBoxes.append(closestBox.0)
-         self.ssidText = closestBox.1.replacingOccurrences(of: " ", with: "")
-         Log.print("보라색박스(SSID 값 추정):\(self.ssidText)")
-
-         let distance = self.distanceBetweenEdges(idBox, closestBox.0)
-         print("ID 박스 CGRect: \(self.formatCGRect(idBox))")
-         print("SSID 박스 CGRect: \(self.formatCGRect(closestBox.0))")
-         print("ID 박스와 SSID 값의 거리: \(String(format: "%.3f", distance))")
-         }
-         }
-
-         // "PW"에 가장 가까운 Bounding Box(Password 값, 연두색) 탐색 - ID와 SSID value 박스는 제외
-         for pwBox in pwBoxes {
-         print("-----비번박스----")
-         if let closestBox = self.closestBoundingBox(from: pwBox, in: boxes.filter { box in
-         box.1 != "ID" && box.1 != "PW" && extractedBoxes.first(where: { extractedBox in box.0 == extractedBox }) == nil }) {
-
-         extractedBoxes.append(closestBox.0)
-         self.passwordText = closestBox.1.replacingOccurrences(of: " ", with: "")
-         Log.print("연두색박스(Password 값 추정):\(self.passwordText)")
-
-         let distance = self.distanceBetweenEdges(pwBox, closestBox.0)
-         print("PW 박스 CGRect: \(self.formatCGRect(pwBox))")
-         print("Password 박스 CGRect: \(self.formatCGRect(closestBox.0))")
-         print("PW 박스와 Password 값의 거리: \(String(format: "%.3f", distance))")
-         }
-         }
-
-         DispatchQueue.main.async {
-         self.boundingBoxes.append(contentsOf: extractedBoxes)
-         single(.success((self.boundingBoxes, self.ssidText, self.passwordText)))
-         }
-         */
     }
 
-    private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ([(CGRect, String)], [(CGRect, String)], [(CGRect, String)]) {
-        var idBoxes: [(CGRect, String)] = []
-        var pwBoxes: [(CGRect, String)] = []
+    private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ([(CGRect, String, CGRect)], [(CGRect, String, CGRect)], [(CGRect, String)]) {
+        var idBoxes: [(CGRect, String, CGRect, Int?)] = []
+        var pwBoxes: [(CGRect, String, CGRect, Int?)] = []
         var otherBoxes: [(CGRect, String)] = []
 
         for observation in observations {
@@ -223,84 +111,87 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             let originalText = topCandidate.string
             let boundingBox = observation.boundingBox
 
-            print("오리오리😍\(originalText)")
-
-            let (label, content, box) = self.identifyKeyword(originalText: originalText,
-                                                             boundingBox: boundingBox)
+            let (label, content, contentBox, labelBox, index) = self.identifyKeyword(originalText: originalText, boundingBox: boundingBox)
 
             switch label {
             case "ID":
-                idBoxes.append((box, content))
+                idBoxes.append((contentBox, content, labelBox, index))
             case "PW":
-                pwBoxes.append((box, content))
+                pwBoxes.append((contentBox, content, labelBox, index))
             default:
-                otherBoxes.append((box, content))
+                otherBoxes.append((contentBox, content))
 
             }
         }
 
-        return (idBoxes, pwBoxes, otherBoxes)
+        idBoxes.sort { $0.3! < $1.3! }
+        pwBoxes.sort { $0.3! < $1.3! }
+
+        return (idBoxes.map { ($0.0, $0.1, $0.2) }, pwBoxes.map { ($0.0, $0.1, $0.2) }, otherBoxes.map { ($0.0, $0.1) })
     }
 
-    private func identifyKeyword(originalText: String, boundingBox: CGRect) -> (String, String, CGRect) {
-        // 1차: 공백 제거
-        // let noSpaceText = originalText.replacingOccurrences(of: " ", with: "")
+    private func identifyKeyword(originalText: String, boundingBox: CGRect) -> (String, String, CGRect, CGRect, Int?) {
 
-        let (keyword, cleanedText) = replaceDelimiterAfterKeyword(in: originalText, keywords: idKeywords.union(pwKeywords))
+        let (keyword, cleanedText, index) = replaceDelimiterAfterKeyword(in: originalText, keywords: idKeywords + pwKeywords)
 
         // ID or PW 키워드가 없는 경우 처리
         guard let keyword = keyword else {
             Log.print("원본텍스트:\(originalText), 기타텍스트:\(cleanedText)")
-            return ("", cleanedText, boundingBox)
+            return ("", cleanedText, boundingBox, boundingBox, nil)
         }
 
         // ID or PW 키워드가 있는 경우 처리
         let value = cleanedText
         let valueBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(value.count) / Double(originalText.count)))
 
+        let keywordBox = CGRect(
+            x: boundingBox.minX,
+            y: boundingBox.minY,
+            width: boundingBox.width - valueBox.width,
+            height: boundingBox.height
+        )
+
         // ID와 PW 구분에 따라 처리
         if idKeywords.contains(keyword) {
             Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-            return ("ID", value, valueBox)
+            return ("ID", value, valueBox, keywordBox, index)
 
         } else if pwKeywords.contains(keyword) {
             Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-            return ("PW", value, valueBox)
+            return ("PW", value, valueBox, keywordBox, index)
         }
 
         // 컴파일러 요구 사항에 따른 디폴트 반환값
-        return ("", cleanedText, boundingBox)
+        return ("", cleanedText, boundingBox, boundingBox, nil)
     }
 
-    private func replaceDelimiterAfterKeyword(in text: String, keywords: Set<String>) -> (String?, String) {
+    private func replaceDelimiterAfterKeyword(in text: String, keywords: Array<String>) -> (String?, String, Int?) {
         // 각 키워드를 순회하며 해당 키워드가 있는 위치를 찾습니다.
-        for keyword in keywords {
+        for (index, keyword) in keywords.enumerated() {
             if let range = text.range(of: "\\b\(keyword)\\b", options: .regularExpression) {
                 // 키워드 뒤의 텍스트 추출
-                let suffix = text[range.upperBound...]
+                var modifiedSuffix = text[range.upperBound...].trimmingCharacters(in: .whitespaces)
 
-                // 키워드 뒤에 나오는 첫 번째 특수 문자 위치 찾기
-                if let delimiterRange = suffix.range(of: "[:\\-\\._\\\\/|]", options: .regularExpression) {
-                    // 특수 문자 위치를 공백으로 대체하여 텍스트 반환
-                    var modifiedSuffix = suffix
-                    modifiedSuffix.replaceSubrange(delimiterRange, with: " ")
-                    return (keyword, String(modifiedSuffix).trimmingCharacters(in: .whitespaces))
+                // 첫 번째 문자가 특수 문자일 경우, 알파벳이나 숫자가 나올 때까지 공백으로 대체
+                while let firstChar = modifiedSuffix.first, ":-._\\/|)]}".contains(firstChar) {
+                    modifiedSuffix.replaceSubrange(modifiedSuffix.startIndex...modifiedSuffix.startIndex, with: " ")
+
+                    modifiedSuffix = modifiedSuffix.trimmingCharacters(in: .whitespaces)
                 }
-                // 특수 문자가 없으면 키워드 뒤의 모든 텍스트 반환
-                return (keyword, String(suffix).trimmingCharacters(in: .whitespaces))
+                return (keyword, modifiedSuffix.trimmingCharacters(in: .whitespaces), index)
+
             }
         }
-        // 키워드가 발견되지 않으면 (nil, 원본 텍스트) 반환
-        return (nil, text)
-    }
 
+        // 키워드가 발견되지 않은 경우
+        return (nil, text, nil)
+    }
 
     private func splitBoundingBox(originalBox: CGRect, splitFactor: CGFloat) -> CGRect {
         let newWidth = originalBox.width * (1 - splitFactor)
         let newX = originalBox.minX + (originalBox.width * splitFactor)
         return CGRect(x: newX, y: originalBox.minY, width: newWidth, height: originalBox.height)
     }
-
 
     private func findClosestRightText(for sourceBoxes: [CGRect], in otherBoxes: [(CGRect, String)]) -> (CGRect, String)? {
         guard let sourceBox = sourceBoxes.first else { return nil }
@@ -312,17 +203,11 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         var minDistance = CGFloat.greatestFiniteMagnitude
 
         for (candidateBox, candidateText) in otherBoxes {
-            // y값이 sourceBox와 유사한(수평 나란한) 선에서 오른쪽에 위치한지 확인
-
-            //            if abs(candidateBox.midY - sourceBox.midY) <= sourceBox.height && candidateBox.minX > sourceBox.maxX {
-
-            if candidateBox.minX > sourceBox.maxX {
+            if candidateBox.minX > sourceBox.midX && candidateBox.minY < sourceBox.maxY && candidateBox.maxY > sourceBox.minY {
 
                 let deltaX = candidateBox.minX - sourceBox.maxX
                 let deltaY = (candidateBox.midY - sourceBox.midY) * yWeight
                 let distance = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
-
-                // let distance = candidateBox.minX - sourceBox.maxX
 
                 if distance < minDistance {
                     closestRightText = candidateText
@@ -337,7 +222,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 
     private func findClosestBelowText(for sourceBoxes: [CGRect], in otherBoxes: [(CGRect, String)]) -> (CGRect, String)? {
         guard let sourceBox = sourceBoxes.first else { return nil }
-
+        
         let xWeight: CGFloat = 1.0
 
         var closestBelowText: String = ""
@@ -345,13 +230,11 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         var minDistance = CGFloat.greatestFiniteMagnitude
 
         for (candidateBox, candidateText) in otherBoxes {
-            if candidateBox.minY > sourceBox.maxY {
+            if candidateBox.maxY < sourceBox.midY && candidateBox.maxX > sourceBox.minX && candidateBox.minX < sourceBox.maxX {
 
                 let deltaX = (candidateBox.midX - sourceBox.midX) * xWeight
-                let deltaY = candidateBox.minY - sourceBox.maxY
+                let deltaY = candidateBox.maxY - sourceBox.minY
                 let distance = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
-
-                // let distance = candidateBox.minY - sourceBox.maxY
 
                 if distance < minDistance {
                     closestBelowText = candidateText
@@ -381,59 +264,6 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 
         return CGImagePropertyOrientation(rawValue: orientationValue) ?? .up
     }
-
-    /**
-     private func distanceBetweenEdges(_ rect1: CGRect, _ rect2: CGRect) -> CGFloat {
-     // X축 겹침 여부 확인: 두 사각형이 가로 방향으로 겹치지 않으면 수직 하단으로 간주하지 않음
-     guard rect1.maxX >= rect2.minX && rect2.maxX >= rect1.minX else { return CGFloat.greatestFiniteMagnitude }
-
-     // Y축 거리 계산
-     if rect1.maxY <= rect2.minY {
-     // 수직으로 겹치지 않는 경우: 두 사각형의 Y축 간격
-     return rect2.minY - rect1.maxY
-     } else {
-     // 수직으로 겹치는 경우: 겹친 영역의 Y축 최소 거리
-     return min(abs(rect1.minY - rect2.minY), abs(rect1.maxY - rect2.maxY))
-     }
-     }
-     */
-    /**
-     private func distanceBetweenEdges(_ rect1: CGRect, _ rect2: CGRect, yWeight: CGFloat = 2.0) -> CGFloat {
-     // X축 최단 거리: 두 사각형이 겹치지 않으면 그 간격, 겹치면 0
-     let dx = max(0, max(rect1.minX - rect2.maxX, rect2.minX - rect1.maxX))
-
-     // Y축 최단 거리: 두 사각형이 겹치지 않으면 그 간격, 겹치면 0
-     let dy = max(0, max(rect1.minY - rect2.maxY, rect2.minY - rect1.maxY))
-
-     // minX끼리의 차이, maxX끼리의 차이
-     let dxMin = abs(rect1.minX - rect2.minX)
-     let dxMax = abs(rect1.maxX - rect2.maxX)
-
-     // minY끼리의 차이, maxY끼리의 차이
-     let dyMin = abs(rect1.minY - rect2.minY)
-     let dyMax = abs(rect1.maxY - rect2.maxY)
-
-     // X축에서 기존 dx와 minX끼리/maxX끼리 중 더 짧은 값 선택
-     let finalDx = min(dx, dxMin, dxMax)
-
-     // Y축에서 기존 dy와 minY끼리/maxY끼리 중 더 짧은 값 선택
-     let finalDy = min(dy, dyMin, dyMax) * yWeight
-
-     // 최종 거리 계산 (피타고라스 정리 사용)
-     return sqrt(finalDx * finalDx + finalDy * finalDy)
-     }
-     */
-
-    // CGRect를 소수점 셋째자리까지 포맷팅하는 함수
-    private func formatCGRect(_ rect: CGRect) -> String {
-        return String(format: "(x: %.3f, y: %.3f, width: %.3f, height: %.3f)", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height)
-    }
-
-    /**
-     private func closestBoundingBox(from sourceBox: CGRect, in boxes: [(CGRect, String)]) -> (CGRect, String)? {
-     return boxes.min { distanceBetweenEdges($0.0, sourceBox) < distanceBetweenEdges($1.0, sourceBox) }
-     }
-     */
 }
 
 
