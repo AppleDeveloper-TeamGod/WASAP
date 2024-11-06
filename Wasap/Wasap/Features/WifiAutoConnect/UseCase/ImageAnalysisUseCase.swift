@@ -73,6 +73,16 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
             return Single.error(ImageAnalysisError.invalidImage)
         }
         return imageAnalysisRepository.performOCR(from: imageData)
-            .map { $0 }
+            .map { (boxes, ssid, password) in
+                let convertedBoxes = boxes.map { box in
+                    CGRect(
+                        x: box.origin.x,
+                        y: (1 - box.origin.y - box.height),
+                        width: box.width,
+                        height: box.height
+                    )
+                }
+                return (convertedBoxes, ssid, password)
+            }
     }
 }
