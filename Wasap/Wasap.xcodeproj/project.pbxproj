@@ -58,6 +58,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0742D10C2CDB7B82009BCA85 /* Exceptions for "Wasap" folder in "WasapTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Global/GoogleService-Info.plist",
+			);
+			target = 6FB475E92CB0181700886498 /* WasapTests */;
+		};
 		6FAE7AB72CAD9F5700A1D1CE /* Exceptions for "Wasap" folder in "Wasap" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -72,14 +79,13 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				6FAE7AB72CAD9F5700A1D1CE /* Exceptions for "Wasap" folder in "Wasap" target */,
+				0742D10C2CDB7B82009BCA85 /* Exceptions for "Wasap" folder in "WasapTests" target */,
 			);
 			path = Wasap;
 			sourceTree = "<group>";
 		};
 		6FB475EB2CB0181700886498 /* WasapTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = WasapTests;
 			sourceTree = "<group>";
 		};
@@ -154,7 +160,6 @@
 				CB0DEA3395B705D1F335DC80 /* Pods-WasapTests.test.xcconfig */,
 				856E368B85C1F710AFF0FB00 /* Pods-WasapTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -457,8 +462,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -523,8 +530,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -564,8 +573,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
