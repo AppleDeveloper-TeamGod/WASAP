@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0700F8862CC41D5900362418 /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = 0700F8852CC41D5900362418 /* RxGesture */; };
+		2221210FCFFD4101D37AC6E2 /* Pods_Wasap.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001EA7B365F6FE641D5AD361 /* Pods_Wasap.framework */; };
 		6F342CDB2CB8D0680023C159 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 6F342CDA2CB8D0680023C159 /* RxBlocking */; };
 		6FAE7AC22CADA1B600A1D1CE /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC12CADA1B600A1D1CE /* Moya */; };
 		6FAE7AC42CADA1B600A1D1CE /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC32CADA1B600A1D1CE /* ReactiveMoya */; };
@@ -17,6 +18,7 @@
 		6FAE7ACD2CADA1CB00A1D1CE /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACC2CADA1CB00A1D1CE /* RxSwift */; };
 		6FAE7AD02CADA1DB00A1D1CE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7ACF2CADA1DB00A1D1CE /* SnapKit */; };
 		BFEBE0372CBD08F7005E6616 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = BFEBE0362CBD08F7005E6616 /* Lottie */; };
+		FDD835253FDE54554023527F /* Pods_WasapTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114D23A1BB7C38614710C8F5 /* Pods_WasapTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,8 +45,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		001EA7B365F6FE641D5AD361 /* Pods_Wasap.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wasap.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		114D23A1BB7C38614710C8F5 /* Pods_WasapTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WasapTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		553E91723E9DD1A017BA3479 /* Pods-Wasap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wasap.release.xcconfig"; path = "Target Support Files/Pods-Wasap/Pods-Wasap.release.xcconfig"; sourceTree = "<group>"; };
 		6FAE7AA52CAD9F5600A1D1CE /* Wasap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wasap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB475EA2CB0181700886498 /* WasapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WasapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		74684E69EF4B57C57E16BFE1 /* Pods-Wasap.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wasap.test.xcconfig"; path = "Target Support Files/Pods-Wasap/Pods-Wasap.test.xcconfig"; sourceTree = "<group>"; };
+		7D4BA7B908E45A8C479B9A1E /* Pods-Wasap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wasap.debug.xcconfig"; path = "Target Support Files/Pods-Wasap/Pods-Wasap.debug.xcconfig"; sourceTree = "<group>"; };
+		856E368B85C1F710AFF0FB00 /* Pods-WasapTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WasapTests.release.xcconfig"; path = "Target Support Files/Pods-WasapTests/Pods-WasapTests.release.xcconfig"; sourceTree = "<group>"; };
+		C8FFD43C4D04E7DFF5550D37 /* Pods-WasapTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WasapTests.debug.xcconfig"; path = "Target Support Files/Pods-WasapTests/Pods-WasapTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CB0DEA3395B705D1F335DC80 /* Pods-WasapTests.test.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WasapTests.test.xcconfig"; path = "Target Support Files/Pods-WasapTests/Pods-WasapTests.test.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,6 +78,8 @@
 		};
 		6FB475EB2CB0181700886498 /* WasapTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = WasapTests;
 			sourceTree = "<group>";
 		};
@@ -87,6 +99,7 @@
 				6FAE7AC92CADA1CB00A1D1CE /* RxCocoa in Frameworks */,
 				6FAE7AC42CADA1B600A1D1CE /* ReactiveMoya in Frameworks */,
 				BFEBE0372CBD08F7005E6616 /* Lottie in Frameworks */,
+				2221210FCFFD4101D37AC6E2 /* Pods_Wasap.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F342CDB2CB8D0680023C159 /* RxBlocking in Frameworks */,
+				FDD835253FDE54554023527F /* Pods_WasapTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +122,7 @@
 				6FB475EB2CB0181700886498 /* WasapTests */,
 				6FEE9AFE2CB3BC11004B9A01 /* Frameworks */,
 				6FAE7AA62CAD9F5600A1D1CE /* Products */,
+				D843D2C9B37AA5312D3D19F5 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -123,8 +138,24 @@
 		6FEE9AFE2CB3BC11004B9A01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				001EA7B365F6FE641D5AD361 /* Pods_Wasap.framework */,
+				114D23A1BB7C38614710C8F5 /* Pods_WasapTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D843D2C9B37AA5312D3D19F5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7D4BA7B908E45A8C479B9A1E /* Pods-Wasap.debug.xcconfig */,
+				74684E69EF4B57C57E16BFE1 /* Pods-Wasap.test.xcconfig */,
+				553E91723E9DD1A017BA3479 /* Pods-Wasap.release.xcconfig */,
+				C8FFD43C4D04E7DFF5550D37 /* Pods-WasapTests.debug.xcconfig */,
+				CB0DEA3395B705D1F335DC80 /* Pods-WasapTests.test.xcconfig */,
+				856E368B85C1F710AFF0FB00 /* Pods-WasapTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -134,9 +165,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FAE7AB82CAD9F5700A1D1CE /* Build configuration list for PBXNativeTarget "Wasap" */;
 			buildPhases = (
+				1748317FBEBB3A19EB18803A /* [CP] Check Pods Manifest.lock */,
 				6FAE7AA12CAD9F5600A1D1CE /* Sources */,
 				6FAE7AA22CAD9F5600A1D1CE /* Frameworks */,
 				6FAE7AA32CAD9F5600A1D1CE /* Resources */,
+				E57208C1E153492F2F672E21 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -165,6 +198,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FB475F02CB0181700886498 /* Build configuration list for PBXNativeTarget "WasapTests" */;
 			buildPhases = (
+				60B23CBBC2CA0E0591B54683 /* [CP] Check Pods Manifest.lock */,
 				6FB475E62CB0181700886498 /* Sources */,
 				6FB475E72CB0181700886498 /* Frameworks */,
 				6FB475E82CB0181700886498 /* Resources */,
@@ -253,6 +287,70 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1748317FBEBB3A19EB18803A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Wasap-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		60B23CBBC2CA0E0591B54683 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WasapTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E57208C1E153492F2F672E21 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Wasap/Pods-Wasap-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Wasap/Pods-Wasap-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Wasap/Pods-Wasap-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6FAE7AA12CAD9F5600A1D1CE /* Sources */ = {
@@ -349,6 +447,7 @@
 		};
 		6F342CDD2CB8D2370023C159 /* Test */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 74684E69EF4B57C57E16BFE1 /* Pods-Wasap.test.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -389,6 +488,7 @@
 		};
 		6F342CDE2CB8D2370023C159 /* Test */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CB0DEA3395B705D1F335DC80 /* Pods-WasapTests.test.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -413,6 +513,7 @@
 		};
 		6FAE7AB92CAD9F5700A1D1CE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7D4BA7B908E45A8C479B9A1E /* Pods-Wasap.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -453,6 +554,7 @@
 		};
 		6FAE7ABA2CAD9F5700A1D1CE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 553E91723E9DD1A017BA3479 /* Pods-Wasap.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -616,6 +718,7 @@
 		};
 		6FB475F12CB0181700886498 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C8FFD43C4D04E7DFF5550D37 /* Pods-WasapTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -640,6 +743,7 @@
 		};
 		6FB475F22CB0181700886498 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 856E368B85C1F710AFF0FB00 /* Pods-WasapTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
