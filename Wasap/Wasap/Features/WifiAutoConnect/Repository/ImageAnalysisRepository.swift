@@ -9,21 +9,17 @@ import RxSwift
 import Vision
 
 public protocol ImageAnalysisRepository {
-    func performOCR(from imageData: Data) -> Single<([CGRect], String, String)>
+    func performOCR(from imageData: Data) -> Single<OCRResultVO>
 
 }
 
 public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
-    let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
+    let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "1.D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
     let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
-
-    var ssidText: String = ""
-    var passwordText: String = ""
-    var boundingBoxes: [CGRect] = []
 
     public init() {}
 
-    public func performOCR(from imageData: Data) -> Single<([CGRect], String, String)> {
+    public func performOCR(from imageData: Data) -> Single<OCRResultVO> {
         return Single.create { [weak self] single in
             guard let self = self else {
                 single(.failure(ImageAnalysisError.ocrFailed("Self not found")))
@@ -38,7 +34,17 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             let orientation = self.extractOrientation(from: imageData)
             let request = VNRecognizeTextRequest { [weak self] request, error in
                 guard let self = self else { return }
-                self.handleOCRResults(request: request, error: error, single: single)
+
+                if let error = error {
+                    single(.failure(ImageAnalysisError.ocrFailed("Failed to perform OCR: \(error.localizedDescription)")))
+                    return
+                }
+
+                if let result = self.handleOCRResults(request: request) {
+                    single(.success(result))
+                } else {
+                    single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
+                }
             }
 
             request.recognitionLanguages = ["ko", "en"]
@@ -57,16 +63,14 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         }
     }
 
-    private func handleOCRResults(request: VNRequest, error: Error?, single: @escaping (SingleEvent<([CGRect], String, String)>) -> Void) {
-        if let error = error {
-            single(.failure(ImageAnalysisError.ocrFailed(error.localizedDescription)))
-            return
+    private func handleOCRResults(request: VNRequest) -> OCRResultVO? {
+        guard let results = request.results as? [VNRecognizedTextObservation] else {
+            return nil
         }
 
-        guard let results = request.results as? [VNRecognizedTextObservation] else {
-            single(.failure(ImageAnalysisError.ocrFailed("No results found")))
-            return
-        }
+        var boundingBoxes: [CGRect] = []
+        var ssidText: String = ""
+        var passwordText: String = ""
 
         let (idBoxes, pwBoxes, otherBoxes) = self.filterAndExtractTextBoxes(results)
 
@@ -85,20 +89,18 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         let delimiters = CharacterSet(charactersIn: "/,")
 
         if let ssidBox = ssidBox {
-            boundingBoxes.append(ssidBox.0)
             let ssidValue = ssidBox.1.components(separatedBy: delimiters).first ?? ssidBox.1
-            self.ssidText = ssidValue.replacingOccurrences(of: " ", with: "")
+            ssidText = ssidValue.replacingOccurrences(of: " ", with: "")
+            boundingBoxes.append(ssidBox.0)
         }
 
         if let passwordBox = passwordBox {
-            boundingBoxes.append(passwordBox.0)
             let passwordValue = passwordBox.1.components(separatedBy: delimiters).first ?? passwordBox.1
-            self.passwordText = passwordValue.replacingOccurrences(of: " ", with: "")
+            passwordText = passwordValue.replacingOccurrences(of: " ", with: "")
+            boundingBoxes.append(passwordBox.0)
         }
 
-        DispatchQueue.main.async {
-            single(.success((self.boundingBoxes, self.ssidText, self.passwordText)))
-        }
+        return OCRResultVO(boundingBoxes: boundingBoxes, ssid: ssidText, password: passwordText)
     }
 
     private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ([(CGRect, String, CGRect)], [(CGRect, String, CGRect)], [(CGRect, String)]) {

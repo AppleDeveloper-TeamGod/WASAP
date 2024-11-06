@@ -27,11 +27,14 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
         }
 
         return imageAnalysisRepository.performOCR(from: imageData)
-            .map { [weak self] boxes, ssid, password in
-                guard let imageWithBoxes = self?.drawBoundingBoxes(boxes, on: image) else {
+            .map { [weak self] result in
+                guard let self = self else { throw  ImageAnalysisError.boxDrawingFailed }
+
+                let imageWithBoxes = self.drawBoundingBoxes(result.boundingBoxes, on: image)
+                guard let renderedImage = imageWithBoxes else {
                     throw ImageAnalysisError.boxDrawingFailed
                 }
-                return (imageWithBoxes, ssid, password)
+                return (renderedImage, result.ssid, result.password)
             }
     }
 
