@@ -24,7 +24,6 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
 
     public override func loadView() {
         self.view = cameraView
-
     }
 
     private func bind(_ viewModel: CameraViewModel) {
@@ -95,6 +94,13 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
         viewModel.zoomValue
             .drive { [weak self] value in
                 self?.cameraView.zoomSlider.value = Float(value)
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.minMaxZoomFactor
+            .drive { [weak self] value in
+                self?.cameraView.zoomSlider.minimumValue = Float(value.min)
+                self?.cameraView.zoomSlider.maximumValue = Float(value.max)
             }
             .disposed(by: disposeBag)
     }

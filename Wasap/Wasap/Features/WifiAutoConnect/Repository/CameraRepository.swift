@@ -254,7 +254,8 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
     public func getMaxZoomFactor() -> CGFloat? {
         let device = getCurrentInputDevice()
 
-        return device?.maxAvailableVideoZoomFactor
+        guard let maximum = device?.maxAvailableVideoZoomFactor else { return nil }
+        return min(maximum, 15.0)
     }
 
     private func getCurrentInputDevice() -> AVCaptureDevice? {

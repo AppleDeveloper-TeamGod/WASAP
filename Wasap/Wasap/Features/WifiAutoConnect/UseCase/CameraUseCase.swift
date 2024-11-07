@@ -19,6 +19,7 @@ public protocol CameraUseCase {
     func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?>
     func startRunning() -> Single<Void>
     func stopRunning()
+    func getMinMaxZoomFactor() -> (min: CGFloat?, max: CGFloat?)
     func zoom(_ factor: CGFloat)
 }
 
@@ -77,6 +78,10 @@ final class DefaultCameraUseCase: CameraUseCase {
 
     func zoom(_ factor: CGFloat) {
         repository.zoom(factor)
+    }
+
+    func getMinMaxZoomFactor() -> (min: CGFloat?, max: CGFloat?) {
+        return (repository.getMinZoomFactor(), repository.getMaxZoomFactor())
     }
 
     private func cropToPreviewLayer(originalImage: UIImage) -> UIImage? {

@@ -31,6 +31,7 @@ public class CameraViewModel: BaseViewModel {
     public var passwordRect: Driver<CGRect?>
     public var zoomValue: Driver<CGFloat>
     public var isPinching: Driver<Bool>
+    public var minMaxZoomFactor: Driver<(min: CGFloat, max: CGFloat)>
 
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
@@ -61,8 +62,11 @@ public class CameraViewModel: BaseViewModel {
         let zoomValueRelay = PublishRelay<CGFloat>()
         self.zoomValue = zoomValueRelay.asDriver(onErrorDriveWith: .empty())
 
-        let isPinchingRelay = PublishRelay<Bool>()
-        self.isPinching = isPinchingRelay.distinctUntilChanged().asDriver(onErrorJustReturn: false)
+        let isPinchingRelay = BehaviorRelay<Bool>(value: false)
+        self.isPinching = isPinchingRelay.distinctUntilChanged().asDriver(onErrorDriveWith: .empty())
+
+        let minMaxZoomFactorRelay = PublishRelay<(min: CGFloat, max: CGFloat)>()
+        self.minMaxZoomFactor = minMaxZoomFactorRelay.asDriver(onErrorDriveWith: .empty())
 
         super.init()
 
@@ -106,6 +110,12 @@ public class CameraViewModel: BaseViewModel {
                     return pinchScale - 1.0 + $1
                 }
             })
+            .distinctUntilChanged {
+                Int($0 * 10)
+            }
+            .map { [weak self] value in
+                self?.adjustedZoomValue(zoomValue: value) ?? 1.0
+            }
             .subscribe { [weak self] appliedZoomValue in
                 isPinchingRelay.accept(true)
                 zoomValueRelay.accept(appliedZoomValue)
@@ -123,6 +133,9 @@ public class CameraViewModel: BaseViewModel {
                     return pinchScale - 1.0 + $1
                 }
             })
+            .map { [weak self] value in
+                self?.adjustedZoomValue(zoomValue: value) ?? 1.0
+            }
             .subscribe { [weak self] newZoomValue in
                 isPinchingRelay.accept(false)
                 self?.currentZoomValue.accept(newZoomValue)
@@ -179,6 +192,14 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
+        isCameraConfigured
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                let (minimum, maximum) = owner.cameraUseCase.getMinMaxZoomFactor()
+                minMaxZoomFactorRelay.accept((min: minimum ?? 1.0, max: maximum ?? 1.0))
+            }
+            .disposed(by: disposeBag)
+
         isCameraRunning
             .filter { $0 }
             .withUnretained(self)
@@ -195,7 +216,9 @@ public class CameraViewModel: BaseViewModel {
         Observable.combineLatest(isCameraRunning, currentZoomValue)
             .filter(\.0)
             .map(\.1)
-            .distinctUntilChanged()
+            .distinctUntilChanged {
+                Int($0 * 10)
+            }
             .subscribe { [weak self] value in
                 zoomValueRelay.accept(value)
                 self?.cameraUseCase.zoom(value)
@@ -212,5 +235,17 @@ public class CameraViewModel: BaseViewModel {
                 owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
             }
             .disposed(by: disposeBag)
+    }
+
+    private func adjustedZoomValue(zoomValue: CGFloat) -> CGFloat {
+        let (minimum, maximum) = self.cameraUseCase.getMinMaxZoomFactor()
+        guard let minimum, let maximum else { return 1.0 }
+        if zoomValue < minimum {
+            return minimum
+        } else if zoomValue > maximum {
+            return maximum
+        } else {
+            return zoomValue
+        }
     }
 }
