@@ -25,7 +25,6 @@ public class CameraViewModel: BaseViewModel {
 
     // MARK: - Output
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
-    public var isZoomControlButtonHidden: Driver<Bool>
     public var frameRectCorners: Driver<[CGPoint]?>
     /// 임시
     public var tempImage: Driver<UIImage>
@@ -42,9 +41,6 @@ public class CameraViewModel: BaseViewModel {
 
         let previewLayerRelay = PublishRelay<AVCaptureVideoPreviewLayer>()
         self.previewLayer = previewLayerRelay.asDriver(onErrorDriveWith: .empty())
-
-        let isZoomControlButtonHiddenRelay = BehaviorRelay<Bool>(value: false)
-        self.isZoomControlButtonHidden = isZoomControlButtonHiddenRelay.asDriver(onErrorDriveWith: .empty())
 
         let qrCodeCornersRelay = BehaviorRelay<[CGPoint]?>(value: nil)
         let qrCodeNoResponseTrigger = qrCodeCornersRelay.debounce(.seconds(5), scheduler: MainScheduler.instance).map({ _ -> [CGPoint]? in nil })
@@ -190,17 +186,6 @@ public class CameraViewModel: BaseViewModel {
             .subscribe { [weak self] _, value in
                 self?.cameraUseCase.zoom(value)
             }
-            .disposed(by: disposeBag)
-
-        Observable.combineLatest(zoomValue, zoomControlButtonDidTap)
-            .debounce(.seconds(3), scheduler: MainScheduler.instance)
-            .map { _ in false }
-            .bind(to: isZoomControlButtonHiddenRelay)
-            .disposed(by: disposeBag)
-
-        zoomControlButtonDidTap
-            .map { _ in true }
-            .bind(to: isZoomControlButtonHiddenRelay)
             .disposed(by: disposeBag)
 
         shutterButtonDidTapWithMask
