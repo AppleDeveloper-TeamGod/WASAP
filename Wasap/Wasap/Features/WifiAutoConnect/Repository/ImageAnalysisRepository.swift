@@ -32,29 +32,22 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             }
 
             let orientation = self.extractOrientation(from: imageData)
-            let request = VNRecognizeTextRequest { [weak self] request, error in
-                guard let self = self else { return }
 
-                if let error = error {
-                    single(.failure(ImageAnalysisError.ocrFailed("Failed to perform OCR: \(error.localizedDescription)")))
-                    return
-                }
-
-                if let result = self.handleOCRResults(request: request) {
-                    single(.success(result))
-                } else {
-                    single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
-                }
-            }
-
-            request.recognitionLanguages = ["ko", "en"]
-            request.usesLanguageCorrection = true
+            let englishRequest = self.createTextRequest(for: "en")
+            let koreanRequest = self.createTextRequest(for: "ko")
 
             let requestHandler = VNImageRequestHandler(cgImage: cgImage,
                                                        orientation: orientation,
                                                        options: [:])
             do {
-                try requestHandler.perform([request])
+                try requestHandler.perform([englishRequest, koreanRequest])
+
+                if let result = self.handleOCRResults([englishRequest, koreanRequest]) {
+                    single(.success(result))
+                } else {
+                    single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
+                }
+
             } catch {
                 single(.failure(ImageAnalysisError.ocrFailed("Failed to perform OCR: \(error.localizedDescription)")))
             }
@@ -63,27 +56,49 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         }
     }
 
-    private func handleOCRResults(request: VNRequest) -> OCRResultVO? {
-        guard let results = request.results as? [VNRecognizedTextObservation] else {
-            return nil
-        }
+    private func createTextRequest(for language: String) -> VNRecognizeTextRequest {
+        let request = VNRecognizeTextRequest()
+        request.recognitionLanguages = [language]
+        request.usesLanguageCorrection = true
+        request.recognitionLevel = .accurate
+        request.customWords = ["ID", "PW"]
+        return request
+    }
 
+    private func handleOCRResults(_ requests: [VNRequest]) -> OCRResultVO? {
         var boundingBoxes: [CGRect] = []
         var ssidText: String = ""
         var passwordText: String = ""
 
-        let (idBoxes, pwBoxes, otherBoxes) = self.filterAndExtractTextBoxes(results)
+        let allObservations = requests.compactMap { $0.results as? [VNRecognizedTextObservation] }.flatMap { $0 }
+
+        let extractedBoxes = self.filterAndExtractTextBoxes(allObservations)
 
         // 1. ID(또는 PW) key와 value가 가로로 나란한 경우
-        var ssidBox = idBoxes.first?.1 == "" ? findClosestRightText(for: idBoxes.map { $0.2 }, in: otherBoxes) : idBoxes.first.map { ($0.0, $0.1) }
-        var passwordBox = pwBoxes.first?.1 == "" ? findClosestRightText(for: pwBoxes.map { $0.2 }, in: otherBoxes) : pwBoxes.first.map { ($0.0, $0.1) }
+        var ssidBox: (CGRect, String)?
+        if let firstIDBox = extractedBoxes.idBoxes.first {
+            if firstIDBox.content.isEmpty {
+                ssidBox = findClosestRightText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            } else {
+                ssidBox = (firstIDBox.contentBox, firstIDBox.content)
+            }
+        }
+
+        var passwordBox: (CGRect, String)?
+        if let firstPWBox = extractedBoxes.pwBoxes.first {
+            if firstPWBox.content.isEmpty {
+                passwordBox = findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            } else {
+                passwordBox = (firstPWBox.contentBox, firstPWBox.content)
+            }
+        }
 
         // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
         if (ssidBox == nil) || (ssidBox?.1 == "") {
-            ssidBox = findClosestBelowText(for: idBoxes.map { $0.2 }, in: otherBoxes)
+            ssidBox = findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
         }
         if (passwordBox == nil) || (passwordBox?.1 == "") {
-            passwordBox = findClosestBelowText(for: pwBoxes.map { $0.2 }, in: otherBoxes)
+            passwordBox = findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
         }
 
         let delimiters = CharacterSet(charactersIn: "/,")
@@ -103,43 +118,43 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         return OCRResultVO(boundingBoxes: boundingBoxes, ssid: ssidText, password: passwordText)
     }
 
-    private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ([(CGRect, String, CGRect)], [(CGRect, String, CGRect)], [(CGRect, String)]) {
-        var idBoxes: [(CGRect, String, CGRect, Int?)] = []
-        var pwBoxes: [(CGRect, String, CGRect, Int?)] = []
-        var otherBoxes: [(CGRect, String)] = []
+    private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ExtractedBoxes {
+        var idBoxes: [KeywordBox] = []
+        var pwBoxes: [KeywordBox] = []
+        var otherBoxes: [(rect: CGRect, text: String)] = []
 
         for observation in observations {
             guard let topCandidate = observation.topCandidates(1).first else { continue }
             let originalText = topCandidate.string
             let boundingBox = observation.boundingBox
 
-            let (label, content, contentBox, labelBox, index) = self.identifyKeyword(originalText: originalText, boundingBox: boundingBox)
+            let keywordBox = self.identifyKeyword(originalText: originalText, boundingBox: boundingBox)
 
-            switch label {
+            switch keywordBox.label {
             case "ID":
-                idBoxes.append((contentBox, content, labelBox, index))
+                idBoxes.append(keywordBox)
             case "PW":
-                pwBoxes.append((contentBox, content, labelBox, index))
+                pwBoxes.append(keywordBox)
             default:
-                otherBoxes.append((contentBox, content))
+                otherBoxes.append((keywordBox.contentBox, keywordBox.content))
 
             }
         }
 
-        idBoxes.sort { $0.3! < $1.3! }
-        pwBoxes.sort { $0.3! < $1.3! }
+        idBoxes.sort { $0.index! < $1.index! }
+        pwBoxes.sort { $0.index! < $1.index! }
 
-        return (idBoxes.map { ($0.0, $0.1, $0.2) }, pwBoxes.map { ($0.0, $0.1, $0.2) }, otherBoxes.map { ($0.0, $0.1) })
+        return ExtractedBoxes(idBoxes: idBoxes, pwBoxes: pwBoxes, otherBoxes: otherBoxes)
     }
 
-    private func identifyKeyword(originalText: String, boundingBox: CGRect) -> (String, String, CGRect, CGRect, Int?) {
+    private func identifyKeyword(originalText: String, boundingBox: CGRect) -> KeywordBox {
 
         let (keyword, cleanedText, index) = replaceDelimiterAfterKeyword(in: originalText, keywords: idKeywords + pwKeywords)
 
         // ID or PW 키워드가 없는 경우 처리
         guard let keyword = keyword else {
             Log.print("원본텍스트:\(originalText), 기타텍스트:\(cleanedText)")
-            return ("", cleanedText, boundingBox, boundingBox, nil)
+            return KeywordBox(label: "", content: cleanedText, contentBox: boundingBox, labelBox: boundingBox, index: nil)
         }
 
         // ID or PW 키워드가 있는 경우 처리
@@ -156,15 +171,15 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         // ID와 PW 구분에 따라 처리
         if idKeywords.contains(keyword) {
             Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-            return ("ID", value, valueBox, keywordBox, index)
+            return KeywordBox(label: "ID", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
 
         } else if pwKeywords.contains(keyword) {
             Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-            return ("PW", value, valueBox, keywordBox, index)
+            return KeywordBox(label: "PW", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
         }
 
         // 컴파일러 요구 사항에 따른 디폴트 반환값
-        return ("", cleanedText, boundingBox, boundingBox, nil)
+        return KeywordBox(label: "", content: cleanedText, contentBox: boundingBox, labelBox: boundingBox, index: nil)
     }
 
     private func replaceDelimiterAfterKeyword(in text: String, keywords: Array<String>) -> (String?, String, Int?) {
