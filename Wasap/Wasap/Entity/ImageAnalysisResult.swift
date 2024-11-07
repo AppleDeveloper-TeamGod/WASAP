@@ -7,9 +7,17 @@
 import Foundation
 
 public struct OCRResultVO {
-    let boundingBoxes: [CGRect]
-    let ssid: String
-    let password: String
+    let ssidBoundingBox: CGRect?
+    let passwordBoundingBox: CGRect?
+    let ssid: String?
+    let password: String?
+
+    var boundingBoxes: [CGRect] {
+        var boxes: [CGRect] = []
+        if let ssidBoundingBox { boxes.append(ssidBoundingBox) }
+        if let passwordBoundingBox { boxes.append(passwordBoundingBox) }
+        return boxes
+    }
 }
 
 public struct KeywordBox {

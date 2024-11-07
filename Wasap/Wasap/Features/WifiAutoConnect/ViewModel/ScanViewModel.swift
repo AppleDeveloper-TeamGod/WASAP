@@ -22,12 +22,12 @@ public class ScanViewModel: BaseViewModel {
     public var updatedImage: Driver<UIImage>
 
     // MARK: - Properties
-    private var ocrResult: Observable<(UIImage, String, String)>
+    private var ocrResult: Observable<(UIImage, String?, String?)>
 
     public init(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorController: ScanCoordinatorController, previewImage: UIImage) {
         self.imageAnalysisUseCase = imageAnalysisUseCase
 
-        let ocrResultRelay = BehaviorRelay<(UIImage, String, String)>(value: (previewImage, "", ""))
+        let ocrResultRelay = BehaviorRelay<(UIImage, String?, String?)>(value: (previewImage, "", ""))
         self.ocrResult = ocrResultRelay.asObservable().share()
 
         let updatedImageRelay = BehaviorRelay<UIImage?>(value: nil)
@@ -39,7 +39,7 @@ public class ScanViewModel: BaseViewModel {
         viewDidLoad
             .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
-            .flatMapLatest { owner, _ -> Single<(UIImage, String, String)> in
+            .flatMapLatest { owner, _ -> Single<(UIImage, String?, String?)> in
                 imageAnalysisUseCase.performOCR(on: previewImage)
             }
             .subscribe {
