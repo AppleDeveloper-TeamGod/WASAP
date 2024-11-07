@@ -50,9 +50,16 @@ final class CameraView: BaseView {
         return imageView
     }()
 
+    public lazy var bottomBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .gray500
+        return view
+    }()
+
     public lazy var takePhotoButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "inset.filled.circle"), for: .normal)
+        button.setImage(UIImage(named: "Shutter"), for: .normal)
+        button.setImage(UIImage(named: "ShutterPressed"), for: .)
         button.tintColor = .white
         button.backgroundColor = .clear
         button.contentHorizontalAlignment = .fill
@@ -112,7 +119,9 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, takePhotoButton, zoomSlider, tempImage)
+        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, bottomBackgroundView, zoomSlider, tempImage)
+
+        self.bottomBackgroundView.addSubview(takePhotoButton)
 
         self.previewContainerView.layer.addSublayer(frameRectLayer)
     }
@@ -132,9 +141,16 @@ final class CameraView: BaseView {
             $0.top.equalToSuperview().offset(superViewHeight * 0.3)
         }
 
+        bottomBackgroundView.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.22)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+
         takePhotoButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-16)
+            $0.centerY.equalToSuperview().inset(-24)
             $0.width.height.equalTo(85)
         }
 
