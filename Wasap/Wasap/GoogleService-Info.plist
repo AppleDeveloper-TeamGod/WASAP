@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBSz0dSQhYXhqsYxbCj-p5N6OXxuRkUi9A</string>
+	<string>AIzaSyATtDnupAuPY5wWhlrdTBcSFOGm8dSaYIg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>534588169596</string>
+	<string>676590354063</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.teamGOD.Wasap</string>
 	<key>PROJECT_ID</key>
-	<string>wasap-9d437</string>
+	<string>wasap-5b09f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>wasap-9d437.firebasestorage.app</string>
+	<string>wasap-5b09f.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:534588169596:ios:7cc7c40e6ac9a3094258f9</string>
+	<string>1:676590354063:ios:a3fd2c71f1e872ff22fafa</string>
 </dict>
 </plist>
