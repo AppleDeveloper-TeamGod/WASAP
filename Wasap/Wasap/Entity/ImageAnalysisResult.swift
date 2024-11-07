@@ -11,3 +11,17 @@ public struct OCRResultVO {
     let ssid: String
     let password: String
 }
+
+public struct KeywordBox {
+    let label: String
+    let content: String
+    let contentBox: CGRect
+    let labelBox: CGRect
+    let index: Int?
+}
+
+struct ExtractedBoxes {
+    let idBoxes: [KeywordBox]
+    let pwBoxes: [KeywordBox]
+    let otherBoxes: [(rect: CGRect, text: String)]
+}
