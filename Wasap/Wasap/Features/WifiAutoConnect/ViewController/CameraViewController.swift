@@ -28,9 +28,11 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
     }
 
     private func bind(_ viewModel: CameraViewModel) {
-        cameraView.zoomSlider.rx.value
+        Observable.combineLatest(cameraView.zoomSlider.rx.value, viewModel.isPinching.asObservable())
+            .filter { !$1 }
+            .map(\.0)
             .map { CGFloat($0) }
-            .bind(to: viewModel.zoomValue)
+            .bind(to: viewModel.zoomSliderValue)
             .disposed(by: disposeBag)
 
         cameraView.takePhotoButton.rx.tap
@@ -38,9 +40,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .disposed(by: disposeBag)
 
         cameraView.previewContainerView.rx.pinchGesture()
-            .subscribe { [weak self] pinch in
-                print("pinch : \(pinch)")
-            }
+            .bind(to: viewModel.zoomPinchGestureDidChange)
             .disposed(by: disposeBag)
 
         viewModel.previewLayer
@@ -92,9 +92,9 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             }
             .disposed(by: disposeBag)
 
-        viewModel.tempImage
-            .drive { [weak self] image in
-                self?.cameraView.tempImage.image = image
+        viewModel.zoomValue
+            .drive { [weak self] value in
+                self?.cameraView.zoomSlider.value = Float(value)
             }
             .disposed(by: disposeBag)
     }
