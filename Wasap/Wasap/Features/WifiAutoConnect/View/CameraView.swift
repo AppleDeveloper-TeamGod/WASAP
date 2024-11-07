@@ -41,7 +41,7 @@ final class CameraView: BaseView {
         let borderLayer = CAShapeLayer()
         borderLayer.strokeColor = UIColor.white.cgColor
         borderLayer.fillColor = UIColor.clear.cgColor
-        borderLayer.lineWidth = 10.0
+        borderLayer.lineWidth = 5.0
         return borderLayer
     }()
 
@@ -173,12 +173,13 @@ final class CameraView: BaseView {
 
     private func updatePhotoFrameLayerPath() {
         let cornerRadius: CGFloat = 20.0
-        let borderOffset: CGFloat = 32.0
+        let lineLength: CGFloat = 32.0
         let bounds = self.photoFrameView.frame
         print("bounds : \(bounds)")
         let path = UIBezierPath()
         // 왼쪽 상단 모서리
-        path.move(to: CGPoint(x: 0, y: borderOffset))
+        path.move(to: CGPoint(x: 0, y: cornerRadius + lineLength))
+        path.addLine(to: CGPoint(x: 0, y: cornerRadius))
         path.addArc(
             withCenter: CGPoint(x: cornerRadius, y: cornerRadius),
             radius: cornerRadius,
@@ -186,9 +187,11 @@ final class CameraView: BaseView {
             endAngle: .pi * 1.5,
             clockwise: true
         )
+        path.addLine(to: CGPoint(x: cornerRadius + lineLength, y: 0))
 
         // 오른쪽 상단 모서리
-        path.move(to: CGPoint(x: bounds.width - cornerRadius, y: 0))
+        path.move(to: CGPoint(x: bounds.width - cornerRadius - lineLength, y: 0))
+        path.addLine(to: CGPoint(x: bounds.width - cornerRadius, y: 0))
         path.addArc(
             withCenter: CGPoint(x: bounds.width - cornerRadius, y: cornerRadius),
             radius: cornerRadius,
@@ -196,10 +199,12 @@ final class CameraView: BaseView {
             endAngle: 0,
             clockwise: true
         )
+        path.addLine(to: CGPoint(x: bounds.width, y: cornerRadius + lineLength))
 
 
         // 오른쪽 하단 모서리
-        path.move(to: CGPoint(x: bounds.width, y: bounds.height - cornerRadius))
+        path.move(to: CGPoint(x: bounds.width, y: bounds.height - cornerRadius - lineLength))
+        path.addLine(to: CGPoint(x: bounds.width, y: bounds.height - cornerRadius))
         path.addArc(
             withCenter: CGPoint(x: bounds.width - cornerRadius, y: bounds.height - cornerRadius),
             radius: cornerRadius,
@@ -207,9 +212,11 @@ final class CameraView: BaseView {
             endAngle: .pi * 0.5,
             clockwise: true
         )
+        path.addLine(to: CGPoint(x: bounds.width - cornerRadius - lineLength, y: bounds.height))
 
         // 왼쪽 하단 모서리
-        path.move(to: CGPoint(x: cornerRadius, y: bounds.height))
+        path.move(to: CGPoint(x: cornerRadius + lineLength, y: bounds.height))
+        path.addLine(to: CGPoint(x: cornerRadius, y: bounds.height))
         path.addArc(
             withCenter: CGPoint(x: cornerRadius, y: bounds.height - cornerRadius),
             radius: cornerRadius,
@@ -217,6 +224,7 @@ final class CameraView: BaseView {
             endAngle: .pi,
             clockwise: true
         )
+        path.addLine(to: CGPoint(x: 0, y: bounds.height - cornerRadius - lineLength))
 
         photoFrameLayer.path = path.cgPath
     }
