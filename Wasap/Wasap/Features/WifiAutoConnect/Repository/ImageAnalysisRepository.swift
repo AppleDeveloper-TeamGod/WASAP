@@ -66,9 +66,10 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     }
 
     private func handleOCRResults(_ requests: [VNRequest]) -> OCRResultVO? {
-        var boundingBoxes: [CGRect] = []
-        var ssidText: String = ""
-        var passwordText: String = ""
+        var ssidBoundingBox: CGRect? = nil
+        var passwordBoundingBox: CGRect? = nil
+        var ssidText: String? = nil
+        var passwordText: String? = nil
 
         let allObservations = requests.compactMap { $0.results as? [VNRecognizedTextObservation] }.flatMap { $0 }
 
@@ -106,16 +107,16 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         if let ssidBox = ssidBox {
             let ssidValue = ssidBox.1.components(separatedBy: delimiters).first ?? ssidBox.1
             ssidText = ssidValue.replacingOccurrences(of: " ", with: "")
-            boundingBoxes.append(ssidBox.0)
+            ssidBoundingBox = ssidBox.0
         }
 
         if let passwordBox = passwordBox {
             let passwordValue = passwordBox.1.components(separatedBy: delimiters).first ?? passwordBox.1
             passwordText = passwordValue.replacingOccurrences(of: " ", with: "")
-            boundingBoxes.append(passwordBox.0)
+            passwordBoundingBox = passwordBox.0
         }
 
-        return OCRResultVO(boundingBoxes: boundingBoxes, ssid: ssidText, password: passwordText)
+        return OCRResultVO(ssidBoundingBox: ssidBoundingBox, passwordBoundingBox: passwordBoundingBox, ssid: ssidText, password: passwordText)
     }
 
     private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ExtractedBoxes {

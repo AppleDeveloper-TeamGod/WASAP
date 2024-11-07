@@ -10,8 +10,8 @@ import UIKit
 
 
 public protocol ImageAnalysisUseCase {
-    func performOCR(on image: UIImage) -> Single<(UIImage, String, String)>
-    func performOCR(on image: UIImage) -> Single<(boxes: [CGRect], ssid: String, password: String)>
+    func performOCR(on image: UIImage) -> Single<(UIImage, String?, String?)>
+    func performOCR(on image: UIImage) -> Single<OCRResultVO>
 }
 
 public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
@@ -21,7 +21,7 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
         self.imageAnalysisRepository = imageAnalysisRepository
     }
 
-    public func performOCR(on image: UIImage) -> Single<(UIImage, String, String)> {
+    public func performOCR(on image: UIImage) -> Single<(UIImage, String?, String?)> {
         guard let imageData = image.jpegData(compressionQuality: 1.0) else {
             return Single.error(ImageAnalysisError.invalidImage)
         }
@@ -68,13 +68,13 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
         return renderedImage
     }
 
-    public func performOCR(on image: UIImage) -> Single<(boxes: [CGRect], ssid: String, password: String)> {
+    public func performOCR(on image: UIImage) -> Single<OCRResultVO> {
         guard let imageData = image.jpegData(compressionQuality: 1.0) else {
             return Single.error(ImageAnalysisError.invalidImage)
         }
         return imageAnalysisRepository.performOCR(from: imageData)
             .map { ocrResult in
-                let convertedBoxes = ocrResult.boundingBoxes.map { box in
+                let convertedSSIDBox = ocrResult.ssidBoundingBox.map { box in
                     CGRect(
                         x: box.origin.x,
                         y: (1 - box.origin.y - box.height),
@@ -82,7 +82,15 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
                         height: box.height
                     )
                 }
-                return (convertedBoxes, ocrResult.ssid, ocrResult.password)
+                let convertedPasswordBox = ocrResult.passwordBoundingBox.map { box in
+                    CGRect(
+                        x: box.origin.x,
+                        y: (1 - box.origin.y - box.height),
+                        width: box.width,
+                        height: box.height
+                    )
+                }
+                return OCRResultVO(ssidBoundingBox: convertedSSIDBox, passwordBoundingBox: convertedPasswordBox, ssid: ocrResult.ssid, password: ocrResult.password)
             }
     }
 }

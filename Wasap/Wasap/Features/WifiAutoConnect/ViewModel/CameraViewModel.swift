@@ -25,7 +25,9 @@ public class CameraViewModel: BaseViewModel {
 
     // MARK: - Output
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
-    public var frameRectCorners: Driver<[CGPoint]?>
+    public var qrCodePoints: Driver<[CGPoint]?>
+    public var ssidRect: Driver<CGRect?>
+    public var passwordRect: Driver<CGRect?>
     /// 임시
     public var tempImage: Driver<UIImage>
     ///
@@ -43,25 +45,17 @@ public class CameraViewModel: BaseViewModel {
         self.previewLayer = previewLayerRelay.asDriver(onErrorDriveWith: .empty())
 
         let qrCodeCornersRelay = BehaviorRelay<[CGPoint]?>(value: nil)
-        let qrCodeNoResponseTrigger = qrCodeCornersRelay.debounce(.seconds(5), scheduler: MainScheduler.instance).map({ _ -> [CGPoint]? in nil })
-        let qrCodeResponses = Observable.merge(qrCodeCornersRelay.asObservable(), qrCodeNoResponseTrigger)
+        let qrCodeNoResponseTrigger = qrCodeCornersRelay.debounce(.seconds(2), scheduler: MainScheduler.instance).map({ _ -> [CGPoint]? in nil })
+        self.qrCodePoints = Observable.merge(qrCodeCornersRelay.asObservable(), qrCodeNoResponseTrigger).asDriver(onErrorJustReturn: nil)
 
-        let ocrCornersRelay = BehaviorRelay<[CGPoint]?>(value: nil)
-        let ocrNoResponseTrigger = ocrCornersRelay.debounce(.seconds(5), scheduler: MainScheduler.instance).map({ _ -> [CGPoint]? in nil })
-        let ocrResponses = Observable.merge(ocrCornersRelay.asObservable(), ocrNoResponseTrigger)
 
-        self.frameRectCorners = Observable.combineLatest(
-            qrCodeResponses,
-            ocrResponses
-        )
-            .map({ qrCodeCorners, ocrCorners -> [CGPoint]? in
-                if let qrCodeCorners {
-                    return qrCodeCorners
-                } else {
-                    return ocrCorners
-                }
-            })
-            .asDriver(onErrorJustReturn: nil)
+        let ssidRelay = BehaviorRelay<CGRect?>(value: nil)
+        let ssidNoResponseTrigger = ssidRelay.debounce(.seconds(2), scheduler: MainScheduler.instance).map({ _ -> CGRect? in nil })
+        self.ssidRect = Observable.merge(ssidRelay.asObservable(), ssidNoResponseTrigger).asDriver(onErrorJustReturn: nil)
+
+        let passwordRelay = BehaviorRelay<CGRect?>(value: nil)
+        let passwordNoResponseTrigger = passwordRelay.debounce(.seconds(2), scheduler: MainScheduler.instance).map({ _ -> CGRect? in nil })
+        self.passwordRect = Observable.merge(passwordRelay.asObservable(), passwordNoResponseTrigger).asDriver(onErrorJustReturn: nil)
 
         let tempImageRelay = PublishRelay<UIImage>()
         self.tempImage = tempImageRelay.asDriver(onErrorDriveWith: .empty())
@@ -127,37 +121,30 @@ public class CameraViewModel: BaseViewModel {
                 owner.cameraUseCase.getPreviewImageDataStream()
             }
             .withUnretained(self)
-            .flatMapLatest { owner, image -> Single<(boxes: [CGRect], ssid: String, password: String)> in
+            .flatMapLatest { owner, image -> Single<OCRResultVO> in
                 owner.imageAnalysisUseCase.performOCR(on: image)
             }
             .withUnretained(self)
             .subscribe { owner, ocrResult in
-                let (boxes, ssid, password) = ocrResult
-                Log.debug("boxes(\(boxes.count): \(boxes), ssid : \(ssid), password : \(password)")
+                Log.debug("boxes(\(ocrResult.boundingBoxes.count): \(ocrResult.boundingBoxes), ssid : \(ocrResult.ssid), password : \(ocrResult.password)")
 
                 guard let videoPreviewLayer = owner.cameraUseCase.getCapturePreviewLayer() else { return }
 
-                let convertedRects = boxes.map { box in
+                let convertedSSIDRect = ocrResult.ssidBoundingBox.map { box in
+                    videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: box)
+                }
+                let convertedPasswordRect = ocrResult.passwordBoundingBox.map { box in
                     videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: box)
                 }
 
-                ocrCornersRelay.accept(
-                    convertedRects.flatMap { rect in
-                        [
-                            CGPoint(x: rect.minX, y: rect.minY),
-                            CGPoint(x: rect.maxX, y: rect.minY),
-                            CGPoint(x: rect.maxX, y: rect.maxY),
-                            CGPoint(x: rect.minX, y: rect.maxY)
-                        ]
-                    }
-                )
-
+                ssidRelay.accept(convertedSSIDRect)
+                passwordRelay.accept(convertedPasswordRect)
             }
             .disposed(by: disposeBag)
 
         isCameraConfigured
             .withUnretained(self)
-            .flatMapLatest { owner, _ in
+            .flatMapLatest { owner, _ -> Observable<(qrString: String, corners: [CGPoint])?> in
                 owner.cameraUseCase.getQRDataStream()
             }
             .withUnretained(self)

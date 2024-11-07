@@ -37,6 +37,12 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .bind(to: viewModel.shutterButtonDidTap)
             .disposed(by: disposeBag)
 
+        cameraView.previewContainerView.rx.pinchGesture()
+            .subscribe { [weak self] pinch in
+                print("pinch : \(pinch)")
+            }
+            .disposed(by: disposeBag)
+
         viewModel.previewLayer
             .drive { [weak self] previewLayer in
                 Log.debug("preview layer on VC : \(previewLayer)")
@@ -46,24 +52,42 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             }
             .disposed(by: disposeBag)
 
-        viewModel.frameRectCorners
-            .drive { [weak self] corners in
-                if let corners, !corners.isEmpty {
-                    guard !corners.isEmpty else { return }
+        viewModel.qrCodePoints
+            .drive { [weak self] points in
+                if let points, points.count == 4 {
 
-                    let minX = corners.map { $0.x }.min() ?? 0
-                    let minY = corners.map { $0.y }.min() ?? 0
-                    let maxX = corners.map { $0.x }.max() ?? 0
-                    let maxY = corners.map { $0.y }.max() ?? 0
+                    let minX = points.map { $0.x }.min() ?? 0
+                    let minY = points.map { $0.y }.min() ?? 0
+                    let maxX = points.map { $0.x }.max() ?? 0
+                    let maxY = points.map { $0.y }.max() ?? 0
 
                     let width = maxX - minX
                     let height = maxY - minY
 
                     let rect = CGRect(x: minX, y: minY, width: width, height: height)
-                    Log.print("frame rect : \(rect)")
-                    self?.cameraView.frameRectLayer.frame = rect
+                    self?.cameraView.qrRectLayer.frame = rect
                 } else {
-                    self?.cameraView.frameRectLayer.frame = CGRect(x: 50, y: 100, width: 300, height: 200)
+                    self?.cameraView.qrRectLayer.frame = .zero
+                }
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.ssidRect
+            .drive { [weak self] rect in
+                if let rect {
+                    self?.cameraView.ssidRectLayer.frame = rect
+                } else {
+                    self?.cameraView.ssidRectLayer.frame = .zero
+                }
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.passwordRect
+            .drive { [weak self] rect in
+                if let rect {
+                    self?.cameraView.passwordRectLayer.frame = rect
+                } else {
+                    self?.cameraView.passwordRectLayer.frame = .zero
                 }
             }
             .disposed(by: disposeBag)

@@ -36,20 +36,6 @@ final class CameraView: BaseView {
         UIView()
     }()
 
-    private var wasapLabel: UILabel = {
-        let label = UILabel()
-        label.text = "WASAP!"
-        label.font = .systemFont(ofSize: 26, weight: .bold)
-        label.textColor = .white
-        return label
-    }()
-
-    private var wifiIcon: UIImageView = {
-        let imageView = UIImageView(image: UIImage(systemName: "wifi"))
-        imageView.tintColor = .green200
-        return imageView
-    }()
-
     public lazy var bottomBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .gray500
@@ -97,9 +83,23 @@ final class CameraView: BaseView {
         return slider
     }()
 
-    public var frameRectLayer: CALayer = {
+    public var qrRectLayer: CALayer = {
         let layer = CALayer()
-        layer.borderColor = UIColor.red.cgColor
+        layer.borderColor = UIColor.green.cgColor
+        layer.borderWidth = 2
+        return layer
+    }()
+
+    public var ssidRectLayer: CALayer = {
+        let layer = CALayer()
+        layer.borderColor = UIColor.blue.cgColor
+        layer.borderWidth = 2
+        return layer
+    }()
+
+    public var passwordRectLayer: CALayer = {
+        let layer = CALayer()
+        layer.borderColor = UIColor.yellow.cgColor
         layer.borderWidth = 2
         return layer
     }()
@@ -119,26 +119,18 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, bottomBackgroundView, zoomSlider, tempImage)
+        self.addSubViews(previewContainerView, bottomBackgroundView, zoomSlider, tempImage)
 
         self.bottomBackgroundView.addSubview(takePhotoButton)
 
-        self.previewContainerView.layer.addSublayer(frameRectLayer)
+        self.previewContainerView.layer.addSublayer(qrRectLayer)
+        self.previewContainerView.layer.addSublayer(ssidRectLayer)
+        self.previewContainerView.layer.addSublayer(passwordRectLayer)
     }
 
     func setConstraints() {
         previewContainerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
-        }
-
-        wasapLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(safeAreaLayoutGuide).offset(32)
-        }
-
-        wifiIcon.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(superViewHeight * 0.3)
         }
 
         bottomBackgroundView.snp.makeConstraints {
@@ -150,7 +142,7 @@ final class CameraView: BaseView {
 
         takePhotoButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview().inset(-24)
+            $0.centerY.equalToSuperview().offset(-16)
             $0.width.height.equalTo(85)
         }
 
