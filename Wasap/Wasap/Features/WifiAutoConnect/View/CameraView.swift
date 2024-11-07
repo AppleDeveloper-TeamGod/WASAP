@@ -59,7 +59,7 @@ final class CameraView: BaseView {
     public lazy var takePhotoButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "Shutter"), for: .normal)
-        button.setImage(UIImage(named: "ShutterPressed"), for: .)
+        button.setImage(UIImage(named: "ShutterPressed"), for: .highlighted)
         button.tintColor = .white
         button.backgroundColor = .clear
         button.contentHorizontalAlignment = .fill

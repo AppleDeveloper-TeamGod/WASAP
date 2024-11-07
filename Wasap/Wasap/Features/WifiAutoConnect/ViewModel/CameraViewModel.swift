@@ -21,7 +21,7 @@ public class CameraViewModel: BaseViewModel {
     // MARK: - Input
     public var zoomValue = BehaviorRelay<CGFloat>(value: 1.0)
     public var zoomControlButtonDidTap = PublishRelay<Void>()
-    public var shutterButtonDidTapWithMask = PublishRelay<CGRect>()
+    public var shutterButtonDidTap = PublishRelay<Void>()
 
     // MARK: - Output
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
@@ -188,10 +188,10 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        shutterButtonDidTapWithMask
+        shutterButtonDidTap
             .withUnretained(self)
-            .flatMapLatest { owner, rect -> Single<UIImage> in
-                owner.cameraUseCase.takePhoto(cropRect: rect)
+            .flatMapLatest { owner, _ in
+                owner.cameraUseCase.takePhoto()
             }
             .withUnretained(self)
             .subscribe { owner, image in
