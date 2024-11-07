@@ -19,7 +19,8 @@ public class CameraViewModel: BaseViewModel {
     private let imageAnalysisUseCase: ImageAnalysisUseCase
 
     // MARK: - Input
-    public var zoomValue = BehaviorRelay<CGFloat>(value: 1.0)
+    public var zoomSliderValue = PublishRelay<CGFloat>()
+    public var zoomPinchGestureDidChange = PublishRelay<UIPinchGestureRecognizer>()
     public var zoomControlButtonDidTap = PublishRelay<Void>()
     public var shutterButtonDidTap = PublishRelay<Void>()
 
@@ -28,12 +29,12 @@ public class CameraViewModel: BaseViewModel {
     public var qrCodePoints: Driver<[CGPoint]?>
     public var ssidRect: Driver<CGRect?>
     public var passwordRect: Driver<CGRect?>
-    /// 임시
-    public var tempImage: Driver<UIImage>
-    ///
+    public var zoomValue: Driver<CGFloat>
+    public var isPinching: Driver<Bool>
 
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
+    private var currentZoomValue = BehaviorRelay<CGFloat>(value: 1.0)
 
     // MARK: - Init & Binding
     public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorController: CameraCoordinatorController) {
@@ -57,8 +58,11 @@ public class CameraViewModel: BaseViewModel {
         let passwordNoResponseTrigger = passwordRelay.debounce(.seconds(2), scheduler: MainScheduler.instance).map({ _ -> CGRect? in nil })
         self.passwordRect = Observable.merge(passwordRelay.asObservable(), passwordNoResponseTrigger).asDriver(onErrorJustReturn: nil)
 
-        let tempImageRelay = PublishRelay<UIImage>()
-        self.tempImage = tempImageRelay.asDriver(onErrorDriveWith: .empty())
+        let zoomValueRelay = PublishRelay<CGFloat>()
+        self.zoomValue = zoomValueRelay.asDriver(onErrorDriveWith: .empty())
+
+        let isPinchingRelay = PublishRelay<Bool>()
+        self.isPinching = isPinchingRelay.distinctUntilChanged().asDriver(onErrorJustReturn: false)
 
         super.init()
 
@@ -88,18 +92,42 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        /// 임시
-        ///
-        isCameraConfigured
-            .withUnretained(self)
-            .flatMapLatest { owner, _ in
-                owner.cameraUseCase.getPreviewImageDataStream()
-            }
-            .subscribe { image in
-                tempImageRelay.accept(image)
+        zoomSliderValue
+            .bind(to: currentZoomValue)
+            .disposed(by: disposeBag)
+
+        zoomPinchGestureDidChange
+            .filter { $0.state == .began || $0.state == .changed }
+            .withLatestFrom(currentZoomValue, resultSelector: {
+                let pinchScale = $0.scale
+                if pinchScale <= 1.0 {
+                    return (1.0 - exp(1.0 - pinchScale)) * 3 + $1
+                } else {
+                    return pinchScale - 1.0 + $1
+                }
+            })
+            .subscribe { [weak self] appliedZoomValue in
+                isPinchingRelay.accept(true)
+                zoomValueRelay.accept(appliedZoomValue)
+                self?.cameraUseCase.zoom(appliedZoomValue)
             }
             .disposed(by: disposeBag)
-        ///
+
+        zoomPinchGestureDidChange
+            .filter { $0.state == .ended }
+            .withLatestFrom(currentZoomValue, resultSelector: {
+                let pinchScale = $0.scale
+                if pinchScale <= 1.0 {
+                    return (1.0 - exp(1.0 - pinchScale)) * 3 + $1
+                } else {
+                    return pinchScale - 1.0 + $1
+                }
+            })
+            .subscribe { [weak self] newZoomValue in
+                isPinchingRelay.accept(false)
+                self?.currentZoomValue.accept(newZoomValue)
+            }
+            .disposed(by: disposeBag)
 
         isCameraConfigured
             .withUnretained(self)
@@ -126,8 +154,6 @@ public class CameraViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .subscribe { owner, ocrResult in
-                Log.debug("boxes(\(ocrResult.boundingBoxes.count): \(ocrResult.boundingBoxes), ssid : \(ocrResult.ssid), password : \(ocrResult.password)")
-
                 guard let videoPreviewLayer = owner.cameraUseCase.getCapturePreviewLayer() else { return }
 
                 let convertedSSIDRect = ocrResult.ssidBoundingBox.map { box in
@@ -149,8 +175,6 @@ public class CameraViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .subscribe { owner, qrData in
-                Log.debug("QR Code String : \(qrData?.qrString)")
-                Log.debug("QR Code Corners : \(qrData?.corners)")
                 qrCodeCornersRelay.accept(qrData?.corners ?? nil)
             }
             .disposed(by: disposeBag)
@@ -168,9 +192,12 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        Observable.combineLatest(isCameraRunning, zoomValue)
+        Observable.combineLatest(isCameraRunning, currentZoomValue)
             .filter(\.0)
-            .subscribe { [weak self] _, value in
+            .map(\.1)
+            .distinctUntilChanged()
+            .subscribe { [weak self] value in
+                zoomValueRelay.accept(value)
                 self?.cameraUseCase.zoom(value)
             }
             .disposed(by: disposeBag)

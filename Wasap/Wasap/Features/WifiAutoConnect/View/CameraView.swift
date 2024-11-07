@@ -85,32 +85,24 @@ final class CameraView: BaseView {
 
     public var qrRectLayer: CALayer = {
         let layer = CALayer()
-        layer.borderColor = UIColor.green.cgColor
-        layer.borderWidth = 2
+        layer.backgroundColor = UIColor.green200.withAlphaComponent(0.3).cgColor
+        layer.cornerRadius = 10
         return layer
     }()
 
     public var ssidRectLayer: CALayer = {
         let layer = CALayer()
-        layer.borderColor = UIColor.blue.cgColor
-        layer.borderWidth = 2
+        layer.backgroundColor = UIColor.green200.withAlphaComponent(0.3).cgColor
+        layer.cornerRadius = 10
         return layer
     }()
 
     public var passwordRectLayer: CALayer = {
         let layer = CALayer()
-        layer.borderColor = UIColor.yellow.cgColor
-        layer.borderWidth = 2
+        layer.backgroundColor = UIColor.green200.withAlphaComponent(0.3).cgColor
+        layer.cornerRadius = 10
         return layer
     }()
-
-    /// 임시
-    public var tempImage: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    ///
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -119,7 +111,7 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, bottomBackgroundView, zoomSlider, tempImage)
+        self.addSubViews(previewContainerView, bottomBackgroundView, zoomSlider)
 
         self.bottomBackgroundView.addSubview(takePhotoButton)
 
@@ -159,12 +151,6 @@ final class CameraView: BaseView {
             $0.bottom.equalTo(takePhotoButton.snp.top).offset(-32)
             $0.width.equalToSuperview().multipliedBy(0.7)
             $0.height.equalTo(84)
-        }
-
-        tempImage.snp.makeConstraints {
-            $0.centerX.centerY.equalToSuperview()
-            $0.height.equalTo(300)
-            $0.width.equalTo(200)
         }
     }
 }
