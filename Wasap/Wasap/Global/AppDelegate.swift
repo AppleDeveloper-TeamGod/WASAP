@@ -9,6 +9,7 @@ import UIKit
 import FirebaseAnalytics
 import FirebaseCore
 import FirebaseAuth
+import FirebaseFirestore
 import CoreLocation
 
 @main
