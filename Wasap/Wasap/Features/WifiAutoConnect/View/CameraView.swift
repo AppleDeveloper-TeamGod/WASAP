@@ -61,17 +61,6 @@ final class CameraView: BaseView {
         return button
     }()
 
-    public lazy var zoomControlButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("1x", for: .normal)
-        button.layer.cornerRadius = 23
-        button.layer.borderColor = UIColor.white.cgColor
-        button.layer.borderWidth = 2
-        button.tintColor = .white
-        button.backgroundColor = .clear
-        return button
-    }()
-
     private lazy var minusImage: UIImageView = {
         let minusImage = UIImageView(image: UIImage(systemName: "minus"))
         minusImage.sizeToFit()
@@ -90,24 +79,14 @@ final class CameraView: BaseView {
         return plusImage
     }()
 
-    public lazy var zoomSliderStack: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [
-            minusImage,
-            zoomSlider,
-            plusImage,
-        ])
-
-        stackView.axis = .horizontal
-        stackView.spacing = 0
-        stackView.alignment = .center
-        stackView.backgroundColor = .cameraZoomDisabled
-        stackView.layer.cornerRadius = 16
-
-        return stackView
-    }()
-
-    public lazy var zoomSlider: CustomSlider = {
-        let slider = CustomSlider()
+    public lazy var zoomSlider: UISlider = {
+        let slider = UISlider()
+        slider.minimumValue = 1
+        slider.maximumValue = 10
+        slider.value = 1
+        slider.tintColor = .white
+        slider.minimumValueImage = UIImage(systemName: "minus")?.withTintColor(.white)
+        slider.maximumValueImage = UIImage(systemName: "plus")?.withTintColor(.white)
         return slider
     }()
 
@@ -133,7 +112,7 @@ final class CameraView: BaseView {
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, takePhotoButton, zoomControlButton, zoomSliderStack, tempImage)
+        self.addSubViews(previewContainerView, wasapLabel, wifiIcon, takePhotoButton, zoomSlider, tempImage)
 
         self.previewContainerView.layer.addSublayer(frameRectLayer)
     }
@@ -159,12 +138,6 @@ final class CameraView: BaseView {
             $0.width.height.equalTo(85)
         }
 
-        zoomControlButton.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(takePhotoButton.snp.top).offset(-52)
-            $0.width.height.equalTo(46)
-        }
-
         minusImage.snp.makeConstraints {
             $0.width.equalTo(56)
         }
@@ -173,10 +146,10 @@ final class CameraView: BaseView {
             $0.width.equalTo(56)
         }
 
-        zoomSliderStack.snp.makeConstraints {
+        zoomSlider.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalTo(takePhotoButton.snp.top).offset(-32)
-            $0.width.equalToSuperview().multipliedBy(0.9)
+            $0.width.equalToSuperview().multipliedBy(0.7)
             $0.height.equalTo(84)
         }
 

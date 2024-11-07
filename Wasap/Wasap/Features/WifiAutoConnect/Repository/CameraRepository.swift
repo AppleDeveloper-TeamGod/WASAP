@@ -205,7 +205,9 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
                 single(.success(()))
             }
 
-            self.captureSession?.startRunning()
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.captureSession?.startRunning()
+            }
             DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 10) {
                 single(.failure(CameraErrors.unknown))
             }

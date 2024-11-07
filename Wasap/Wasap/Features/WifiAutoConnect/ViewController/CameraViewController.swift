@@ -37,33 +37,10 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             }
             .disposed(by: disposeBag)
 
-        viewModel.isZoomControlButtonHidden
-            .drive { [weak self] isHidden in
-                self?.cameraView.zoomControlButton.isHidden = isHidden
-                self?.cameraView.zoomSliderStack.isHidden = !isHidden
-            }
-            .disposed(by: disposeBag)
-
-        cameraView.zoomControlButton.rx.tap
-            .bind(to: viewModel.zoomControlButtonDidTap)
-            .disposed(by: disposeBag)
-
-        cameraView.zoomSlider.rx.currentSteppedValue
+        cameraView.zoomSlider.rx.value
             .map { CGFloat($0) }
             .bind(to: viewModel.zoomValue)
             .disposed(by: disposeBag)
-
-        cameraView.zoomSlider.rx.currentSteppedValue
-            .map { String(Int($0)) + "x" }
-            .subscribe { [weak self] in
-                self?.cameraView.zoomControlButton.setTitle($0, for: .normal)
-            }
-            .disposed(by: disposeBag)
-
-//        cameraView.takePhotoButton.rx.tap
-//            .compactMap { [weak self] _ in self?.cameraView.maskRect }
-//            .bind(to: viewModel.shutterButtonDidTapWithMask)
-//            .disposed(by: disposeBag)
 
         viewModel.frameRectCorners
             .drive { [weak self] corners in
