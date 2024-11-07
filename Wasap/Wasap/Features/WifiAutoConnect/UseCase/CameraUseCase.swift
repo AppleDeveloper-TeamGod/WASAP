@@ -12,7 +12,7 @@ import AVFoundation
 
 public protocol CameraUseCase {
     func configureCamera() -> Single<Void>
-    func takePhoto(cropRect: CGRect) -> Single<UIImage>
+    func takePhoto() -> Single<UIImage>
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
     func getCapturePreviewLayer() -> AVCaptureVideoPreviewLayer?
     func getPreviewImageDataStream() -> Observable<UIImage>
@@ -35,7 +35,7 @@ final class DefaultCameraUseCase: CameraUseCase {
             .map { _ in () }
     }
 
-    func takePhoto(cropRect: CGRect) -> Single<UIImage> {
+    func takePhoto() -> Single<UIImage> {
         return repository.capturePhoto()
             .map { [weak self] in
                 guard let image = UIImage(data: $0) else {

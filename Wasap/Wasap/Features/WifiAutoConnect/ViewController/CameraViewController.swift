@@ -28,6 +28,15 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
     }
 
     private func bind(_ viewModel: CameraViewModel) {
+        cameraView.zoomSlider.rx.value
+            .map { CGFloat($0) }
+            .bind(to: viewModel.zoomValue)
+            .disposed(by: disposeBag)
+
+        cameraView.takePhotoButton.rx.tap
+            .bind(to: viewModel.shutterButtonDidTap)
+            .disposed(by: disposeBag)
+
         viewModel.previewLayer
             .drive { [weak self] previewLayer in
                 Log.debug("preview layer on VC : \(previewLayer)")
@@ -35,11 +44,6 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
                 self?.cameraView.previewContainerView.layer.addSublayer(previewLayer)
                 self?.cameraView.previewLayer?.frame = (self?.cameraView.previewContainerView.bounds)!
             }
-            .disposed(by: disposeBag)
-
-        cameraView.zoomSlider.rx.value
-            .map { CGFloat($0) }
-            .bind(to: viewModel.zoomValue)
             .disposed(by: disposeBag)
 
         viewModel.frameRectCorners
