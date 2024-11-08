@@ -225,6 +225,14 @@ final class CameraView: BaseView {
         )
         path.addLine(to: CGPoint(x: 0, y: bounds.height - cornerRadius - lineLength))
 
+        // 가운데 십자가 가로
+        path.move(to: CGPoint(x: bounds.width / 2 - lineLength / 2, y: bounds.height / 2))
+        path.addLine(to: CGPoint(x: bounds.width / 2 + lineLength / 2, y: bounds.height / 2))
+
+        // 가운데 십자가 세로
+        path.move(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 - lineLength / 2))
+        path.addLine(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 + lineLength / 2))
+
         photoFrameLayer.path = path.cgPath
     }
 }
