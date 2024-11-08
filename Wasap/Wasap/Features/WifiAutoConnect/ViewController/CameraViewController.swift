@@ -68,6 +68,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
                 } else {
                     self?.cameraView.qrRectLayer.frame = .zero
                 }
+                self?.cameraView.setNeedsLayout()
             }
             .disposed(by: disposeBag)
 
@@ -78,6 +79,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
                 } else {
                     self?.cameraView.ssidRectLayer.frame = .zero
                 }
+                self?.cameraView.setNeedsLayout()
             }
             .disposed(by: disposeBag)
 
@@ -88,6 +90,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
                 } else {
                     self?.cameraView.passwordRectLayer.frame = .zero
                 }
+                self?.cameraView.setNeedsLayout()
             }
             .disposed(by: disposeBag)
 

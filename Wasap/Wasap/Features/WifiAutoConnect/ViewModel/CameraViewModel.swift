@@ -167,7 +167,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .withUnretained(self)
             .subscribe { owner, ocrResult in
-                guard let videoPreviewLayer = owner.cameraUseCase.getCapturePreviewLayer() else { return }
+                guard let videoPreviewLayer: AVCaptureVideoPreviewLayer = owner.cameraUseCase.getCapturePreviewLayer() else { return }
 
                 let convertedSSIDRect = ocrResult.ssidBoundingBox.map { box in
                     videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: box)
