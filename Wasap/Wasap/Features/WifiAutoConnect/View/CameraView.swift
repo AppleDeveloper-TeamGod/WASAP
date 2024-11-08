@@ -41,7 +41,15 @@ final class CameraView: BaseView {
         let borderLayer = CAShapeLayer()
         borderLayer.strokeColor = UIColor.white.cgColor
         borderLayer.fillColor = UIColor.clear.cgColor
-        borderLayer.lineWidth = 5.0
+        borderLayer.lineWidth = 5
+        return borderLayer
+    }()
+
+    private lazy var photoCrossFrameLayer: CAShapeLayer = {
+        let borderLayer = CAShapeLayer()
+        borderLayer.strokeColor = UIColor.white.cgColor
+        borderLayer.fillColor = UIColor.clear.cgColor
+        borderLayer.lineWidth = 1
         return borderLayer
     }()
 
@@ -130,6 +138,7 @@ final class CameraView: BaseView {
         self.previewContainerView.layer.addSublayer(passwordRectLayer)
 
         self.photoFrameView.layer.addSublayer(photoFrameLayer)
+        self.photoFrameView.layer.addSublayer(photoCrossFrameLayer)
     }
 
     func setConstraints() {
@@ -138,7 +147,7 @@ final class CameraView: BaseView {
         }
 
         photoFrameView.snp.makeConstraints {
-            $0.top.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+            $0.top.leading.trailing.equalTo(safeAreaLayoutGuide).inset(32)
             $0.bottom.equalTo(zoomSlider.snp.top).offset(-16)
         }
 
@@ -175,7 +184,9 @@ final class CameraView: BaseView {
         let cornerRadius: CGFloat = 20.0
         let lineLength: CGFloat = 32.0
         let bounds = self.photoFrameView.frame
+
         let path = UIBezierPath()
+
         // 왼쪽 상단 모서리
         path.move(to: CGPoint(x: 0, y: cornerRadius + lineLength))
         path.addLine(to: CGPoint(x: 0, y: cornerRadius))
@@ -225,15 +236,20 @@ final class CameraView: BaseView {
         )
         path.addLine(to: CGPoint(x: 0, y: bounds.height - cornerRadius - lineLength))
 
+        let crossPath = UIBezierPath()
+        crossPath.lineWidth = 1
+
         // 가운데 십자가 가로
-        path.move(to: CGPoint(x: bounds.width / 2 - lineLength / 2, y: bounds.height / 2))
-        path.addLine(to: CGPoint(x: bounds.width / 2 + lineLength / 2, y: bounds.height / 2))
+        crossPath.move(to: CGPoint(x: bounds.width / 2 - lineLength / 2, y: bounds.height / 2))
+        crossPath.addLine(to: CGPoint(x: bounds.width / 2 + lineLength / 2, y: bounds.height / 2))
+
 
         // 가운데 십자가 세로
-        path.move(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 - lineLength / 2))
-        path.addLine(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 + lineLength / 2))
+        crossPath.move(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 - lineLength / 2))
+        crossPath.addLine(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 + lineLength / 2))
 
         photoFrameLayer.path = path.cgPath
+        photoCrossFrameLayer.path = crossPath.cgPath
     }
 }
 
