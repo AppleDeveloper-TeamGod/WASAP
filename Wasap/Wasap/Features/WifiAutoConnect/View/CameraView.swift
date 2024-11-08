@@ -175,7 +175,6 @@ final class CameraView: BaseView {
         let cornerRadius: CGFloat = 20.0
         let lineLength: CGFloat = 32.0
         let bounds = self.photoFrameView.frame
-        print("bounds : \(bounds)")
         let path = UIBezierPath()
         // 왼쪽 상단 모서리
         path.move(to: CGPoint(x: 0, y: cornerRadius + lineLength))
