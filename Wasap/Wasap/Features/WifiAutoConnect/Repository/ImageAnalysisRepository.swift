@@ -154,7 +154,7 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 
         // ID or PW 키워드가 없는 경우 처리
         guard let keyword = keyword else {
-            Log.print("원본텍스트:\(originalText), 기타텍스트:\(cleanedText)")
+//            Log.print("원본텍스트:\(originalText), 기타텍스트:\(cleanedText)")
             return KeywordBox(label: "", content: cleanedText, contentBox: boundingBox, labelBox: boundingBox, index: nil)
         }
 
@@ -171,11 +171,11 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 
         // ID와 PW 구분에 따라 처리
         if idKeywords.contains(keyword) {
-            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
+//            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
             return KeywordBox(label: "ID", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
 
         } else if pwKeywords.contains(keyword) {
-            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
+//            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
             return KeywordBox(label: "PW", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
         }
 
