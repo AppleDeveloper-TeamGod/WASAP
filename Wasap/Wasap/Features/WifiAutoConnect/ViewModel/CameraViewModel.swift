@@ -139,7 +139,15 @@ public class CameraViewModel: BaseViewModel {
             }
             .subscribe { [weak self] newZoomValue in
                 isPinchingRelay.accept(false)
+                Toaster.shared.toast("value : \(newZoomValue)")
                 self?.currentZoomValue.accept(newZoomValue)
+            }
+            .disposed(by: disposeBag)
+
+        isCameraConfigured
+            .observe(on: MainScheduler.instance)
+            .subscribe { _ in
+                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요")
             }
             .disposed(by: disposeBag)
 
