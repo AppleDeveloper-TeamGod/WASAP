@@ -27,6 +27,7 @@ public class RootCoordinator: Coordinator {
         let scanCoordinator = CameraCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
         start(childCoordinator: scanCoordinator)
         window?.rootViewController = scanCoordinator.navigationController
+        Toaster.shared.connect(to: scanCoordinator.navigationController)
         window?.makeKeyAndVisible()
     }
 
