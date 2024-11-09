@@ -24,10 +24,10 @@ public class RootCoordinator: Coordinator {
     }
 
     public func start() {
-        let scanCoordinator = CameraCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
-        start(childCoordinator: scanCoordinator)
-        window?.rootViewController = scanCoordinator.navigationController
-        Toaster.shared.connect(to: scanCoordinator.navigationController)
+        let cameraCoordinator = CameraCoordinator(navigationController: UINavigationController(), wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
+        start(childCoordinator: cameraCoordinator)
+        window?.rootViewController = cameraCoordinator.navigationController
+        Toaster.shared.connect(to: cameraCoordinator.navigationController)
         window?.makeKeyAndVisible()
     }
 
