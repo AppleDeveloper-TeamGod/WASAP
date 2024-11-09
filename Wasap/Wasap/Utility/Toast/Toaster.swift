@@ -18,20 +18,13 @@ public final class Toaster {
         self.connectedViewController = connectedViewController
     }
 
-    public func toast(_ message: String) {
+    public func toast(_ message: String, duration: TimeInterval = 1.0, delay: TimeInterval = 2.0) {
         guard let connectedViewController else {
             Log.error("Error! No connected view")
             return
         }
 
-        let toastView = ToastView(
-            frame: CGRect(
-                x: 10,
-                y: 10,
-                width: 200,
-                height: 200
-            )
-        )
+        let toastView = ToastView()
 
         toastView.toastLabel.text = message
 
@@ -44,7 +37,7 @@ public final class Toaster {
             $0.height.greaterThanOrEqualToSuperview().multipliedBy(0.06)
         }
 
-        UIView.animate(withDuration: 1.0, delay: 2.0) {
+        UIView.animate(withDuration: duration, delay: delay) {
             toastView.alpha = 0.0
         } completion: { _ in
             toastView.removeFromSuperview()

@@ -18,6 +18,12 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
         bind(viewModel)
     }
 
+    override public func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.startOnboarding()
+    }
+
     @MainActor required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -108,4 +114,18 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .disposed(by: disposeBag)
     }
 
+    private func startOnboarding() {
+        let onboardingView = OnboardingView()
+        self.navigationController?.view.addSubview(onboardingView)
+
+        onboardingView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
+        UIView.animate(withDuration: 1.0, delay: 2.0) {
+            onboardingView.alpha = 0.0
+        } completion: { _ in
+            onboardingView.removeFromSuperview()
+        }
+    }
 }
