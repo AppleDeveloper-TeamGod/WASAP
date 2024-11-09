@@ -147,7 +147,7 @@ final class CameraView: BaseView {
         }
 
         photoFrameView.snp.makeConstraints {
-            $0.top.leading.trailing.equalTo(safeAreaLayoutGuide).inset(32)
+            $0.top.leading.trailing.equalTo(safeAreaLayoutGuide).inset(64)
             $0.bottom.equalTo(zoomSlider.snp.top).offset(-16)
         }
 

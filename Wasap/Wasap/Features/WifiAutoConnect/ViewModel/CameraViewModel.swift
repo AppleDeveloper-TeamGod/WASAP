@@ -248,12 +248,6 @@ public class CameraViewModel: BaseViewModel {
                 owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
             }
             .disposed(by: disposeBag)
-
-        captureRect
-            .subscribe { rect in
-                Log.print(rect)
-            }
-            .disposed(by: disposeBag)
     }
 
     private func adjustedZoomValue(zoomValue: CGFloat) -> CGFloat {
