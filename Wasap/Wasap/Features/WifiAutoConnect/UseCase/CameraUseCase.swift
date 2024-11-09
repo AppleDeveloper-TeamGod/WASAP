@@ -12,7 +12,7 @@ import AVFoundation
 
 public protocol CameraUseCase {
     func configureCamera() -> Single<Void>
-    func takePhoto() -> Single<UIImage>
+    func takePhoto(with captureRect: CGRect?) -> Single<UIImage>
     func getCapturePreviewLayer() -> Single<AVCaptureVideoPreviewLayer>
     func getCapturePreviewLayer() -> AVCaptureVideoPreviewLayer?
     func getPreviewImageDataStream() -> Observable<UIImage>
@@ -36,13 +36,16 @@ final class DefaultCameraUseCase: CameraUseCase {
             .map { _ in () }
     }
 
-    func takePhoto() -> Single<UIImage> {
+    func takePhoto(with captureRect: CGRect?) -> Single<UIImage> {
         return repository.capturePhoto()
             .map { [weak self] in
                 guard let image = UIImage(data: $0) else {
                     throw CameraErrors.imageConvertError
                 }
-                guard let croppedImage = self?.cropToPreviewLayer(originalImage: image) else {
+                guard let captureRect else {
+                    return image
+                }
+                guard let croppedImage = self?.cropImage(originalImage: image, captureRect: captureRect) else {
                     throw CameraErrors.imageConvertError
                 }
                 return croppedImage
@@ -84,6 +87,55 @@ final class DefaultCameraUseCase: CameraUseCase {
         return (repository.getMinZoomFactor(), repository.getMaxZoomFactor())
     }
 
+    private func cropImage(originalImage: UIImage, captureRect: CGRect) -> UIImage? {
+        guard let cgImage = originalImage.cgImage else { return nil }
+
+        guard let videoPreviewLayer = self.repository.getPreviewLayer() else {
+            return nil
+        }
+
+        let convertedRect = videoPreviewLayer
+            .metadataOutputRectConverted(fromLayerRect: captureRect)
+            .insetByPercentage(0.1)
+
+        let width = CGFloat(cgImage.width)
+        let height = CGFloat(cgImage.height)
+        let outputRect = CGRect(x: convertedRect.origin.x * width, y: convertedRect.origin.y * height, width: convertedRect.size.width * width, height: convertedRect.size.height * height)
+
+        let resizedOutputRect = resizeRectToAspectRatio(outputRect, aspectRatio: 345 / 224)
+
+        if let previewImage = cgImage.cropping(to: resizedOutputRect) {
+            return UIImage(cgImage: previewImage, scale: 1.0, orientation: originalImage.imageOrientation)
+        }
+
+        return nil
+    }
+
+    private func resizeRectToAspectRatio(_ rect: CGRect, aspectRatio: CGFloat) -> CGRect {
+        let originalWidth = rect.width
+        let originalHeight = rect.height
+        let originalAspectRatio = originalWidth / originalHeight
+
+        var newWidth: CGFloat
+        var newHeight: CGFloat
+
+        // 새로운 CGRect가 원본 CGRect를 완전히 포함하도록 만듭니다.
+        if originalAspectRatio > aspectRatio {
+            // 원본의 가로가 더 넓으면 높이를 늘려야 함
+            newWidth = originalWidth
+            newHeight = originalWidth / aspectRatio
+        } else {
+            // 원본의 세로가 더 넓으면 가로를 늘려야 함
+            newWidth = originalHeight * aspectRatio
+            newHeight = originalHeight
+        }
+
+        let newX = rect.origin.x - (newWidth - originalWidth) / 2
+        let newY = rect.origin.y - (newHeight - originalHeight) / 2
+
+        return CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+    }
+
     private func cropToPreviewLayer(originalImage: UIImage) -> UIImage? {
         guard let cgImage = originalImage.cgImage else { return nil }
 
@@ -97,9 +149,6 @@ final class DefaultCameraUseCase: CameraUseCase {
         let height = CGFloat(cgImage.height)
         let previewRect = CGRect(x: outputRect.origin.x * width, y: outputRect.origin.y * height, width: outputRect.size.width * width, height: outputRect.size.height * height)
         let maskRect = modifyRect(originalRect: previewRect)
-
-        Log.print(previewRect, maskRect)
-
 
         if let previewImage = cgImage.cropping(to: maskRect) {
             return UIImage(cgImage: previewImage, scale: 1.0, orientation: originalImage.imageOrientation)

@@ -36,6 +36,7 @@ public class CameraViewModel: BaseViewModel {
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
     private var currentZoomValue = BehaviorRelay<CGFloat>(value: 1.0)
+    private var captureRect = BehaviorRelay<CGRect?>(value: nil)
 
     // MARK: - Init & Binding
     public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorController: CameraCoordinatorController) {
@@ -178,6 +179,17 @@ public class CameraViewModel: BaseViewModel {
 
                 ssidRelay.accept(convertedSSIDRect)
                 passwordRelay.accept(convertedPasswordRect)
+
+                var unionedRect: CGRect? = nil
+                if let ssidRect = convertedSSIDRect, let passwordRect = convertedPasswordRect {
+                    unionedRect = ssidRect.union(passwordRect)
+                } else if let ssidRect = convertedSSIDRect {
+                    unionedRect = ssidRect
+                } else if let passwordRect = convertedPasswordRect {
+                    unionedRect = passwordRect
+                }
+                
+                owner.captureRect.accept(unionedRect)
             }
             .disposed(by: disposeBag)
 
@@ -226,13 +238,20 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         shutterButtonDidTap
+            .withLatestFrom(captureRect)
             .withUnretained(self)
-            .flatMapLatest { owner, _ in
-                owner.cameraUseCase.takePhoto()
+            .flatMapLatest { owner, rect in
+                owner.cameraUseCase.takePhoto(with: rect)
             }
             .withUnretained(self)
             .subscribe { owner, image in
                 owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
+            }
+            .disposed(by: disposeBag)
+
+        captureRect
+            .subscribe { rect in
+                Log.print(rect)
             }
             .disposed(by: disposeBag)
     }
