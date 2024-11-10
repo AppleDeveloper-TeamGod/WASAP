@@ -75,12 +75,8 @@ final public class WifiAutoConnectDIContainer {
         return ConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
     }
 
-    public func makeCameraViewModel(
-        cameraUseCase: CameraUseCase,
-        imageAnalysisUseCase: ImageAnalysisUseCase,
-        coordinatorcontroller: CameraCoordinatorController
-    ) -> CameraViewModel {
-        return CameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller)
+    public func makeCameraViewModel(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: CameraCoordinatorController) -> CameraViewModel {
+        return CameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller)
     }
 
     public func makeGoToSettingViewModel(goToSettingUseCase: GoToSettingUseCase, coordinatorcontroller: GoToSettingCoordinatorController,
@@ -91,6 +87,10 @@ final public class WifiAutoConnectDIContainer {
 
     public func makeSharingViewModel(wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: SharingCoordinatorController, ssid: String, password: String) -> SharingViewModel {
         return SharingViewModel(wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
+    }
+
+    public func makeReceivingViewModel(coordinatorcontroller: ReceivingCoordinatorController, ssid: String, password: String) -> ReceivingViewModel {
+        return ReceivingViewModel(coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
     }
 
     // MARK: ViewController
@@ -116,5 +116,9 @@ final public class WifiAutoConnectDIContainer {
 
     public func makeSharingViewController(_ viewModel: SharingViewModel) -> SharingViewController {
         return SharingViewController(viewModel: viewModel)
+    }
+
+    public func makeReceivingViewController(_ viewModel: ReceivingViewModel) -> ReceivingViewController {
+        return ReceivingViewController(viewModel: viewModel)
     }
 }

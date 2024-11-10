@@ -26,7 +26,7 @@ public class SharingViewModel: BaseViewModel {
         let connectedPeerCountRelay = BehaviorRelay<Int>(value: 0)
         self.connectedPeerCount = connectedPeerCountRelay.asDriver()
 
-        var isAdvertising = BehaviorRelay<Bool>(value: false)
+        let isAdvertising = BehaviorRelay<Bool>(value: false)
 
         self.coordinatorController = coordinatorController
         super.init()
