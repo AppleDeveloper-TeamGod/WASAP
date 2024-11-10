@@ -9,7 +9,7 @@ import UIKit
 
 public protocol ReceivingCoordinatorController: AnyObject {
     func performFinish(to flow: ReceivingCoordinator.FinishFlow)
-    // func performTransition(to flow: ReceivingCoordinator.Flow)
+    func performTransition(to flow: ReceivingCoordinator.Flow)
 }
 
 public class ReceivingCoordinator: NavigationCoordinator {
@@ -61,19 +61,19 @@ public class ReceivingCoordinator: NavigationCoordinator {
 }
 
 extension ReceivingCoordinator: ReceivingCoordinatorController {
-//    public func performTransition(to flow: Flow) {
-//        switch flow {
-//        case .connecting(ssid: let ssid, password: let password):
-//            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
-//            start(childCoordinator: coordinator)
-//        }
-//    }
+    public func performTransition(to flow: Flow) {
+        switch flow {
+        case .connecting(ssid: let ssid, password: let password):
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: UIImage(), ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
+        }
+    }
 
     public func performFinish(to flow: FinishFlow) {
         switch flow {
         case .pop:
             finishCurrentCoordinator()
-//            navigationController.dismiss(animated: true)
+            //            navigationController.dismiss(animated: true)
         }
     }
 }
