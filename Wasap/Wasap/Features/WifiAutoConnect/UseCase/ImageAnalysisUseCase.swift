@@ -12,6 +12,7 @@ import UIKit
 public protocol ImageAnalysisUseCase {
     func performOCR(on image: UIImage) -> Single<(UIImage, String?, String?)>
     func performOCR(on image: UIImage) -> Single<OCRResultVO>
+    func parseWiFiInfo(from qrString: String) -> (ssid: String?, password: String?)?
 }
 
 public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
@@ -92,5 +93,35 @@ public class DefaultImageAnalysisUseCase: ImageAnalysisUseCase {
                 }
                 return OCRResultVO(ssidBoundingBox: convertedSSIDBox, passwordBoundingBox: convertedPasswordBox, ssid: ocrResult.ssid, password: ocrResult.password)
             }
+    }
+
+    public func parseWiFiInfo(from qrString: String) -> (ssid: String?, password: String?)? {
+        // Wi-Fi 문자열 형식 검사
+        guard qrString.hasPrefix("WIFI:") else {
+            print("Invalid Wi-Fi QR code format")
+            return nil
+        }
+
+        // Wi-Fi 정보 추출을 위한 패턴
+        let ssidPattern = "(?<=S:)(.*?)(?=;)"
+        let passwordPattern = "(?<=P:)(.*?)(?=;)"
+
+        let ssid = extractInfo(from: qrString, withPattern: ssidPattern)
+        let password = extractInfo(from: qrString, withPattern: passwordPattern)
+
+        return (ssid, password)
+    }
+
+    private func extractInfo(from text: String, withPattern pattern: String) -> String? {
+        guard let regex = try? NSRegularExpression(pattern: pattern) else {
+            return nil
+        }
+        let range = NSRange(text.startIndex..<text.endIndex, in: text)
+        if let match = regex.firstMatch(in: text, options: [], range: range) {
+            if let matchedRange = Range(match.range, in: text) {
+                return String(text[matchedRange])
+            }
+        }
+        return nil
     }
 }

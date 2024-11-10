@@ -11,6 +11,7 @@ enum WiFiConnectionErrors: Error {
     case alreadyConnected(String)
     case invalidSSID
     case userDenied
+    case notAvailableQRCode
 
     var localizedDescription: String {
         switch self {
@@ -42,6 +43,10 @@ enum WiFiConnectionErrors: Error {
         /// 취소버튼 터치 완료
         case .userDenied:
             return "사용자가 허용하지 않았습니다."
+
+        /// QR코드가 WIFI 형식이 아닐 때
+        case .notAvailableQRCode:
+            return "QR코드가 WIFI 형식이 아님"
 
         }
     }
