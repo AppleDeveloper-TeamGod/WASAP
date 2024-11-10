@@ -39,7 +39,11 @@ public class CameraViewModel: BaseViewModel {
     private var captureRect = BehaviorRelay<CGRect?>(value: nil)
 
     // MARK: - Init & Binding
-    public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorController: CameraCoordinatorController) {
+    public init(
+        cameraUseCase: CameraUseCase,
+        imageAnalysisUseCase: ImageAnalysisUseCase,
+        coordinatorController: CameraCoordinatorController
+    ) {
         self.cameraUseCase = cameraUseCase
         self.imageAnalysisUseCase = imageAnalysisUseCase
         self.coordinatorController = coordinatorController
@@ -200,14 +204,38 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        isCameraConfigured
+        let getQRDataStream = isCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ -> Observable<(qrString: String, corners: [CGPoint])?> in
                 owner.cameraUseCase.getQRDataStream()
             }
+            .map { qrDataWithCorners -> (qrString: String, corners: [CGPoint])? in
+                guard let qrDataWithCorners, qrDataWithCorners.qrString.lowercased().hasPrefix("wifi:") else {
+                    return nil
+                }
+                return qrDataWithCorners
+            }
+
+        getQRDataStream
             .withUnretained(self)
             .subscribe { owner, qrData in
                 qrCodeCornersRelay.accept(qrData?.corners ?? nil)
+            }
+            .disposed(by: disposeBag)
+
+        getQRDataStream
+            .compactMap { $0 }
+            .map(\.qrString)
+            .distinctUntilChanged()
+            .withUnretained(self)
+            .compactMap { owner, qrString in
+                owner.imageAnalysisUseCase.parseWiFiInfo(from: qrString)
+            }
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe { owner, wifiInfo in
+                Log.print("qr 발견!! : \(wifiInfo)")
+                owner.coordinatorController?.performTransition(to: .connectWithQR(ssid: wifiInfo.ssid ?? "", password: wifiInfo.password ?? ""))
             }
             .disposed(by: disposeBag)
 

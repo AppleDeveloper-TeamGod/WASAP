@@ -20,13 +20,16 @@ public class CameraCoordinator: NavigationCoordinator {
 
     public enum Flow {
         case analysis(imageData: UIImage)
+        case connectWithQR(ssid: String, password: String)
     }
 
     public func start() {
         let cameraRepository = wifiAutoConnectDIContainer.makeCameraRepository()
         let cameraUseCase = wifiAutoConnectDIContainer.makeCameraUseCase(cameraRepository)
+
         let imageAnalysisRepository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
         let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
+
         let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, coordinatorcontroller: self)
         let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
 
@@ -42,8 +45,11 @@ extension CameraCoordinator: CameraCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .analysis(let imageData):
-            print("analysis view! : \(imageData)")
             let coordinator = ScanCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, previewImage: imageData)
+            start(childCoordinator: coordinator)
+
+        case .connectWithQR(let ssid, let password):
+            let coordinator = ConnectingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: nil, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }
