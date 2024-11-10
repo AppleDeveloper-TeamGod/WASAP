@@ -59,7 +59,7 @@ class ConnectingView: BaseView {
         button.setTitleColor(.textPrimaryHigh, for: .normal)
         button.titleLabel?.font = FontStyle.button.font
         button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
-        button.backgroundColor = .buttonActivePrimaryBG
+        button.backgroundColor = .neutral500
         button.isHidden = true
 
         button.layer.cornerRadius = 25

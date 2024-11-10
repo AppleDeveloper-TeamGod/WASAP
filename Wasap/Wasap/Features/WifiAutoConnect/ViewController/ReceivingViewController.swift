@@ -32,8 +32,14 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel> {
 
     private func bind(_ viewModel: ReceivingViewModel) {
         // 뷰 -> 뷰모델
+        receivingView.connectButton.rx.tap
+            .bind(to: viewModel.connectButtonTapped)
+            .disposed(by: disposeBag)
 
         // 뷰모델 -> 뷰
+        viewModel.ssidDriver
+            .drive(receivingView.ssidLabel.rx.text)
+            .disposed(by: disposeBag)
 
     }
 }

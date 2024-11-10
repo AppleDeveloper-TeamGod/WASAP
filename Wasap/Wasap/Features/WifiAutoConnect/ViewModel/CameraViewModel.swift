@@ -100,6 +100,8 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, _ in
                 owner.cameraUseCase.stopRunning()
+                owner.wifiShareUseCase.stopBrowsing()
+                isBrowsing.accept(false)
             }
             .disposed(by: disposeBag)
 
@@ -204,7 +206,7 @@ public class CameraViewModel: BaseViewModel {
                 } else if let passwordRect = convertedPasswordRect {
                     unionedRect = passwordRect
                 }
-                
+
                 owner.captureRect.accept(unionedRect)
             }
             .disposed(by: disposeBag)
@@ -286,8 +288,6 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, image in
                 owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
-                wifiShareUseCase.stopBrowsing()
-                isBrowsing.accept(false)
             }
             .disposed(by: disposeBag)
 
