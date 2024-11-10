@@ -9,6 +9,7 @@ import UIKit
 
 public protocol ConnectingCoordinatorController: AnyObject {
     func performFinish(to flow: ConnectingCoordinator.FinishFlow)
+    func performTransition(to flow: ConnectingCoordinator.Flow)
 }
 
 public class ConnectingCoordinator: NavigationCoordinator {
@@ -16,11 +17,11 @@ public class ConnectingCoordinator: NavigationCoordinator {
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
-
+    
     let imageData: UIImage
     let ssid: String?
     let password: String?
-
+    
     private weak var connectingViewController: ConnectingViewController?
     
     public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, imageData: UIImage?, ssid: String?, password: String?) {
@@ -30,12 +31,16 @@ public class ConnectingCoordinator: NavigationCoordinator {
         self.password = password
         self.imageData = imageData ?? UIImage()
     }
-
+    
     public enum FinishFlow {
         case popToRoot
         case finishWithError
     }
-
+    
+    public enum Flow {
+        case sharing(ssid : String?, password : String?)
+    }
+    
     public func start() {
         let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
         let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository)
@@ -46,13 +51,21 @@ public class ConnectingCoordinator: NavigationCoordinator {
         self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
-
+    
     public func finish() {
         self.navigationController.popViewController(animated: true)
     }
 }
 
 extension ConnectingCoordinator: ConnectingCoordinatorController {
+    public func performTransition(to flow: Flow) {
+        switch flow {
+        case .sharing(ssid: let ssid, password: let password):
+            let coordinator = SharingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
+        }
+    }
+    
     public func performFinish(to flow: FinishFlow) {
         switch flow {
         case .popToRoot:

@@ -9,12 +9,13 @@ import RxSwift
 import MultipeerConnectivity
 
 public protocol WiFiShareRepository {
-    func startAdvertising(ssid: String, password: String)
-    func startBrowsing()
-    func stopSharing()
+    func startAdvertising(ssid: String, password: String) -> Single<Void>
+    func startBrowsing() -> Single<Void>
+    func stopSharing() -> Single<Void>
+    func getConnectedPeerCount() -> Observable<Int>
 }
 
-final public class DefaultWifiShareRepository: NSObject, WiFiShareRepository {
+final public class DefaultWiFiShareRepository: NSObject, WiFiShareRepository {
     /// multipeer 연결을 구분하기 위해 설정하는 고유 문자열 - 동일 serviceType 기기끼리 연결
     private let serviceType = "wasap-sharing"
     /// 현재 기기 고유 ID
@@ -26,7 +27,7 @@ final public class DefaultWifiShareRepository: NSObject, WiFiShareRepository {
     /// 탐색을 통해 근처에서 광고 중인 피어를 찾는 역할
     private var browser: MCNearbyServiceBrowser?
 
-    var isHost: Bool = false
+    private var isHost: Bool = false
     private var ssidToSend: String = ""
     private var passwordToSend: String = ""
 
@@ -34,8 +35,8 @@ final public class DefaultWifiShareRepository: NSObject, WiFiShareRepository {
     var receivedWiFiDetails: Observable<(String, String)> {
         return receivedWiFiDetailsSubject.asObservable()
     }
-
-    var connectedPeerCount: Int = 0
+    
+    private let connectedPeerCountSubject = BehaviorSubject<Int>(value: 0)
 
     override init() {
         self.session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
@@ -44,28 +45,65 @@ final public class DefaultWifiShareRepository: NSObject, WiFiShareRepository {
     }
 
     /// 송신 기능 - SSID와 Password를 저장하고 광고를 시작
-    public func startAdvertising(ssid: String, password: String) {
-        self.ssidToSend = ssid
-        self.passwordToSend = password
+    public func startAdvertising(ssid: String, password: String) -> Single<Void> {
+        return Single.create { [weak self] single in
+            guard let self = self else {
+                single(.failure(WiFiShareErrors.unknownError))
+                return Disposables.create()
+            }
 
-        advertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: nil, serviceType: serviceType)
-        advertiser?.delegate = self
-        advertiser?.startAdvertisingPeer()
+            self.ssidToSend = ssid
+            self.passwordToSend = password
+            self.advertiser = MCNearbyServiceAdvertiser(peer: myPeerID, discoveryInfo: nil, serviceType: serviceType)
+            self.advertiser?.delegate = self
+
+            self.advertiser?.startAdvertisingPeer()
+            single(.success(()))
+
+            return Disposables.create {
+                self.advertiser?.stopAdvertisingPeer()
+            }
+        }
     }
 
     /// 수신 기능 - 탐색을 시작
-    public func startBrowsing() {
-        browser = MCNearbyServiceBrowser(peer: myPeerID, serviceType: serviceType)
-        browser?.delegate = self
-        browser?.startBrowsingForPeers()
+    public func startBrowsing() -> Single<Void> {
+        return Single<Void>.create { [weak self] single in
+            guard let self = self else {
+                single(.failure(WiFiShareErrors.unknownError))
+                return Disposables.create()
+            }
+
+            self.browser = MCNearbyServiceBrowser(peer: myPeerID, serviceType: serviceType)
+            self.browser?.delegate = self
+
+            self.browser?.startBrowsingForPeers()
+            single(.success(()))
+
+            return Disposables.create {
+                self.browser?.stopBrowsingForPeers()
+            }
+        }
     }
 
     /// 송수신 종료
-    public func stopSharing() {
-        advertiser?.stopAdvertisingPeer()
-        browser?.stopBrowsingForPeers()
-        advertiser = nil
-        browser = nil
+    public func stopSharing() -> Single<Void> {
+        return Single<Void>.create { [weak self] single in
+            guard let self = self else {
+                single(.failure(WiFiShareErrors.unknownError))
+                return Disposables.create()
+            }
+            self.advertiser?.stopAdvertisingPeer()
+            self.browser?.stopBrowsingForPeers()
+            single(.success(()))
+
+            return Disposables.create()
+        }
+
+    }
+
+    public func getConnectedPeerCount() -> Observable<Int> {
+        self.connectedPeerCountSubject.asObservable()
     }
 
     /// ID와 PW를 JSON 형식으로 인코딩하여 연결된 피어에게 전송 (연결된 피어가 없으면 전송하지 않음)
@@ -80,11 +118,11 @@ final public class DefaultWifiShareRepository: NSObject, WiFiShareRepository {
     }
 }
 
-extension DefaultWifiShareRepository: MCSessionDelegate {
+extension DefaultWiFiShareRepository: MCSessionDelegate {
     /// 세션에서 피어의 연결 상태가 변경될 때 호출. 연결된 피어를 관리하고 상태에 따라 peers 배열을 업데이트
     public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         DispatchQueue.main.async {
-            self.connectedPeerCount = session.connectedPeers.count
+            self.connectedPeerCountSubject.onNext(session.connectedPeers.count)
         }
 
         /// 새로운 피어가 연결되었을 때
@@ -108,14 +146,14 @@ extension DefaultWifiShareRepository: MCSessionDelegate {
     public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {}
 }
 
-extension DefaultWifiShareRepository: MCNearbyServiceAdvertiserDelegate {
+extension DefaultWiFiShareRepository: MCNearbyServiceAdvertiserDelegate {
     /// 탐색 중인 다른 피어로부터 초대를 수신했을 때 호출. 초대를 수락하면 세션에 연결
     public func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         invitationHandler(true, session)
     }
 }
 
-extension DefaultWifiShareRepository: MCNearbyServiceBrowserDelegate {
+extension DefaultWiFiShareRepository: MCNearbyServiceBrowserDelegate {
     /// 주변에 광고 중인 피어를 발견하면 호출. 이 피어에 대한 세션 연결 요청을 보냄
     public func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
@@ -124,7 +162,7 @@ extension DefaultWifiShareRepository: MCNearbyServiceBrowserDelegate {
     /// 연결이 끊어진 피어를 처리
     public func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         DispatchQueue.main.async {
-            self.connectedPeerCount = self.session.connectedPeers.count
+            self.connectedPeerCountSubject.onNext(self.session.connectedPeers.count)
         }
     }
 }

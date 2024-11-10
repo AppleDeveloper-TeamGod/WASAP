@@ -35,7 +35,12 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
         connectingView.quitButton.rx.tap
             .bind(to: viewModel.quitButtonTapped)
             .disposed(by: disposeBag)
-        
+
+        connectingView.shareButton.rx.tap
+            .bind(to: viewModel.shareButtonTapped)
+            .disposed(by: disposeBag)
+
+
         // 뷰모델 -> 뷰
         viewModel.isLoading
             .filter { $0 }
@@ -44,6 +49,7 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
                 self?.connectingView.subStatusLabel.text = "연결중".localized()
                 self?.connectingView.doneSignIcon.isHidden = true
                 self?.connectingView.quitButton.isHidden = true
+                self?.connectingView.shareButton.isHidden = true
             }
             .disposed(by: disposeBag)
         
@@ -54,6 +60,7 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
                 self?.connectingView.subStatusLabel.text = "연결 완료!".localized()
                 self?.connectingView.doneSignIcon.isHidden = false
                 self?.connectingView.quitButton.isHidden = false
+                self?.connectingView.shareButton.isHidden = false
             }
             .disposed(by: disposeBag)
     }

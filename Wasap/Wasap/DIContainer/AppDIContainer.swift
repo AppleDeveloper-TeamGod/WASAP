@@ -37,6 +37,10 @@ final public class WifiAutoConnectDIContainer {
         return DefaultGoToSettingRepository()
     }
 
+    public func makeWiFiShareRepository() -> WiFiShareRepository {
+        return DefaultWiFiShareRepository()
+    }
+
     // MARK: UseCase
     public func makeImageAnalysisUseCase(_ repository: ImageAnalysisRepository) -> ImageAnalysisUseCase {
         return DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
@@ -52,6 +56,10 @@ final public class WifiAutoConnectDIContainer {
 
     public func makeGoToSettingUseCase(_ repository: GoToSettingRepository) -> GoToSettingUseCase {
         return DefaultGoToSettingUseCase(repository: repository)
+    }
+
+    public func makeWiFiShareUseCase(_ repository: WiFiShareRepository) -> WiFiShareUseCase {
+        return DefaultWiFiShareUseCase(repository: repository)
     }
 
     // MARK: ViewModel
@@ -81,6 +89,10 @@ final public class WifiAutoConnectDIContainer {
                                     imageData: imageData, ssid: ssid, password: password)
     }
 
+    public func makeSharingViewModel(wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: SharingCoordinatorController, ssid: String, password: String) -> SharingViewModel {
+        return SharingViewModel(wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
+    }
+
     // MARK: ViewController
     public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {
         return ScanViewController(viewModel: viewModel)
@@ -100,5 +112,9 @@ final public class WifiAutoConnectDIContainer {
 
     public func makeGoToSettingViewController(_ viewModel: GoToSettingViewModel) -> GoToSettingViewController {
         return GoToSettingViewController(viewModel: viewModel)
+    }
+
+    public func makeSharingViewController(_ viewModel: SharingViewModel) -> SharingViewController {
+        return SharingViewController(viewModel: viewModel)
     }
 }

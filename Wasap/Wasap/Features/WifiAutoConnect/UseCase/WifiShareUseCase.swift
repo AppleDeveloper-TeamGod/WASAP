@@ -9,9 +9,10 @@ import RxSwift
 import UIKit
 
 public protocol WiFiShareUseCase {
-    func startSending(ssid: String, password: String)
-    func startReceiving()
-    func stopSharing()
+    func startAdvertising(ssid: String, password: String) -> Single<Void>
+    func startBrowsing() -> Single<Void>
+    func stopSharing() -> Single<Void>
+    func getConnectedPeerCount() -> Observable<Int>
 }
 
 final class DefaultWiFiShareUseCase: WiFiShareUseCase {
@@ -21,15 +22,19 @@ final class DefaultWiFiShareUseCase: WiFiShareUseCase {
         self.repository = repository
     }
 
-    func startSending(ssid: String, password: String) {
-        repository.startAdvertising(ssid: ssid, password: password)
+    func startAdvertising(ssid: String, password: String) -> Single<Void> {
+        return repository.startAdvertising(ssid: ssid, password: password)
     }
     
-    func startReceiving() {
-        repository.startBrowsing()
+    func startBrowsing() -> Single<Void> {
+        return repository.startBrowsing()
     }
     
-    func stopSharing() {
-        repository.stopSharing()
+    func stopSharing() -> Single<Void> {
+        return repository.stopSharing()
+    }
+
+    func getConnectedPeerCount() -> Observable<Int> {
+        return repository.getConnectedPeerCount()
     }
 }
