@@ -52,10 +52,25 @@ class ConnectingView: BaseView {
         animation.play()
         return animation
     }()
-    
+
+    lazy var shareButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Wi-Fi 공유하기".localized(), for: .normal)
+        button.setTitleColor(.textPrimaryHigh, for: .normal)
+        button.titleLabel?.font = FontStyle.button.font
+        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.backgroundColor = .buttonActivePrimaryBG
+        button.isHidden = true
+
+        button.layer.cornerRadius = 25
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.clear.cgColor
+        return button
+    }()
+
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(loadingAnimation, mainStatusLabel, subStatusLabel, doneSignIcon, quitButton)
+        self.addSubViews(loadingAnimation, mainStatusLabel, subStatusLabel, doneSignIcon, quitButton, shareButton)
     }
     
     func setConstraints() {
@@ -90,6 +105,12 @@ class ConnectingView: BaseView {
         loadingAnimation.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalToSuperview()
+        }
+
+        shareButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-82)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(52)
         }
     }
 }
