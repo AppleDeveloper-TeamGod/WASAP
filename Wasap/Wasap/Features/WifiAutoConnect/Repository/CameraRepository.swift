@@ -236,8 +236,8 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
         do {
             try device.lockForConfiguration()
             if minAvailableZoomScale...maxAvailableZoomScale ~= factor {
-//                device.videoZoomFactor = factor
-                device.ramp(toVideoZoomFactor: factor, withRate: 5.0)
+                device.videoZoomFactor = factor
+//                device.ramp(toVideoZoomFactor: factor, withRate: 5.0)
             }
         } catch {
             return
