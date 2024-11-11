@@ -35,6 +35,8 @@ final class OnboardingView: BaseView {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = 4
             paragraphStyle.alignment = .center
+            paragraphStyle.lineBreakMode = .byWordWrapping
+            paragraphStyle.lineBreakStrategy = .hangulWordPriority
             attrString.addAttributes([.paragraphStyle: paragraphStyle, .font: FontStyle.title.font], range: NSMakeRange(0, attrString.length))
             label.attributedText = attrString
             return label
@@ -42,7 +44,7 @@ final class OnboardingView: BaseView {
 
         let stackView = UIStackView(arrangedSubviews: [onboardingImageView, onboardingLabel])
         onboardingImageView.snp.makeConstraints {
-            $0.width.height.lessThanOrEqualTo(160)
+            $0.width.height.lessThanOrEqualTo(160).priority(999)
         }
         stackView.spacing = 16
         stackView.axis = .vertical
