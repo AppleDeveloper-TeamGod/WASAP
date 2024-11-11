@@ -93,7 +93,6 @@ final class CameraView: BaseView {
         let slider = UISlider()
         slider.minimumValue = 1
         slider.maximumValue = 10
-        slider.value = 1
         slider.tintColor = .white
         slider.minimumValueImage = UIImage(systemName: "minus")?.withTintColor(.white)
         slider.maximumValueImage = UIImage(systemName: "plus")?.withTintColor(.white)

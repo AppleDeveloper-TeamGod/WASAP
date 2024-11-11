@@ -35,7 +35,7 @@ public class CameraViewModel: BaseViewModel {
 
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
-    private var currentZoomValue = BehaviorRelay<CGFloat>(value: 1.0)
+    private var currentZoomValue = BehaviorRelay<CGFloat>(value: 2.0)
     private var captureRect = BehaviorRelay<CGRect?>(value: nil)
 
     // MARK: - Init & Binding
@@ -102,6 +102,9 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         zoomSliderValue
+            .distinctUntilChanged {
+                Int($0 * 10)
+            }
             .bind(to: currentZoomValue)
             .disposed(by: disposeBag)
 

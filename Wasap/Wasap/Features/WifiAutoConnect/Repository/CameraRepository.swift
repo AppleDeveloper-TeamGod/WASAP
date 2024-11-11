@@ -87,7 +87,7 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
 
             session.sessionPreset = .photo
 
-            guard let backCamera = AVCaptureDevice.default(for: .video) else {
+            guard let backCamera = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) else {
                 session.commitConfiguration()
                 single(.failure(CameraErrors.cameraNotFound))
                 return Disposables.create()

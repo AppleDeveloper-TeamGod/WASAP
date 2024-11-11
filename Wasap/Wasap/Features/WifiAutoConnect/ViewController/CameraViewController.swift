@@ -35,6 +35,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
     private func bind(_ viewModel: CameraViewModel) {
         Observable.combineLatest(cameraView.zoomSlider.rx.value, viewModel.isPinching.asObservable())
             .filter { !$1 }
+            .skip(1) // 첫번째 기본 값 설정 무시
             .map(\.0)
             .map { CGFloat($0) }
             .bind(to: viewModel.zoomSliderValue)
