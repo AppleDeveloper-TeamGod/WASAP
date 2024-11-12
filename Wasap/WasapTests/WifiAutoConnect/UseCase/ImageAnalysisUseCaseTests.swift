@@ -11,6 +11,35 @@ import Testing
 import UIKit
 @testable import Wasap
 
+enum OCRTestCases: CaseIterable {
+    case success1
+    case success2
+    case success3
+    case success4
+
+    var inputImageName: String {
+        switch self {
+        case .success1: "previewTestImage1"
+        case .success2: "previewTestImage2"
+        case .success3: "previewTestImage3"
+        case .success4: "previewTestImage4"
+        }
+    }
+
+    var expectedAnswer: (ssid: String, password: String) {
+        switch self {
+        case .success1:
+            return ("barbet_2F", "barbet1234")
+        case .success2:
+            return ("Tarrtarr", "12345678")
+        case .success3:
+            return ("SwiftFun", "WeAreDevs")
+        case .success4:
+            return ("KT_GiGA_5G_Wave2_CAC7", "ecff9be894")
+        }
+    }
+}
+
 class ImageAnalysisUseCaseTests {
     var repository: DefaultImageAnalysisRepository!
     var useCase: DefaultImageAnalysisUseCase
@@ -23,23 +52,24 @@ class ImageAnalysisUseCaseTests {
     }
     
     // OCR 성공 테스트
-    @Test
-    func testPerformOCRSuccess() throws {
-        guard let image = UIImage(named: "OCRTestImage", in: bundle, compatibleWith: nil) else {
+    @Test("OCR Tests", arguments: OCRTestCases.allCases)
+    func testPerformOCRSuccess(_ testCase: OCRTestCases) throws {
+        guard let image = UIImage(named: testCase.inputImageName, in: bundle, compatibleWith: nil) else {
             Issue.record("이미지 불러올 수 없음")
             return
         }
-        
+
         // UseCase 실행
-        let result = try useCase.performOCR(on: image).toBlocking().first()
-        
+        let result: OCRResultVO? = try useCase.performOCR(on: image).toBlocking().first()
+
         // 결과 검증
         try #require(result != nil)
-        let (boundingBoxes, ssid, password) = result!
-        
-        try #require(!boundingBoxes.isEmpty)
-        #expect(ssid == "Tarrtarr")
-        #expect(password == "12345678")
+        try #require(result!.ssid != nil)
+        try #require(result!.password != nil)
+
+        let answer = testCase.expectedAnswer
+        #expect(result!.ssid == answer.ssid)
+        #expect(result!.password == answer.password)
     }
     
     // OCR 실패 테스트
@@ -49,16 +79,13 @@ class ImageAnalysisUseCaseTests {
             Issue.record("이미지 불러올 수 없음")
             return
         }
-        
-        // UseCase 실행
-        let result = try useCase.performOCR(on: image).toBlocking().first()
-        
-        // 결과 검증
-        let (boundingBoxes, ssid, password) = result!
-        
-        try #require(!boundingBoxes.isEmpty)
-        #expect(ssid == "")
-        #expect(password == "")
+
+        let result: OCRResultVO? = try useCase.performOCR(on: image).toBlocking().first()
+
+        try #require(!(result!.ssidBoundingBox!).isEmpty)
+        try #require(!(result!.passwordBoundingBox!).isEmpty)
+        #expect(result!.ssid == "")
+        #expect(result!.password == "")
     }
 }
 
