@@ -15,17 +15,25 @@ public class ReceivingViewModel: BaseViewModel {
 
     // MARK: - Input
     public let connectButtonTapped = PublishRelay<Void>()
+    public let xButtonTapped = PublishRelay<Void>()
 
     // MARK: - Output
     public let ssidDriver: Driver<String>
 
     public init(coordinatorController: ReceivingCoordinatorController, ssid: String, password: String) {
 
-        let ssidRelay = BehaviorRelay<String>(value: ssid)
+        let ssidRelay = BehaviorRelay<String>(value: "‘\(ssid)’")
         self.ssidDriver = ssidRelay.asDriver()
 
         self.coordinatorController = coordinatorController
         super.init()
+
+        xButtonTapped
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                owner.coordinatorController?.performFinish(to: .pop)
+            }
+            .disposed(by: disposeBag)
 
         connectButtonTapped
             .withUnretained(self)

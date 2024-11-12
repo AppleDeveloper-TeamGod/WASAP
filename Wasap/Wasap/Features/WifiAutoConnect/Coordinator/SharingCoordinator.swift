@@ -9,7 +9,7 @@ import UIKit
 
 public protocol SharingCoordinatorController: AnyObject {
     func performFinish(to flow: SharingCoordinator.FinishFlow)
-    // func performTransition(to flow: SharingCoordinator.Flow)
+    func performTransition(to flow: SharingCoordinator.Flow)
 }
 
 public class SharingCoordinator: NavigationCoordinator {
@@ -47,18 +47,8 @@ public class SharingCoordinator: NavigationCoordinator {
         let viewModel = wifiAutoConnectDIContainer.makeSharingViewModel(wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self, ssid: ssid ?? "", password: password ?? "")
         let viewController = wifiAutoConnectDIContainer.makeSharingViewController(viewModel)
 
-        viewController.modalPresentationStyle = .pageSheet
-        if let sheet = viewController.sheetPresentationController {
-            sheet.detents = [.large()]
-            sheet.largestUndimmedDetentIdentifier = .medium
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
-            sheet.preferredCornerRadius = 20.0
-        }
-        self.navigationController.present(viewController, animated: true)
-
-        // self.navigationController.setNavigationBarHidden(true, animated: false)
-        // self.navigationController.pushViewController(viewController, animated: true)
+        self.navigationController.setNavigationBarHidden(true, animated: false)
+        self.navigationController.pushViewController(viewController, animated: true)
     }
 
     public func finish() {
@@ -67,19 +57,18 @@ public class SharingCoordinator: NavigationCoordinator {
 }
 
 extension SharingCoordinator: SharingCoordinatorController {
-//    public func performTransition(to flow: Flow) {
-//        switch flow {
-//        case .sharingQR(ssid: let ssid, password: let password):
-//            let coordinator = SharingQRCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
-//            start(childCoordinator: coordinator)
-//        }
-//    }
+    public func performTransition(to flow: Flow) {
+        switch flow {
+        case .sharingQR(ssid: let ssid, password: let password):
+            let coordinator = SharingQRCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
+        }
+    }
 
     public func performFinish(to flow: FinishFlow) {
         switch flow {
         case .pop:
             finishCurrentCoordinator()
-//            navigationController.dismiss(animated: true)
         }
     }
 }

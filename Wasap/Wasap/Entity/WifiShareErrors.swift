@@ -6,18 +6,15 @@
 //
 
 enum WiFiShareErrors: Error {
-    case advertisingFailed
-    case browsingFailed
-    case unknownError
+    case wifiShareError
+    case qrCodeError
 
     var localizedDescription: String {
         switch self {
-        case .advertisingFailed:
-            return "Failed to start advertising"
-        case .browsingFailed:
-            return "Failed to start browsing"
-        case .unknownError:
-            return "An unknown error occurred."
+        case .wifiShareError:
+            return "error occurred in advertising or browsing"
+        case .qrCodeError:
+            return "error occurred in generating QR code"
         }
     }
 }

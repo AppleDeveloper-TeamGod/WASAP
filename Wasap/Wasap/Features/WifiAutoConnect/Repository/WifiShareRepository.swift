@@ -46,7 +46,7 @@ final public class DefaultWiFiShareRepository: NSObject, WiFiShareRepository {
     public func startAdvertising(ssid: String, password: String) -> Observable<Void> {
         return Observable.create { [weak self] observer in
             guard let self = self else {
-                observer.onError(WiFiShareErrors.unknownError)
+                observer.onError(WiFiShareErrors.wifiShareError)
                 return Disposables.create()
             }
 
@@ -76,7 +76,7 @@ final public class DefaultWiFiShareRepository: NSObject, WiFiShareRepository {
     public func startBrowsing() -> Observable<Void> {
         return Observable.create { [weak self] observer in
             guard let self = self else {
-                observer.onError(WiFiShareErrors.unknownError)
+                observer.onError(WiFiShareErrors.wifiShareError)
                 return Disposables.create()
             }
 
@@ -131,7 +131,7 @@ final public class DefaultWiFiShareRepository: NSObject, WiFiShareRepository {
             do {
                 try session.send(dataToSend, toPeers: [peerID], with: .reliable)
             } catch {
-                print("Failed to send data: \(error.localizedDescription)")
+                Log.error("Failed to send data: \(error.localizedDescription)")
             }
         }
     }
@@ -147,17 +147,17 @@ extension DefaultWiFiShareRepository: MCSessionDelegate {
         /// 새로운 피어가 연결되었을 때
         switch state {
         case .connected:
-            print("Connected to peer: \(peerID)")
+            Log.debug("Connected to peer: \(peerID)")
             if isHost {
-                print("Sending WiFi info to \(peerID) (SSID: \(ssidToSend), Password: \(passwordToSend))")
+                Log.debug("Sending WiFi info to \(peerID) (SSID: \(ssidToSend), Password: \(passwordToSend))")
                 sendWiFiInfo(ssid: ssidToSend, password: passwordToSend, peerID: peerID)
             }
         case .connecting:
-            print("Connecting to peer: \(peerID)")
+            Log.debug("Connecting to peer: \(peerID)")
         case .notConnected:
-            print("Disconnected from peer: \(peerID)")
+            Log.debug("Disconnected from peer: \(peerID)")
         default:
-            print("Unknown state for peer: \(peerID)")
+            Log.debug("Unknown state for peer: \(peerID)")
         }
     }
 
@@ -166,11 +166,11 @@ extension DefaultWiFiShareRepository: MCSessionDelegate {
         if let dict = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: String],
            let ssid = dict["ssid"], let password = dict["password"] {
             DispatchQueue.main.async {
-                print("Received WiFi info from \(peerID) - SSID: \(ssid), Password: \(password)")
+                Log.debug("Received WiFi info from \(peerID) - SSID: \(ssid), Password: \(password)")
                 self.receivedWiFiInfoSubject.onNext((ssid, password))
             }
         } else {
-            print("Failed to decode WiFi info from \(peerID)")
+            Log.debug("Failed to decode WiFi info from \(peerID)")
         }
     }
 
@@ -182,7 +182,7 @@ extension DefaultWiFiShareRepository: MCSessionDelegate {
 extension DefaultWiFiShareRepository: MCNearbyServiceAdvertiserDelegate {
     /// 탐색 중인 다른 피어로부터 초대를 수신했을 때 호출. 초대를 수락하면 세션에 연결
     public func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        print("Received invitation from peer: \(peerID). Accepting invitation.")
+        Log.debug("Received invitation from peer: \(peerID). Accepting invitation.")
         invitationHandler(true, session)
     }
 }
@@ -190,7 +190,7 @@ extension DefaultWiFiShareRepository: MCNearbyServiceAdvertiserDelegate {
 extension DefaultWiFiShareRepository: MCNearbyServiceBrowserDelegate {
     /// 주변에 광고 중인 피어를 발견하면 호출. 이 피어에 대한 세션 연결 요청을 보냄
     public func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
-        print("Found peer: \(peerID). Sending invitation to connect.")
+        Log.debug("Found peer: \(peerID). Sending invitation to connect.")
         browser.invitePeer(peerID, to: session, withContext: nil, timeout: 30)
     }
 
@@ -199,6 +199,6 @@ extension DefaultWiFiShareRepository: MCNearbyServiceBrowserDelegate {
         DispatchQueue.main.async {
             self.connectedPeerCountSubject.onNext(self.session.connectedPeers.count)
         }
-        print("Lost connection with peer: \(peerID)")
+        Log.debug("Lost connection with peer: \(peerID)")
     }
 }

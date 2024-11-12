@@ -1,18 +1,17 @@
 //
-//  ReceivingCoordinator.swift
+//  SharingQRCoordinator.swift
 //  Wasap
 //
-//  Created by Chang Jonghyeon on 11/10/24.
+//  Created by Chang Jonghyeon on 11/11/24.
 //
 
 import UIKit
 
-public protocol ReceivingCoordinatorController: AnyObject {
-    func performFinish(to flow: ReceivingCoordinator.FinishFlow)
-    func performTransition(to flow: ReceivingCoordinator.Flow)
+public protocol SharingQRCoordinatorController: AnyObject {
+    func performFinish(to flow: SharingQRCoordinator.FinishFlow)
 }
 
-public class ReceivingCoordinator: NSObject, NavigationCoordinator {
+public class SharingQRCoordinator: NSObject, NavigationCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
@@ -29,29 +28,27 @@ public class ReceivingCoordinator: NSObject, NavigationCoordinator {
     }
 
     deinit {
-        print("ReceivingCoordinator deinit")
+        print("SharingQRCoordinator deinit")
     }
 
     public enum FinishFlow {
         case pop
-        case popToRoot
-    }
-
-    public enum Flow {
-        case connecting(ssid : String, password : String)
     }
 
     public func start() {
-        let viewModel = wifiAutoConnectDIContainer.makeReceivingViewModel(coordinatorcontroller: self, ssid: ssid ?? "", password: password ?? "")
-        let viewController = wifiAutoConnectDIContainer.makeReceivingViewController(viewModel)
+        let wifiShareRepository = wifiAutoConnectDIContainer.makeWiFiShareRepository()
+        let wifiShareUseCase = wifiAutoConnectDIContainer.makeWiFiShareUseCase(wifiShareRepository)
+
+        let viewModel = wifiAutoConnectDIContainer.makeSharingQRViewModel(wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self, ssid: ssid ?? "", password: password ?? "")
+        let viewController = wifiAutoConnectDIContainer.makeSharingQRViewController(viewModel)
 
         viewController.modalPresentationStyle = .pageSheet
         if let sheet = viewController.sheetPresentationController {
-            sheet.detents = [.medium()]
+            sheet.detents = [.large()]
             sheet.largestUndimmedDetentIdentifier = .medium
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
-            sheet.preferredCornerRadius = 40.0
+            sheet.preferredCornerRadius = 20.0
         }
 
         viewController.presentationController?.delegate = self
@@ -63,29 +60,17 @@ public class ReceivingCoordinator: NSObject, NavigationCoordinator {
     }
 }
 
-extension ReceivingCoordinator: ReceivingCoordinatorController {
-    public func performTransition(to flow: Flow) {
-        switch flow {
-        case .connecting(ssid: let ssid, password: let password):
-            finishCurrentCoordinator()
-            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: UIImage(), ssid: ssid, password: password)
-            start(childCoordinator: coordinator)
-        }
-    }
-
+extension SharingQRCoordinator: SharingQRCoordinatorController {
     public func performFinish(to flow: FinishFlow) {
         switch flow {
         case .pop:
             finishCurrentCoordinator()
-        case .popToRoot:
-            finishUntil(CameraCoordinator.self)
         }
     }
 }
 
-extension ReceivingCoordinator: UIAdaptivePresentationControllerDelegate {
+extension SharingQRCoordinator: UIAdaptivePresentationControllerDelegate {
     public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         finishCurrentCoordinator()
     }
 }
-

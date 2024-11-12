@@ -17,6 +17,10 @@ public class SharingViewModel: BaseViewModel {
     private let wifiShareUseCase: WiFiShareUseCase
 
     // MARK: - Input
+    public let backButtonTapped = PublishRelay<Void>()
+    public let stopShareButtonTapped = PublishRelay<Void>()
+    public let shareQRButtonTapped = PublishRelay<Void>()
+
     // MARK: - Output
     public var connectedPeerCount: Driver<Int>
 
@@ -51,6 +55,31 @@ public class SharingViewModel: BaseViewModel {
             }
             .subscribe {
                 connectedPeerCountRelay.accept($0)
+            }
+            .disposed(by: disposeBag)
+
+        self.backButtonTapped
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                owner.coordinatorController?.performFinish(to: .pop)
+                owner.wifiShareUseCase.stopAdvertising()
+                isAdvertising.accept(false)
+            }
+            .disposed(by: disposeBag)
+
+        self.stopShareButtonTapped
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                owner.coordinatorController?.performFinish(to: .pop)
+                owner.wifiShareUseCase.stopAdvertising()
+                isAdvertising.accept(false)
+            }
+            .disposed(by: disposeBag)
+
+        self.shareQRButtonTapped
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                owner.coordinatorController?.performTransition(to: .sharingQR(ssid: ssid, password: password))
             }
             .disposed(by: disposeBag)
     }

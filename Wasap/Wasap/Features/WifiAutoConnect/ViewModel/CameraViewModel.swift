@@ -71,7 +71,7 @@ public class CameraViewModel: BaseViewModel {
         let minMaxZoomFactorRelay = PublishRelay<(min: CGFloat, max: CGFloat)>()
         self.minMaxZoomFactor = minMaxZoomFactorRelay.asDriver(onErrorDriveWith: .empty())
 
-        /// 공유 테스트
+        /// 공유 수신
         let isBrowsing = BehaviorRelay<Bool>(value: false)
         let receivedWiFiInfo = PublishRelay<(ssid: String, password: String)>()
 
@@ -291,7 +291,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        /// 공유 테스트
+        /// 공유 수신
         isCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ in
