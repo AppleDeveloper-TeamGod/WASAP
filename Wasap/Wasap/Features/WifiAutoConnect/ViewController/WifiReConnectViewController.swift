@@ -80,7 +80,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                     self?.wifiReConnectView.reConnectButton.titleLabel?.font = FontStyle.button.font
                     self?.wifiReConnectView.reConnectButton.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
                     self?.wifiReConnectView.reConnectButton.backgroundColor = .green300
-                    
+
                     self?.wifiReConnectView.reConnectButton.layer.borderWidth = 1
                     self?.wifiReConnectView.reConnectButton.layer.borderColor = UIColor.clear.cgColor
                 }
@@ -106,11 +106,11 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             .disposed(by: disposeBag)
 
         // MARK: BackGround 터치하면 ViewModel 트리거
-//        wifiReConnectView.backgroundView.rx.tapGesture()
-//            .when(.recognized)
-//            .map { _ in } // 이벤트를 빈 값으로 변환하여 Relay로 전달
-//            .bind(to: viewModel.bgTouched)
-//            .disposed(by: disposeBag)
+        //        wifiReConnectView.backgroundView.rx.tapGesture()
+        //            .when(.recognized)
+        //            .map { _ in } // 이벤트를 빈 값으로 변환하여 Relay로 전달
+        //            .bind(to: viewModel.bgTouched)
+        //            .disposed(by: disposeBag)
 
         // MARK: CameraBtn 터치하면 ViewModel 트리거
         wifiReConnectView.cameraButton.rx.tap
@@ -169,11 +169,10 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         // MARK: ViewModel로부터 SSID COLOR 값 전달 받기
         viewModel.ssidTextFieldTouchedDriver
             .drive(onNext: { [weak self] isEnabled in
-                self?.wifiReConnectView.ssidLabel.textColor = isEnabled ? .green200 : .neutral200
 
                 self?.wifiReConnectView.ssidField.layer.borderColor = isEnabled ? UIColor.green200.cgColor : UIColor.neutral200.cgColor
 
-                self?.wifiReConnectView.ssidField.layer.borderWidth = isEnabled ? 1 : 0
+                self?.wifiReConnectView.ssidField.layer.borderWidth = isEnabled ? 4 : 0
             })
             .disposed(by: disposeBag)
 
@@ -185,11 +184,10 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         // MARK: ViewModel로부터 PASSWORD COLOR 값 전달 받기
         viewModel.pwTextFieldTouchedDriver
             .drive(onNext: { [weak self] isEnabled in
-                self?.wifiReConnectView.pwLabel.textColor = isEnabled ? .green200 : .neutral200
 
                 self?.wifiReConnectView.pwField.layer.borderColor = isEnabled ? UIColor.green200.cgColor :  UIColor.neutral200.cgColor
 
-                self?.wifiReConnectView.pwField.layer.borderWidth = isEnabled ? 1 : 0
+                self?.wifiReConnectView.pwField.layer.borderWidth = isEnabled ? 4 : 0
             })
             .disposed(by: disposeBag)
 
@@ -230,22 +228,15 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
     // MARK: 키보드 보일 때 처리
     private func handleKeyboardWillShow() {
         wifiReConnectView.pwStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-49)
-        }
-
-        wifiReConnectView.photoImageView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-250)
-            $0.height.equalTo(216)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-24)
         }
 
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
+            self.view.layoutIfNeeded()
+
             self.wifiReConnectView.labelStackView.alpha = 0
             self.wifiReConnectView.cameraButton.alpha = 0
-            self.view.layoutIfNeeded()
-        }, completion: { _ in
-            self.wifiReConnectView.labelStackView.isHidden = true
         })
     }
 
@@ -254,44 +245,28 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         resetViewState()
 
         wifiReConnectView.pwStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-187)
         }
 
-        wifiReConnectView.photoImageView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(self.wifiReConnectView.ssidStackView.snp.top).offset(-53)
-            $0.height.equalTo(216)
-        }
-
-        wifiReConnectView.ssidField.textAlignment = .center
-        wifiReConnectView.pwField.textAlignment = .center
-
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
+            self.view.layoutIfNeeded()
+
             self.wifiReConnectView.labelStackView.alpha = 1
             self.wifiReConnectView.cameraButton.alpha = 1
-            self.view.layoutIfNeeded()
-        }, completion: { _ in
-            self.wifiReConnectView.labelStackView.isHidden = false
+
         })
     }
 
     // MARK: 원래 화면으로 복원
     private func resetViewState() {
-        wifiReConnectView.labelStackView.alpha = 1
-        wifiReConnectView.labelStackView.isHidden = false
-
-        wifiReConnectView.ssidLabel.textColor = .neutral200
-
         wifiReConnectView.ssidField.textColor = .neutral200
+        wifiReConnectView.ssidField.textAlignment = .center
         wifiReConnectView.ssidField.layer.borderColor = UIColor.clear.cgColor
-        wifiReConnectView.ssidField.layer.borderWidth = 0
-
-        wifiReConnectView.pwLabel.textColor = .neutral200
 
         wifiReConnectView.pwField.textColor = .neutral200
+        wifiReConnectView.pwField.textAlignment = .center
         wifiReConnectView.pwField.layer.borderColor = UIColor.clear.cgColor
-        wifiReConnectView.pwField.layer.borderWidth = 0
     }
 
     // MARK: 키보드 deinit

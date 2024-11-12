@@ -21,29 +21,14 @@ class WifiReConnectView: BaseView {
         return button
     }()
 
-    lazy var iconImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "RetryViewIcon")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-
     lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Retry"
+        label.text = "Retry!"
         label.textColor = .primary200
         label.textAlignment = .left
         label.font = FontStyle.title.font
         label.addLabelSpacing(fontStyle: FontStyle.title)
         return label
-    }()
-
-    lazy var titleStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
-        stackView.axis = .horizontal
-        stackView.alignment = .leading
-        stackView.spacing = 3
-        return stackView
     }()
 
     lazy var subLabel: UILabel = {
@@ -57,18 +42,15 @@ class WifiReConnectView: BaseView {
     }()
 
     lazy var labelStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [titleStackView, subLabel])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, subLabel])
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 12
         stackView.alignment = .leading
         return stackView
     }()
 
     lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "RetryViewPhoto")
-        imageView.layer.borderColor = UIColor.green200.cgColor
-        imageView.layer.borderWidth = 3.0
         return imageView
     }()
 
@@ -89,7 +71,7 @@ class WifiReConnectView: BaseView {
         textField.font = FontStyle.password_M.font
 
         textField.returnKeyType = .done
-        textField.layer.cornerRadius = 16
+        textField.layer.cornerRadius = 10
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
 
@@ -120,7 +102,7 @@ class WifiReConnectView: BaseView {
         textField.font = FontStyle.password_M.font
 
         textField.returnKeyType = .done
-        textField.layer.cornerRadius = 16
+        textField.layer.cornerRadius = 10
         textField.layer.masksToBounds = true
         textField.textAlignment = .center
 
@@ -171,56 +153,47 @@ class WifiReConnectView: BaseView {
         }
 
         cameraButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(68)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(labelStackView.snp.top).offset(-16)
+            $0.trailing.equalToSuperview().inset(24)
             $0.width.height.equalTo(32)
         }
 
-        iconImageView.snp.makeConstraints {
-            $0.width.height.equalTo(26)
-        }
-
-        titleStackView.snp.makeConstraints {
-            $0.height.equalTo(36)
-        }
-
         labelStackView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(20)
-            $0.bottom.equalTo(photoImageView.snp.top).offset(-53)
-            $0.height.equalTo(63)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(photoImageView.snp.top).offset(-50)
         }
 
         photoImageView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(ssidStackView.snp.top).offset(-54)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(ssidStackView.snp.top).offset(-29)
             $0.height.equalTo(216)
         }
 
         ssidStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
-            $0.bottom.equalTo(pwStackView.snp.top).offset(-16)
-            $0.height.equalTo(78)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(pwStackView.snp.top).offset(-8)
+            $0.height.equalTo(86)
         }
 
         ssidField.snp.makeConstraints {
             $0.height.equalTo(60)
-            $0.width.equalTo(330)
+            $0.width.equalTo(345)
         }
 
         pwStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(31)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
-            $0.height.equalTo(78)
+            $0.height.equalTo(86)
         }
 
         pwField.snp.makeConstraints {
             $0.height.equalTo(60)
-            $0.width.equalTo(330)
+            $0.width.equalTo(345)
         }
 
         reConnectButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().offset(-82)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview().offset(-83)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(52)
         }
     }
