@@ -106,11 +106,11 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             .disposed(by: disposeBag)
 
         // MARK: BackGround 터치하면 ViewModel 트리거
-        wifiReConnectView.rx.tapGesture()
-            .when(.recognized)
-            .map { _ in } // 이벤트를 빈 값으로 변환하여 Relay로 전달
-            .bind(to: viewModel.bgTouched)
-            .disposed(by: disposeBag)
+//        wifiReConnectView.backgroundView.rx.tapGesture()
+//            .when(.recognized)
+//            .map { _ in } // 이벤트를 빈 값으로 변환하여 Relay로 전달
+//            .bind(to: viewModel.bgTouched)
+//            .disposed(by: disposeBag)
 
         // MARK: CameraBtn 터치하면 ViewModel 트리거
         wifiReConnectView.cameraButton.rx.tap
