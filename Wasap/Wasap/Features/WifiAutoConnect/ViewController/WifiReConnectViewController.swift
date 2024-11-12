@@ -246,7 +246,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
 
         wifiReConnectView.pwStackView.snp.remakeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-187)
+            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-197)
         }
 
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {

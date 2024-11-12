@@ -51,6 +51,8 @@ class WifiReConnectView: BaseView {
 
     lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
         return imageView
     }()
 
@@ -153,8 +155,8 @@ class WifiReConnectView: BaseView {
         }
 
         cameraButton.snp.makeConstraints {
-            $0.bottom.equalTo(labelStackView.snp.top).offset(-16)
             $0.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(labelStackView.snp.top).offset(-16)
             $0.width.height.equalTo(32)
         }
 
@@ -166,7 +168,7 @@ class WifiReConnectView: BaseView {
         photoImageView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
             $0.bottom.equalTo(ssidStackView.snp.top).offset(-29)
-            $0.height.equalTo(216)
+            $0.height.equalTo(224)
         }
 
         ssidStackView.snp.makeConstraints {
@@ -182,7 +184,7 @@ class WifiReConnectView: BaseView {
 
         pwStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-187)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-197)
             $0.height.equalTo(86)
         }
 
@@ -192,8 +194,8 @@ class WifiReConnectView: BaseView {
         }
 
         reConnectButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().offset(-83)
             $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalToSuperview().offset(-83)
             $0.height.equalTo(52)
         }
     }
