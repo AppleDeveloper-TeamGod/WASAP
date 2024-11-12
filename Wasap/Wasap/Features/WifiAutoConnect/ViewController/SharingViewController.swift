@@ -32,6 +32,17 @@ public class SharingViewController: RxBaseViewController<SharingViewModel> {
 
     private func bind(_ viewModel: SharingViewModel) {
         // 뷰 -> 뷰모델
+        sharingView.backButton.rx.tap
+            .bind(to: viewModel.backButtonTapped)
+            .disposed(by: disposeBag)
+
+        sharingView.stopShareButton.rx.tap
+            .bind(to: viewModel.stopShareButtonTapped)
+            .disposed(by: disposeBag)
+
+        sharingView.shareQRButton.rx.tap
+            .bind(to: viewModel.shareQRButtonTapped)
+            .disposed(by: disposeBag)
 
         // 뷰모델 -> 뷰
         viewModel.connectedPeerCount

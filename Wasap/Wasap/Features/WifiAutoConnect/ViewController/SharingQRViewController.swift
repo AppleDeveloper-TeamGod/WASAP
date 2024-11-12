@@ -1,16 +1,16 @@
 //
-//  ReceivingViewController.swift
+//  ShareQRViewController.swift
 //  Wasap
 //
-//  Created by Chang Jonghyeon on 11/10/24.
+//  Created by Chang Jonghyeon on 11/11/24.
 //
 
 import RxSwift
 import RxCocoa
 import UIKit
 
-public class ReceivingViewController: RxBaseViewController<ReceivingViewModel> {
-    private let receivingView = ReceivingView()
+public class SharingQRViewController: RxBaseViewController<SharingQRViewModel> {
+    private let sharingQRView = SharingQRView()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,10 +18,10 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel> {
 
     public override func loadView() {
         super.loadView()
-        self.view = receivingView
+        self.view = sharingQRView
     }
 
-    override init(viewModel: ReceivingViewModel) {
+    override init(viewModel: SharingQRViewModel) {
         super.init(viewModel: viewModel)
         bind(viewModel)
     }
@@ -30,20 +30,21 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel> {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func bind(_ viewModel: ReceivingViewModel) {
+    private func bind(_ viewModel: SharingQRViewModel) {
         // 뷰 -> 뷰모델
-        receivingView.xButton.rx.tap
+        sharingQRView.xButton.rx.tap
             .bind(to: viewModel.xButtonTapped)
             .disposed(by: disposeBag)
 
-        receivingView.connectButton.rx.tap
-            .bind(to: viewModel.connectButtonTapped)
+        sharingQRView.closeButton.rx.tap
+            .bind(to: viewModel.closeButtonTapped)
             .disposed(by: disposeBag)
 
         // 뷰모델 -> 뷰
-        viewModel.ssidDriver
-            .drive(receivingView.ssidLabel.rx.text)
+        viewModel.qrCodeImage
+            .drive { [weak self] image in
+                self?.sharingQRView.qrCodeView.image = image
+            }
             .disposed(by: disposeBag)
-
     }
 }

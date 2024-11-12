@@ -7,6 +7,7 @@
 
 import RxSwift
 import UIKit
+import CoreImage.CIFilterBuiltins
 
 public protocol WiFiShareUseCase {
     func startAdvertising(ssid: String, password: String) -> Observable<Void>
@@ -15,6 +16,7 @@ public protocol WiFiShareUseCase {
     func stopBrowsing()
     func getConnectedPeerCount() -> Observable<Int>
     func getReceivedWiFiInfo() -> Observable<(ssid: String, password: String)>
+    func generateQRCode(ssid: String, password: String) -> Observable<UIImage>
 }
 
 final class DefaultWiFiShareUseCase: WiFiShareUseCase {
@@ -46,5 +48,34 @@ final class DefaultWiFiShareUseCase: WiFiShareUseCase {
 
     func getReceivedWiFiInfo() -> Observable<(ssid: String, password: String)> {
         return repository.getReceivedWiFiInfo()
+    }
+
+    func generateQRCode(ssid: String, password: String) -> Observable<UIImage> {
+        return Observable.create { observer in
+            let qrString = "WIFI:S:\(ssid);T:WPA;P:\(password);;"
+
+            guard let data = qrString.data(using: .utf8) else {
+                observer.onError(WiFiShareErrors.qrCodeError)
+                return Disposables.create()
+            }
+
+            let qrCodeGenerator = CIFilter.qrCodeGenerator()
+            qrCodeGenerator.message = data
+            qrCodeGenerator.correctionLevel = "Q"
+
+            guard let ciImage = qrCodeGenerator.outputImage else {
+                observer.onError(WiFiShareErrors.qrCodeError)
+                return Disposables.create()
+            }
+            
+            let transform = CGAffineTransform(scaleX: 10, y: 10)
+            let scaledCIImage = ciImage.transformed(by: transform)
+            let qrUIImage = UIImage(ciImage: scaledCIImage)
+
+            observer.onNext(qrUIImage)
+            observer.onCompleted()
+
+            return Disposables.create()
+        }
     }
 }

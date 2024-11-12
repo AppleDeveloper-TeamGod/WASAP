@@ -1,14 +1,14 @@
 //
-//  ReceivingView.swift
+//  SharingQRView.swift
 //  Wasap
 //
-//  Created by Chang Jonghyeon on 11/10/24.
+//  Created by Chang Jonghyeon on 11/11/24.
 //
 
 import UIKit
 import SnapKit
 
-class ReceivingView: BaseView {
+class SharingQRView: BaseView {
     lazy var backgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .lightBackground
@@ -21,28 +21,28 @@ class ReceivingView: BaseView {
         return button
     }()
 
-    lazy var ssidLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
+        label.text = "QR로 공유하기".localized()
         label.textColor = .neutral500
-        label.font = FontStyle.title.font.withSize(18)
+        label.font = FontStyle.title.font
         label.addLabelSpacing(fontStyle: FontStyle.title)
         label.textAlignment = .center
         return label
     }()
 
-    lazy var subLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Wi-Fi를 공유 받았어요!".localized()
-        label.textColor = .neutral500
-        label.font = FontStyle.subTitle.font
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
-        label.textAlignment = .center
-        return label
+    lazy var qrCodeView: UIImageView = {
+        let qrView = UIImageView()
+        qrView.contentMode = .scaleAspectFit
+        qrView.layer.borderWidth = 6.0
+        qrView.layer.borderColor = UIColor.green200.cgColor
+        qrView.layer.masksToBounds = true
+        return qrView
     }()
 
-    lazy var connectButton: UIButton = {
+    lazy var closeButton: UIButton = {
         let button = UIButton()
-        button.setTitle("바로 연결하기".localized(), for: .normal)
+        button.setTitle("닫기".localized(), for: .normal)
         button.setTitleColor(.textPrimaryHigh, for: .normal)
         button.titleLabel?.font = FontStyle.button.font
         button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
@@ -56,31 +56,34 @@ class ReceivingView: BaseView {
 
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(ssidLabel, subLabel, connectButton, xButton)
+        self.addSubViews(titleLabel, closeButton, qrCodeView, xButton)
     }
 
     func setConstraints() {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
 
         xButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(17)
-            $0.trailing.equalToSuperview().inset(17)
+            $0.top.equalToSuperview().offset(22)
+            $0.trailing.equalToSuperview().inset(15)
             $0.width.height.equalTo(34)
         }
 
-        ssidLabel.snp.makeConstraints {
+        titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(subLabel.snp.top).offset(-12)
+            $0.bottom.equalTo(qrCodeView.snp.top).offset(-30)
             $0.leading.trailing.equalToSuperview().inset(20)
+            $0.width.equalTo(178)
+            $0.height.equalTo(25)
         }
 
-        subLabel.snp.makeConstraints {
+        qrCodeView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(connectButton.snp.top).offset(-39)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(closeButton.snp.top).offset(-153)
+            $0.width.equalTo(275)
+            $0.height.equalTo(275)
         }
 
-        connectButton.snp.makeConstraints {
+        closeButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().offset(-83)
             $0.leading.trailing.equalToSuperview().inset(27)
             $0.height.equalTo(52)

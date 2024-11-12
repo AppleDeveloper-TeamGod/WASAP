@@ -77,6 +77,9 @@ extension ConnectingCoordinator: ConnectingCoordinatorController {
             } else if let parentCoordinator = parentCoordinator as? WifiReConnectCoordinator {
                 finishCurrentCoordinator()
                 parentCoordinator.performTransition(to: .gotoSetting(imageData: imageData, ssid: ssid ?? "", password: password ?? ""))
+            } else if let parentCoordinator = parentCoordinator as? ReceivingCoordinator {
+                finishCurrentCoordinator()
+                parentCoordinator.performFinish(to: .popToRoot)
             } else {
                 finishCurrentCoordinator()
                 Toaster.shared.importantToast("연결에 실패했어요")
