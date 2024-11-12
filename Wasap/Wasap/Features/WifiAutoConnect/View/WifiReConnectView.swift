@@ -52,6 +52,7 @@ class WifiReConnectView: BaseView {
     lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = true
         imageView.layer.masksToBounds = true
         return imageView
     }()
@@ -136,6 +137,7 @@ class WifiReConnectView: BaseView {
         super.init(frame: frame)
         setViewHierarchy()
         setConstraints()
+
     }
 
     required init?(coder: NSCoder) {
