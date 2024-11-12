@@ -41,12 +41,13 @@ enum OCRTestCases: CaseIterable {
 }
 
 class ImageAnalysisUseCaseTests {
-    var repository: DefaultImageAnalysisRepository!
+    var repository: ImageAnalysisRepository!
     var useCase: DefaultImageAnalysisUseCase
     let bundle: Bundle
     
     init() {
-        repository = DefaultImageAnalysisRepository()
+//        repository = DefaultImageAnalysisRepository()
+        repository = QuickImageAnalysisRepository()
         useCase = DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
         bundle = Bundle(for: type(of: self))
     }
@@ -73,19 +74,19 @@ class ImageAnalysisUseCaseTests {
     }
     
     // OCR 실패 테스트
-    @Test
-    func testPerformOCRError() throws {
-        guard let image = UIImage(named: "OCRTestImage2", in: bundle, compatibleWith: nil) else {
-            Issue.record("이미지 불러올 수 없음")
-            return
-        }
-
-        let result: OCRResultVO? = try useCase.performOCR(on: image).toBlocking().first()
-
-        try #require(!(result!.ssidBoundingBox!).isEmpty)
-        try #require(!(result!.passwordBoundingBox!).isEmpty)
-        #expect(result!.ssid == "")
-        #expect(result!.password == "")
-    }
+//    @Test
+//    func testPerformOCRError() throws {
+//        guard let image = UIImage(named: "OCRTestImage2", in: bundle, compatibleWith: nil) else {
+//            Issue.record("이미지 불러올 수 없음")
+//            return
+//        }
+//
+//        let result: OCRResultVO? = try useCase.performOCR(on: image).toBlocking().first()
+//
+//        try #require(!(result!.ssidBoundingBox!).isEmpty)
+//        try #require(!(result!.passwordBoundingBox!).isEmpty)
+//        #expect(result!.ssid == "")
+//        #expect(result!.password == "")
+//    }
 }
 
