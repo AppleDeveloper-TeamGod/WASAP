@@ -16,7 +16,6 @@ import SystemConfiguration.CaptiveNetwork
 import UIKit
 
 class MockWifiConnectRepository: WiFiConnectRepository {
-    
     // 현재 Wi-Fi 연결 상태를 확인하는 함수
     func isWiFiConnected() -> Bool {
         return getCurrentWiFiSSID() != nil
@@ -47,6 +46,14 @@ class MockWifiConnectRepository: WiFiConnectRepository {
             }
             return Disposables.create()
         }
+    }
+
+    func isWiFiConnectedcheck() -> RxSwift.Single<Bool> {
+        return .just(true)
+    }
+
+    func getCurrentWiFiSSID() -> RxSwift.Single<String?> {
+        return .just(nil)
     }
 }
 
@@ -97,7 +104,7 @@ struct WifiConnectUseCaseTests {
     @Test
     func testDifferentInformation() throws {
         let targetSSID: String = "targetSSID"
-        let currentSSID = mockRepository.getCurrentWiFiSSID()
+        let currentSSID: String? = mockRepository.getCurrentWiFiSSID()
         // 결과 검증
         try #require( targetSSID != currentSSID )
     }

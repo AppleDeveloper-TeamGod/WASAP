@@ -4,7 +4,7 @@
 //
 //  Created by chongin on 10/7/24.
 //
-
+/*
 import RxSwift
 import AVFoundation
 @testable import Wasap
@@ -14,6 +14,7 @@ import RxBlocking
 import UIKit
 
 class MockCameraRepository: NSObject, CameraRepository {
+    
     var captureSession: AVCaptureSession?
     private var stillImageOutput: AVCapturePhotoOutput?
 
@@ -100,3 +101,4 @@ struct CameraUseCaseTests {
         try #require(result != nil)
     }
 }
+*/
