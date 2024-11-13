@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>네트워크에서 다른 기기와의 통신을 허용합니다.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_wasap-sharing._tcp</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>GmarketSansBold.otf</string>

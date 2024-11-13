@@ -17,6 +17,7 @@ public class CameraViewModel: BaseViewModel {
     // MARK: - UseCase
     private let cameraUseCase: CameraUseCase
     private let imageAnalysisUseCase: ImageAnalysisUseCase
+    private let wifiShareUseCase: WiFiShareUseCase
 
     // MARK: - Input
     public var zoomSliderValue = PublishRelay<CGFloat>()
@@ -39,13 +40,10 @@ public class CameraViewModel: BaseViewModel {
     private var captureRect = BehaviorRelay<CGRect?>(value: nil)
 
     // MARK: - Init & Binding
-    public init(
-        cameraUseCase: CameraUseCase,
-        imageAnalysisUseCase: ImageAnalysisUseCase,
-        coordinatorController: CameraCoordinatorController
-    ) {
+    public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorController: CameraCoordinatorController) {
         self.cameraUseCase = cameraUseCase
         self.imageAnalysisUseCase = imageAnalysisUseCase
+        self.wifiShareUseCase = wifiShareUseCase
         self.coordinatorController = coordinatorController
 
         let previewLayerRelay = PublishRelay<AVCaptureVideoPreviewLayer>()
@@ -73,6 +71,10 @@ public class CameraViewModel: BaseViewModel {
         let minMaxZoomFactorRelay = PublishRelay<(min: CGFloat, max: CGFloat)>()
         self.minMaxZoomFactor = minMaxZoomFactorRelay.asDriver(onErrorDriveWith: .empty())
 
+        /// 공유 수신
+        let isBrowsing = BehaviorRelay<Bool>(value: false)
+        let receivedWiFiInfo = PublishRelay<(ssid: String, password: String)>()
+
         super.init()
 
         let isCameraConfigured = PublishRelay<Void>()
@@ -98,6 +100,8 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, _ in
                 owner.cameraUseCase.stopRunning()
+                owner.wifiShareUseCase.stopBrowsing()
+                isBrowsing.accept(false)
             }
             .disposed(by: disposeBag)
 
@@ -202,7 +206,7 @@ public class CameraViewModel: BaseViewModel {
                 } else if let passwordRect = convertedPasswordRect {
                     unionedRect = passwordRect
                 }
-                
+
                 owner.captureRect.accept(unionedRect)
             }
             .disposed(by: disposeBag)
@@ -286,6 +290,39 @@ public class CameraViewModel: BaseViewModel {
                 owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
             }
             .disposed(by: disposeBag)
+
+        /// 공유 수신
+        isCameraConfigured
+            .withUnretained(self)
+            .flatMapLatest { owner, _ in
+                wifiShareUseCase.startBrowsing()
+            }
+            .subscribe {
+                Log.debug("start Browsing")
+                isBrowsing.accept(true)
+            } onError: { error in
+                Log.error("\(error.localizedDescription)")
+            }
+            .disposed(by: disposeBag)
+
+        isBrowsing
+            .filter { $0 }
+            .withUnretained(self)
+            .flatMapLatest { owner, _ -> Observable<(ssid: String, password: String)> in
+                owner.wifiShareUseCase.getReceivedWiFiInfo()
+            }
+            .subscribe {
+                receivedWiFiInfo.accept($0)
+            }
+            .disposed(by: disposeBag)
+
+        receivedWiFiInfo
+            .withUnretained(self)
+            .subscribe { owner, wifiInfo in
+                owner.coordinatorController?.performTransition(to: .receiving(ssid: wifiInfo.ssid, password: wifiInfo.password))
+            }
+            .disposed(by: disposeBag)
+
     }
 
     private func adjustedZoomValue(zoomValue: CGFloat) -> CGFloat {

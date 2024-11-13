@@ -18,6 +18,7 @@ public class ConnectingViewModel: BaseViewModel {
 
     // MARK: - Input
     public let quitButtonTapped = PublishRelay<Void>()
+    public let shareButtonTapped = PublishRelay<Void>()
 
     // MARK: - Output
     public var isWiFiConnected: Driver<Bool>
@@ -67,6 +68,13 @@ public class ConnectingViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.coordinatorController?.performFinish(to: .popToRoot)
+            })
+            .disposed(by: disposeBag)
+
+        self.shareButtonTapped
+            .withUnretained(self)
+            .subscribe(onNext: { _ in
+                self.coordinatorController?.performTransition(to: .sharing(ssid: ssid, password: password))
             })
             .disposed(by: disposeBag)
     }

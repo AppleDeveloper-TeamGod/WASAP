@@ -37,6 +37,10 @@ final public class WifiAutoConnectDIContainer {
         return DefaultGoToSettingRepository()
     }
 
+    public func makeWiFiShareRepository() -> WiFiShareRepository {
+        return DefaultWiFiShareRepository()
+    }
+
     // MARK: UseCase
     public func makeImageAnalysisUseCase(_ repository: ImageAnalysisRepository) -> ImageAnalysisUseCase {
         return DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
@@ -54,6 +58,10 @@ final public class WifiAutoConnectDIContainer {
         return DefaultGoToSettingUseCase(repository: repository)
     }
 
+    public func makeWiFiShareUseCase(_ repository: WiFiShareRepository) -> WiFiShareUseCase {
+        return DefaultWiFiShareUseCase(repository: repository)
+    }
+
     // MARK: ViewModel
     public func makeScanViewModel(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
         return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
@@ -67,18 +75,26 @@ final public class WifiAutoConnectDIContainer {
         return ConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
     }
 
-    public func makeCameraViewModel(
-        cameraUseCase: CameraUseCase,
-        imageAnalysisUseCase: ImageAnalysisUseCase,
-        coordinatorcontroller: CameraCoordinatorController
-    ) -> CameraViewModel {
-        return CameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller)
+    public func makeCameraViewModel(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: CameraCoordinatorController) -> CameraViewModel {
+        return CameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller)
     }
 
     public func makeGoToSettingViewModel(goToSettingUseCase: GoToSettingUseCase, coordinatorcontroller: GoToSettingCoordinatorController,
                                          imageData: UIImage, ssid: String, password: String) -> GoToSettingViewModel {
         return GoToSettingViewModel(goToSettingUseCase: goToSettingUseCase, coordinatorController: coordinatorcontroller,
                                     imageData: imageData, ssid: ssid, password: password)
+    }
+
+    public func makeSharingViewModel(wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: SharingCoordinatorController, ssid: String, password: String) -> SharingViewModel {
+        return SharingViewModel(wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
+    }
+
+    public func makeReceivingViewModel(coordinatorcontroller: ReceivingCoordinatorController, ssid: String, password: String) -> ReceivingViewModel {
+        return ReceivingViewModel(coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
+    }
+
+    public func makeSharingQRViewModel(wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: SharingQRCoordinatorController, ssid: String, password: String) -> SharingQRViewModel {
+        return SharingQRViewModel(wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
     }
 
     // MARK: ViewController
@@ -100,5 +116,17 @@ final public class WifiAutoConnectDIContainer {
 
     public func makeGoToSettingViewController(_ viewModel: GoToSettingViewModel) -> GoToSettingViewController {
         return GoToSettingViewController(viewModel: viewModel)
+    }
+
+    public func makeSharingViewController(_ viewModel: SharingViewModel) -> SharingViewController {
+        return SharingViewController(viewModel: viewModel)
+    }
+
+    public func makeReceivingViewController(_ viewModel: ReceivingViewModel) -> ReceivingViewController {
+        return ReceivingViewController(viewModel: viewModel)
+    }
+
+    public func makeSharingQRViewController(_ viewModel: SharingQRViewModel) -> SharingQRViewController {
+        return SharingQRViewController(viewModel: viewModel)
     }
 }

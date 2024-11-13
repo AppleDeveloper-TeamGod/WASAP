@@ -21,6 +21,7 @@ public class CameraCoordinator: NavigationCoordinator {
     public enum Flow {
         case analysis(imageData: UIImage)
         case connectWithQR(ssid: String, password: String)
+        case receiving(ssid : String?, password : String?)
     }
 
     public func start() {
@@ -29,8 +30,9 @@ public class CameraCoordinator: NavigationCoordinator {
 
         let imageAnalysisRepository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
         let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
-
-        let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, coordinatorcontroller: self)
+        let wifiShareRepository = wifiAutoConnectDIContainer.makeWiFiShareRepository()
+        let wifiShareUseCase = wifiAutoConnectDIContainer.makeWiFiShareUseCase(wifiShareRepository)
+        let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self)
         let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
 
         self.navigationController.pushViewController(cameraViewController, animated: true)
@@ -50,6 +52,9 @@ extension CameraCoordinator: CameraCoordinatorController {
 
         case .connectWithQR(let ssid, let password):
             let coordinator = ConnectingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: nil, ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
+        case .receiving(ssid: let ssid, password: let password):
+            let coordinator = ReceivingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }
