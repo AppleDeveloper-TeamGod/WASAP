@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Lottie
 
 class ReceivingView: BaseView {
     lazy var backgroundView: UIView = {
@@ -19,6 +20,13 @@ class ReceivingView: BaseView {
         let button = UIButton()
         button.setImage(UIImage(named: "SheetQuitButton"), for: .normal)
         return button
+    }()
+
+    lazy var loadingAnimation: LottieAnimationView = {
+        let animation = LottieAnimationView(name: "receive")
+        animation.loopMode = .loop
+        animation.play()
+        return animation
     }()
 
     lazy var ssidLabel: UILabel = {
@@ -56,11 +64,16 @@ class ReceivingView: BaseView {
 
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(ssidLabel, subLabel, connectButton, xButton)
+        self.addSubViews(loadingAnimation, ssidLabel, subLabel, connectButton, xButton)
     }
 
     func setConstraints() {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
+
+        loadingAnimation.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalTo(ssidLabel.snp.top).offset(-8)
+        }
 
         xButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(17)
