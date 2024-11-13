@@ -16,7 +16,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
     private let imageAnalyzer = ImageAnalyzer()
 
     // MARK: VisionKit
-    lazy var interaction: ImageAnalysisInteraction = {
+    private let interaction: ImageAnalysisInteraction = {
         let interaction = ImageAnalysisInteraction()
         interaction.preferredInteractionTypes = .automatic // 자동으로 텍스트 상호작용 활성화
         return interaction
@@ -25,13 +25,12 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupKeyboardNotifications()
-        // Live Text 상호작용 추가
+        view.keyboardLayoutGuide.usesBottomSafeArea = false
 
+        // Live Text 상호작용 추가
         wifiReConnectView.photoImageView.addInteraction(interaction)
         // 이미지 분석 시작
         analyzeImageForText()
-        view.keyboardLayoutGuide.usesBottomSafeArea = false
-
     }
 
     public override func loadView() {
