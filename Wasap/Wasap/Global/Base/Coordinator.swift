@@ -102,6 +102,10 @@ public protocol NavigationCoordinator: Coordinator {
     var navigationController: UINavigationController { get }
 }
 
+public protocol SheetCoordinator: Coordinator {
+    var sheetController: UIViewController { get }
+}
+
 // MARK: - CoordinatorController ( 추가 )
 public protocol WifiReConnectCoordinatorController: AnyObject {
     func performTransition(to flow: WifiReConnectCoordinator.Flow)
