@@ -8,15 +8,29 @@ import UIKit
 import RxSwift
 import SnapKit
 import RxGesture
+import VisionKit
 
 public class WifiReConnectViewController: RxBaseViewController<WifiReConnectViewModel>{
 
     private let wifiReConnectView = WifiReConnectView()
+    private let imageAnalyzer = ImageAnalyzer()
+
+    // MARK: VisionKit
+    private let interaction: ImageAnalysisInteraction = {
+        let interaction = ImageAnalysisInteraction()
+        interaction.preferredInteractionTypes = .automatic // 자동으로 텍스트 상호작용 활성화
+        return interaction
+    }()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupKeyboardNotifications()
         view.keyboardLayoutGuide.usesBottomSafeArea = false
+
+        // Live Text 상호작용 추가
+        wifiReConnectView.photoImageView.addInteraction(interaction)
+        // 이미지 분석 시작
+        analyzeImageForText()
     }
 
     public override func loadView() {
@@ -173,6 +187,14 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 self?.wifiReConnectView.ssidField.layer.borderColor = isEnabled ? UIColor.green200.cgColor : UIColor.neutral200.cgColor
 
                 self?.wifiReConnectView.ssidField.layer.borderWidth = isEnabled ? 4 : 0
+
+                /// 공백 처리 로직
+                if(isEnabled) {
+                    if let copiedStr = UIPasteboard.general.string {
+                        let textWithoutSpaces = copiedStr.replacingOccurrences(of: " ", with: "")
+                        UIPasteboard.general.string = textWithoutSpaces
+                    }
+                }
             })
             .disposed(by: disposeBag)
 
@@ -188,6 +210,14 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 self?.wifiReConnectView.pwField.layer.borderColor = isEnabled ? UIColor.green200.cgColor :  UIColor.neutral200.cgColor
 
                 self?.wifiReConnectView.pwField.layer.borderWidth = isEnabled ? 4 : 0
+
+                /// 공백 처리 로직
+                if(isEnabled) {
+                    if let copiedStr = UIPasteboard.general.string {
+                        let textWithoutSpaces = copiedStr.replacingOccurrences(of: " ", with: "")
+                        UIPasteboard.general.string = textWithoutSpaces
+                    }
+                }
             })
             .disposed(by: disposeBag)
 
@@ -267,6 +297,20 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         wifiReConnectView.pwField.textColor = .neutral200
         wifiReConnectView.pwField.textAlignment = .center
         wifiReConnectView.pwField.layer.borderColor = UIColor.clear.cgColor
+    }
+
+    private func analyzeImageForText() {
+        guard let image = wifiReConnectView.photoImageView.image else { return }
+
+        Task {
+            let configuration = ImageAnalyzer.Configuration([.text]) // 텍스트만 분석하도록 설정
+            // 이미지 분석 수행
+            let analysis = try await self.imageAnalyzer.analyze(image, configuration: configuration)
+            DispatchQueue.main.async {
+                // 분석 결과를 ImageAnalysisInteraction에 연결하여 상호작용 가능하게 함
+                self.interaction.analysis = analysis
+            }
+        }
     }
 
     // MARK: 키보드 deinit
