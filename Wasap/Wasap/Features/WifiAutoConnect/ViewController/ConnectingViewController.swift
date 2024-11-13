@@ -8,6 +8,7 @@
 import RxSwift
 import RxCocoa
 import UIKit
+import Lottie
 
 public class ConnectingViewController: RxBaseViewController<ConnectingViewModel> {
     private let connectingView = ConnectingView()
@@ -45,9 +46,8 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
         viewModel.isLoading
             .filter { $0 }
             .drive { [weak self] _ in
-                self?.connectingView.mainStatusLabel.text = "ASAP!"
-                self?.connectingView.subStatusLabel.text = "연결중".localized()
-                self?.connectingView.doneSignIcon.isHidden = true
+                self?.connectingView.mainStatusLabel.isHidden = true
+                self?.connectingView.subStatusLabel.isHidden = true
                 self?.connectingView.quitButton.isHidden = true
                 self?.connectingView.shareButton.isHidden = true
             }
@@ -56,9 +56,12 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
         viewModel.isWiFiConnected
             .filter { $0 }
             .drive { [weak self] _ in
-                self?.connectingView.mainStatusLabel.text = "Done!"
-                self?.connectingView.subStatusLabel.text = "연결 완료!".localized()
-                self?.connectingView.doneSignIcon.isHidden = false
+                self?.connectingView.loadingAnimation.animation = LottieAnimation.named("DONE")
+                self?.connectingView.loadingAnimation.loopMode = .playOnce
+                self?.connectingView.loadingAnimation.play()
+
+                self?.connectingView.mainStatusLabel.isHidden = false
+                self?.connectingView.subStatusLabel.isHidden = false
                 self?.connectingView.quitButton.isHidden = false
                 self?.connectingView.shareButton.isHidden = false
             }
