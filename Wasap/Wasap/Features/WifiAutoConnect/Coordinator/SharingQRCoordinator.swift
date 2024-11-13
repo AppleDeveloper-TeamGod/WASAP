@@ -11,17 +11,17 @@ public protocol SharingQRCoordinatorController: AnyObject {
     func performFinish(to flow: SharingQRCoordinator.FinishFlow)
 }
 
-public class SharingQRCoordinator: NSObject, NavigationCoordinator {
+public class SharingQRCoordinator: NSObject, SheetCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
-    public let navigationController: UINavigationController
+    public let sheetController: UIViewController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
     let ssid: String?
     let password: String?
 
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, ssid: String?, password: String?) {
-        self.navigationController = navigationController
+    public init(sheetController: UIViewController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, ssid: String?, password: String?) {
+        self.sheetController = sheetController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
         self.password = password
@@ -52,11 +52,11 @@ public class SharingQRCoordinator: NSObject, NavigationCoordinator {
         }
 
         viewController.presentationController?.delegate = self
-        self.navigationController.present(viewController, animated: true)
+        self.sheetController.present(viewController, animated: true)
     }
 
     public func finish() {
-        self.navigationController.dismiss(animated: true)
+        self.sheetController.dismiss(animated: true)
     }
 }
 

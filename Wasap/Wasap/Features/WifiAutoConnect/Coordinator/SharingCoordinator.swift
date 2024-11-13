@@ -60,7 +60,7 @@ extension SharingCoordinator: SharingCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .sharingQR(ssid: let ssid, password: let password):
-            let coordinator = SharingQRCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
+            let coordinator = SharingQRCoordinator(sheetController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }
