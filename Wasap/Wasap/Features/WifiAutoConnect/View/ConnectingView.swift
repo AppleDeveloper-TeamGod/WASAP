@@ -11,46 +11,45 @@ import Lottie
 
 class ConnectingView: BaseView {
     lazy var backgroundView: UIView = {
-        let view = GradientBackgroundView()
+        let view = UIView()
+        view.backgroundColor = .darkBackground
         return view
     }()
-    
+
+    lazy var loadingAnimation: LottieAnimationView = {
+        let animation = LottieAnimationView(name: "connecting_v2")
+        animation.loopMode = .loop
+        animation.play()
+        return animation
+    }()
+
     lazy var quitButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "QuitButtonDefault"), for: .normal)
+        button.setImage(UIImage(named: "QuitButtonGray"), for: .normal)
         button.isHidden = true
         return button
     }()
     
-    lazy var doneSignIcon: UIImageView = {
-        let icon = UIImageView(image: UIImage(named: "DoneIcon"))
-        icon.isHidden = true
-        return icon
-    }()
-    
     lazy var mainStatusLabel: UILabel = {
         let label = UILabel()
-        label.text = "ASAP!"
-        label.textColor = .neutralWhite
-        label.font = FontStyle.title.font
+        label.text = "Done!"
+        label.textColor = .neutral500
+        label.font = FontStyle.title.font.withSize(48)
         label.addLabelSpacing(fontStyle: FontStyle.title)
+        label.textAlignment = .center
+        label.isHidden = true
         return label
     }()
     
     lazy var subStatusLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .neutralWhite
+        label.text = "연결 되었어요!".localized()
+        label.textColor = .neutral500
         label.font = FontStyle.subTitle.font
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         label.textAlignment = .center
+        label.isHidden = true
         return label
-    }()
-    
-    lazy var loadingAnimation: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "processing")
-        animation.loopMode = .loop
-        animation.play()
-        return animation
     }()
 
     lazy var shareButton: UIButton = {
@@ -70,12 +69,14 @@ class ConnectingView: BaseView {
 
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(loadingAnimation, mainStatusLabel, subStatusLabel, doneSignIcon, quitButton, shareButton)
+        self.addSubViews(loadingAnimation, mainStatusLabel, subStatusLabel, quitButton, shareButton)
     }
     
     func setConstraints() {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        
+
+        loadingAnimation.snp.makeConstraints { $0.edges.equalToSuperview() }
+
         quitButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(71)
             $0.trailing.equalToSuperview().offset(-20)
@@ -85,26 +86,16 @@ class ConnectingView: BaseView {
 
         mainStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(359)
-            $0.width.equalTo(91)
-            $0.height.equalTo(36)
+            $0.top.equalToSuperview().offset(384)
+            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(45)
         }
 
         subStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(mainStatusLabel.snp.bottom).offset(6)
+            $0.top.equalTo(mainStatusLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.height.equalTo(30)
-        }
-
-        doneSignIcon.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(mainStatusLabel.snp.top).offset(-6)
-        }
-        
-        loadingAnimation.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.height.equalTo(20)
         }
 
         shareButton.snp.makeConstraints {
