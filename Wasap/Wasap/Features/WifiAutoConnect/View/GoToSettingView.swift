@@ -15,65 +15,50 @@ class GoToSettingView: BaseView {
         return view
     }()
 
-    lazy var xButton : UIButton = {
+    lazy var cameraBtn : UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "QuitButtonDefault"), for: .normal)
+        button.setImage(UIImage(named: "GoCameraButton"), for: .normal)
         return button
     }()
-    
-    lazy var iconImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "SorryViewIcon")
-        imageView.contentMode = .scaleAspectFit
-        return imageView
+
+    lazy var titleLabel1: UILabel = {
+        let label = UILabel()
+        label.text = "인식된 정보를 확인하고,"
+        label.textColor = .gray200
+        label.textAlignment = .left
+        label.font = UIFont.systemFont(ofSize: 21)
+        return label
     }()
 
-    lazy var titleLabel: UILabel = {
+    lazy var titleLabel2: UILabel = {
         let label = UILabel()
-        label.text = "Sorry"
+        label.text = "설정에서 시도하세요."
         label.textColor = .green300
         label.textAlignment = .left
-        label.font = FontStyle.title.font
-        label.addLabelSpacing(fontStyle: FontStyle.title)
+        label.font = UIFont.systemFont(ofSize: 21)
         return label
     }()
 
     lazy var titleStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
-        stackView.axis = .horizontal
+        let stackView = UIStackView(arrangedSubviews: [titleLabel1, titleLabel2])
+        stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.spacing = 3
         return stackView
     }()
     
-    lazy var subLabel: UILabel = {
-        let label = UILabel()
-        label.text = "연결 실패".localized()
-        label.textColor = .neutral400
-        label.font = FontStyle.subTitle.font
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
-        label.textAlignment = .left
-        return label
+    lazy var memoView : UIView = {
+        let view = UIView()
+        view.backgroundColor = .neutral450
+        view.layer.cornerRadius = 20
+        view.layer.masksToBounds = true
+        return view
     }()
 
-    lazy var labelStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [titleStackView, subLabel])
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.alignment = .leading
-        return stackView
-    }()
-    
-    lazy var photoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage()
-        return imageView
-    }()
-    
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
-        label.text = "와이파이 ID".localized()
-        label.textColor = .neutral200
+        label.text = "와이파이 ID"
+        label.textColor = .white
         label.font = FontStyle.subTitle.font.withSize(10)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         label.textAlignment = .left
@@ -82,12 +67,12 @@ class GoToSettingView: BaseView {
 
     lazy var ssidFieldLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .neutral200
+        label.textColor = .white
         label.backgroundColor = UIColor.neutral450
         label.font = FontStyle.password_M.font.withSize(15)
         label.layer.cornerRadius = 13
         label.layer.masksToBounds = true
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.text = "SSID" // 기본 텍스트 설정 (예시)
         return label
     }()
@@ -101,8 +86,8 @@ class GoToSettingView: BaseView {
     
     lazy var pwLabel: UILabel = {
         let label = UILabel()
-        label.text = "비밀번호".localized()
-        label.textColor = .neutral200
+        label.text = "비밀번호"
+        label.textColor = .white
         label.font = FontStyle.subTitle.font.withSize(10)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         label.textAlignment = .left
@@ -111,13 +96,14 @@ class GoToSettingView: BaseView {
 
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .neutral200
+        label.textColor = .white
         label.backgroundColor = .neutral450
+        label.text = "비밀번호"
         label.font = FontStyle.password_M.font.withSize(15)
         label.font = .preferredFont(forTextStyle: .headline)
         label.layer.cornerRadius = 13
         label.layer.masksToBounds = true
-        label.textAlignment = .center
+        label.textAlignment = .left
         return label
     }()
 
@@ -127,16 +113,50 @@ class GoToSettingView: BaseView {
         stackView.spacing = 4
         return stackView
     }()
-    
-    lazy var infoLabel: UILabel = {
+
+    lazy var copyButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("복사하기", for: .normal)
+        button.setTitleColor(.green200, for: .normal)
+        button.backgroundColor = .clear
+
+        button.layer.cornerRadius = 20
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.green200.cgColor
+        return button
+    }()
+
+    lazy var infoIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "info_icon")
+        return imageView
+    }()
+
+    lazy var infoFirstLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = .white
+        label.textAlignment = .left
+        label.text = "WiFi 비밀번호를 복사해 두면"
+        return label
+    }()
+
+    lazy var infoStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [infoIcon, infoFirstLabel])
+        stackView.axis = .horizontal
+        stackView.spacing = 6
+        return stackView
+    }()
+
+    lazy var infoSecondLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = .gray100
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.font = FontStyle.subTitle.font.withSize(16)
 
-        let wifiID = "와이파이 ID".localized()
-        let description = "\(wifiID) "+"가 실제와 다를 수 있어요.\n아래 버튼을 누르면 비밀번호를 복사합니다.".localized()
+        let wifiID = "설정 > Wi-Fi"
+        let description = "\(wifiID) "+"에서 쉽게 연결할 수 있습니다."
 
         // 글자 색깔 넣기
         let attributedString = NSMutableAttributedString(string: description)
@@ -148,21 +168,42 @@ class GoToSettingView: BaseView {
         label.attributedText = attributedString
         return label
     }()
-    
+
+
+
+    lazy var backBtn: UIButton = {
+        let button = UIButton()
+        button.setTitle("<", for: .normal)
+        button.setTitleColor(.primary200, for: .normal)
+        button.backgroundColor = .clear
+
+        button.layer.cornerRadius = 14
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.primary200.cgColor
+        return button
+    }()
+
     lazy var settingBtn: UIButton = {
         let button = UIButton()
-        button.setTitle("설정에서 연결하기".localized(), for: .normal)
+        button.setTitle("아이폰 설정으로 가기", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = FontStyle.button.font
         button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
         button.backgroundColor = .primary200
 
-        button.layer.cornerRadius = 25
+        button.layer.cornerRadius = 14
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.clear.cgColor
         return button
     }()
-    
+
+    lazy var btnStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [backBtn, settingBtn])
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        return stackView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setViewHierarchy()
@@ -175,72 +216,79 @@ class GoToSettingView: BaseView {
     
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        backgroundView.addSubViews(labelStackView,photoImageView,
-                                   ssidStackView,pwStackView,
-                                   settingBtn,infoLabel,xButton)
+        backgroundView.addSubViews(cameraBtn,titleStackView,memoView,
+                                   infoStackView,infoSecondLabel,btnStackView)
+        memoView.addSubViews(ssidStackView,pwStackView,copyButton)
     }
     
     func setConstraints() {
-        backgroundView.snp.makeConstraints { $0.edges.equalToSuperview()
+        backgroundView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
 
-        xButton.snp.makeConstraints {
+        cameraBtn.snp.makeConstraints {
             $0.top.equalToSuperview().offset(71)
             $0.trailing.equalToSuperview().inset(20)
             $0.width.height.equalTo(26)
         }
 
-        iconImageView.snp.makeConstraints { $0.width.height.equalTo(26)
-        }
-
         titleStackView.snp.makeConstraints {
-            $0.height.equalTo(36)
+            $0.top.equalToSuperview().offset(116)
+            $0.leading.equalToSuperview().inset(24)
+            $0.height.equalTo(59)
         }
 
-        labelStackView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(20)
-            $0.top.equalToSuperview().offset(108)
-            $0.height.equalTo(66)
+        memoView.snp.makeConstraints {
+            $0.top.equalTo(titleStackView.snp.bottom).offset(32)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.height.equalTo(152)
         }
-        
-        photoImageView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(62)
-            $0.top.equalTo(labelStackView.snp.bottom).offset(50)
-            $0.height.equalTo(175)
-        }
-        
-        ssidStackView.snp.makeConstraints {
-            $0.top.equalTo(photoImageView.snp.bottom).offset(29)
-            $0.leading.trailing.equalToSuperview().inset(63)
-            $0.height.equalTo(63)
-        }
-        
-        ssidFieldLabel.snp.makeConstraints {
+
+        ssidStackView.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(17)
+            $0.leading.trailing.equalToSuperview().inset(17)
             $0.height.equalTo(48)
-            $0.width.equalToSuperview()
         }
-        
+
         pwStackView.snp.makeConstraints {
-            $0.top.equalTo(ssidStackView.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview().inset(63)
-            $0.height.equalTo(63)
-        }
-        
-        pwFieldLabel.snp.makeConstraints {
+            $0.top.equalTo(ssidStackView.snp.bottom).offset(20)
+            $0.leading.equalToSuperview().inset(17)
             $0.height.equalTo(48)
-            $0.width.equalToSuperview()
         }
-        
-        infoLabel.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(32)
-            $0.top.equalTo(pwStackView.snp.bottom).offset(49)
-            $0.height.equalTo(50)
+
+        copyButton.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(17)
+            $0.top.equalToSuperview().offset(103)
+            $0.width.equalTo(84)
+            $0.height.equalTo(38)
         }
-        
-        settingBtn.snp.makeConstraints {
-            $0.top.equalTo(infoLabel.snp.bottom).offset(49)
-            $0.leading.trailing.equalToSuperview().inset(20)
+
+        infoIcon.snp.makeConstraints {
+            $0.width.height.equalTo(16)
+        }
+
+        infoStackView.snp.makeConstraints {
+            $0.top.equalTo(memoView.snp.bottom).offset(18)
+            $0.leading.trailing.equalToSuperview().inset(24)
+        }
+
+        infoSecondLabel.snp.makeConstraints {
+            $0.top.equalTo(infoStackView.snp.bottom).offset(1)
+            $0.leading.equalToSuperview().inset(46)
+        }
+
+        btnStackView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.top.equalTo(infoSecondLabel.snp.bottom).offset(297)
             $0.height.equalTo(52)
+        }
+
+        backBtn.snp.makeConstraints {
+            $0.width.equalTo(99)
+        }
+
+        settingBtn.snp.makeConstraints {
+            $0.width.equalTo(236)
         }
     }
 }
