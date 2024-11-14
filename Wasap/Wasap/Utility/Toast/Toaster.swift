@@ -55,7 +55,7 @@ public final class Toaster {
         }
     }
 
-    public func toast(_ message: String, duration: TimeInterval = 1.0, delay: TimeInterval = 2.0) {
+    public func toast(_ message: String, duration: TimeInterval = 1.0, delay: TimeInterval = 2.0,top: Int) {
         guard let connectedViewController else {
             Log.error("Error! No connected view")
             return
@@ -76,7 +76,7 @@ public final class Toaster {
                 connectedViewController.view.addSubview(toastView)
 
                 toastView.snp.makeConstraints {
-                    $0.top.equalTo(connectedViewController.view.safeAreaLayoutGuide).offset(24)
+                    $0.top.equalTo(connectedViewController.view.safeAreaLayoutGuide).offset(top)
                     $0.centerX.equalToSuperview()
 
                     $0.height.greaterThanOrEqualToSuperview().multipliedBy(0.06)

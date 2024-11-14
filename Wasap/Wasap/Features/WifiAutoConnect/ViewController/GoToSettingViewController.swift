@@ -50,6 +50,20 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             })
             .disposed(by: disposeBag)
 
+        goToSettingView.copyButton.rx.tap
+            .bind(to: viewModel.copyButtonTapped)
+            .disposed(by: disposeBag)
+
+        goToSettingView.copyButton.rx.controlEvent(.touchDown)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.copyButton.setImage(UIImage(named: "check"), for: .normal)
+                    self?.goToSettingView.copyButton.setTitle("", for: .normal)
+                    self?.goToSettingView.copyButton.backgroundColor = .black
+                }
+            })
+            .disposed(by: disposeBag)
+
         goToSettingView.settingBtn.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
@@ -105,12 +119,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         viewModel.passwordDriver
             .drive { [ weak self] password in
                 self?.goToSettingView.pwFieldLabel.text = password
-            }
-            .disposed(by: disposeBag)
-
-        viewModel.imageDriver
-            .drive { [weak self] image in
-
             }
             .disposed(by: disposeBag)
     }
