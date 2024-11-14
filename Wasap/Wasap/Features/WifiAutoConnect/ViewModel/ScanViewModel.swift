@@ -63,7 +63,6 @@ public class ScanViewModel: BaseViewModel {
                 self.coordinatorController?.performTransition(to: .connecting( imageData: previewImage,ssid: ssid, password: password))
             }
             .disposed(by: disposeBag)
+
     }
-    
-    
 }
