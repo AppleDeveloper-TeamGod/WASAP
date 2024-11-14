@@ -13,7 +13,7 @@ public protocol ImageAnalysisRepository {
 
 }
 
-public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
+public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
     let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "1.D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
     let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
 
@@ -40,9 +40,9 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                                                        orientation: orientation,
                                                        options: [:])
             do {
-                try requestHandler.perform([englishRequest, koreanRequest])
+                try requestHandler.perform([englishRequest/*, koreanRequest*/])
 
-                if let result = self.handleOCRResults([englishRequest, koreanRequest]) {
+                if let result = self.handleOCRResults([englishRequest/*, koreanRequest*/]) {
                     single(.success(result))
                 } else {
                     single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
@@ -286,9 +286,11 @@ public class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 
 
 
-public class QuickImageAnalysisRepository: ImageAnalysisRepository {
+public final class QuickImageAnalysisRepository: ImageAnalysisRepository {
     let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "1.D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
     let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
+
+    private let englishRequest = createTextRequest(for: "en")
 
     public init() {}
 
@@ -306,19 +308,19 @@ public class QuickImageAnalysisRepository: ImageAnalysisRepository {
 
             let orientation = self.extractOrientation(from: imageData)
 
-            let englishRequest = self.createTextRequest(for: "en")
-            let koreanRequest = self.createTextRequest(for: "ko")
 
             let requestHandler = VNImageRequestHandler(cgImage: cgImage,
                                                        orientation: orientation,
                                                        options: [:])
             do {
-                try requestHandler.perform([englishRequest, koreanRequest])
+                try requestHandler.perform([englishRequest])
 
-                if let result = self.handleOCRResults([englishRequest, koreanRequest]) {
+                self.handleOCRResults([englishRequest]) { result in
+                    guard let result else {
+                        single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
+                        return
+                    }
                     single(.success(result))
-                } else {
-                    single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
                 }
 
             } catch {
@@ -329,7 +331,7 @@ public class QuickImageAnalysisRepository: ImageAnalysisRepository {
         }
     }
 
-    private func createTextRequest(for language: String) -> VNRecognizeTextRequest {
+    static private func createTextRequest(for language: String) -> VNRecognizeTextRequest {
         let request = VNRecognizeTextRequest()
         request.recognitionLanguages = [language]
         request.usesLanguageCorrection = true
@@ -338,7 +340,11 @@ public class QuickImageAnalysisRepository: ImageAnalysisRepository {
         return request
     }
 
-    private func handleOCRResults(_ requests: [VNRequest]) -> OCRResultVO? {
+    let ssidAnalysisQueue = DispatchQueue(label: "Quickimageanalysis.ssidAnalysisQueue", qos: .userInitiated)
+    let passwordAnalysisQueue = DispatchQueue(label: "Quickimageanalysis.passwordAnalysisQueue", qos: .userInitiated)
+    let analysisGroup = DispatchGroup()
+
+    private func handleOCRResults(_ requests: [VNRequest], completion: @escaping (OCRResultVO?) -> Void) {
         var ssidBoundingBox: CGRect? = nil
         var passwordBoundingBox: CGRect? = nil
         var ssidText: String? = nil
@@ -348,48 +354,65 @@ public class QuickImageAnalysisRepository: ImageAnalysisRepository {
 
         let extractedBoxes = self.filterAndExtractTextBoxes(allObservations)
 
+
         // 1. ID(또는 PW) key와 value가 가로로 나란한 경우
         var ssidBox: (CGRect, String)?
-        if let firstIDBox = extractedBoxes.idBoxes.first {
-            if firstIDBox.content.isEmpty {
-                ssidBox = findClosestRightText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
-            } else {
-                ssidBox = (firstIDBox.contentBox, firstIDBox.content)
+        ssidAnalysisQueue.async(group: analysisGroup) {
+            if let firstIDBox = extractedBoxes.idBoxes.first {
+                if firstIDBox.content.isEmpty {
+                    ssidBox = self.findClosestRightText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+                } else {
+                    ssidBox = (firstIDBox.contentBox, firstIDBox.content)
+                }
             }
         }
 
         var passwordBox: (CGRect, String)?
-        if let firstPWBox = extractedBoxes.pwBoxes.first {
-            if firstPWBox.content.isEmpty {
-                passwordBox = findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
-            } else {
-                passwordBox = (firstPWBox.contentBox, firstPWBox.content)
+        passwordAnalysisQueue.async(group: analysisGroup) {
+            if let firstPWBox = extractedBoxes.pwBoxes.first {
+                if firstPWBox.content.isEmpty {
+                    passwordBox = self.findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+                } else {
+                    passwordBox = (firstPWBox.contentBox, firstPWBox.content)
+                }
             }
         }
 
         // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
-        if (ssidBox == nil) || (ssidBox?.1 == "") {
-            ssidBox = findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+        ssidAnalysisQueue.async(group: analysisGroup) {
+            if (ssidBox == nil) || (ssidBox?.1 == "") {
+                ssidBox = self.findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            }
         }
-        if (passwordBox == nil) || (passwordBox?.1 == "") {
-            passwordBox = findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+        passwordAnalysisQueue.async(group: analysisGroup) {
+            if (passwordBox == nil) || (passwordBox?.1 == "") {
+                passwordBox = self.findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            }
         }
 
         let delimiters = CharacterSet(charactersIn: "/,")
 
-        if let ssidBox = ssidBox {
-            let ssidValue = ssidBox.1.components(separatedBy: delimiters).first ?? ssidBox.1
-            ssidText = ssidValue.replacingOccurrences(of: " ", with: "")
-            ssidBoundingBox = ssidBox.0
+        ssidAnalysisQueue.async(group: analysisGroup) {
+            if let ssidBox = ssidBox {
+                let ssidValue = ssidBox.1.components(separatedBy: delimiters).first ?? ssidBox.1
+                ssidText = ssidValue.replacingOccurrences(of: " ", with: "")
+                ssidBoundingBox = ssidBox.0
+            }
         }
 
-        if let passwordBox = passwordBox {
-            let passwordValue = passwordBox.1.components(separatedBy: delimiters).first ?? passwordBox.1
-            passwordText = passwordValue.replacingOccurrences(of: " ", with: "")
-            passwordBoundingBox = passwordBox.0
+        passwordAnalysisQueue.async(group: analysisGroup) {
+            if let passwordBox = passwordBox {
+                let passwordValue = passwordBox.1.components(separatedBy: delimiters).first ?? passwordBox.1
+                passwordText = passwordValue.replacingOccurrences(of: " ", with: "")
+                passwordBoundingBox = passwordBox.0
+            }
         }
 
-        return OCRResultVO(ssidBoundingBox: ssidBoundingBox, passwordBoundingBox: passwordBoundingBox, ssid: ssidText, password: passwordText)
+        let workItem = DispatchWorkItem {
+            completion(OCRResultVO(ssidBoundingBox: ssidBoundingBox, passwordBoundingBox: passwordBoundingBox, ssid: ssidText, password: passwordText))
+        }
+
+        analysisGroup.notify(queue: .main, work: workItem)
     }
 
     private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ExtractedBoxes {
