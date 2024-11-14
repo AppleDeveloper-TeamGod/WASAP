@@ -347,33 +347,37 @@ public final class QuickImageAnalysisRepository: ImageAnalysisRepository {
 
         let extractedBoxes = self.filterAndExtractTextBoxes(allObservations)
 
-        let delimiters = CharacterSet(charactersIn: "/,")
+        async let ssidTaskValue: (rect: CGRect, text: String)? = findSSIDBoundingBoxTask(extractedBoxes: extractedBoxes)
 
-        async let ssidTask: (rect: CGRect, text: String)? = await { () async -> (rect: CGRect, text: String)? in
-            if let ssid = ssidBox(with: extractedBoxes) {
-                let separatedSsidValue = ssid.1.components(separatedBy: delimiters).first ?? ssid.1
-                let ssidText: String = separatedSsidValue.replacingOccurrences(of: " ", with: "")
-                return (ssid.0, ssidText)
-            } else {
-                return nil
-            }
-        }()
-
-        async let passwordTask: (rect: CGRect, text: String)? = await { () async -> (rect: CGRect, text: String)? in
-            if let password = passwordBox(with: extractedBoxes) {
-                let separatedSsidValue = password.1.components(separatedBy: delimiters).first ?? password.1
-                let passwordText: String = separatedSsidValue.replacingOccurrences(of: " ", with: "")
-                return (password.0, passwordText)
-            } else {
-                return nil
-            }
-        }()
+        async let passwordTaskValue: (rect: CGRect, text: String)? = findPasswordBoundingBox(extractedBoxes: extractedBoxes)
 
 
-        let ssidResult = await ssidTask
-        let passwordResult = await passwordTask
+        let ssidResult = await ssidTaskValue
+        let passwordResult = await passwordTaskValue
 
         return OCRResultVO(ssidBoundingBox: ssidResult?.rect, passwordBoundingBox: passwordResult?.rect, ssid: ssidResult?.text, password: passwordResult?.text)
+    }
+
+    private func findSSIDBoundingBoxTask(extractedBoxes: ExtractedBoxes) async -> (rect: CGRect, text: String)? {
+        if let ssid = self.ssidBox(with: extractedBoxes) {
+            let delimiters = CharacterSet(charactersIn: "/,")
+            let separatedSsidValue = ssid.1.components(separatedBy: delimiters).first ?? ssid.1
+            let ssidText: String = separatedSsidValue.replacingOccurrences(of: " ", with: "")
+            return (ssid.0, ssidText)
+        } else {
+            return nil
+        }
+    }
+
+    private func findPasswordBoundingBox(extractedBoxes: ExtractedBoxes) async -> (rect: CGRect, text: String)? {
+        if let password = self.passwordBox(with: extractedBoxes) {
+            let delimiters = CharacterSet(charactersIn: "/,")
+            let separatedSsidValue = password.1.components(separatedBy: delimiters).first ?? password.1
+            let passwordText: String = separatedSsidValue.replacingOccurrences(of: " ", with: "")
+            return (password.0, passwordText)
+        } else {
+            return nil
+        }
     }
 
     private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ExtractedBoxes {
