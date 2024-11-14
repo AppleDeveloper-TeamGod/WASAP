@@ -17,7 +17,8 @@ public class GoToSettingViewModel: BaseViewModel {
 
     // MARK: - Input
     public let setButtonTapped = PublishRelay<Void>()
-    public let xButtonTapped = PublishRelay<Void>()
+    public let cameraButtonTapped = PublishRelay<Void>()
+    public let backButtonTapped = PublishRelay<Void>()
     public let copyButtonTapped = PublishRelay<Void>()
 
     // MARK: - Output
@@ -42,17 +43,26 @@ public class GoToSettingViewModel: BaseViewModel {
 
         super.init()
 
-        xButtonTapped
+        cameraButtonTapped
             .subscribe(onNext: { _ in
                 self.coordinatorController?.performFinish(to: .popToRoot)
             })
             .disposed(by: disposeBag)
+
+        backButtonTapped
+            .subscribe(onNext: { _ in
+                self.coordinatorController?.performFinish(to: .popToRetry)
+            })
+            .disposed(by: disposeBag)
+
 
         setButtonTapped
             .subscribe(onNext: {
                 goToSettingUseCase.openSettings()
             })
             .disposed(by: disposeBag)
+
+
 
         copyButtonTapped
             .subscribe(onNext: {
