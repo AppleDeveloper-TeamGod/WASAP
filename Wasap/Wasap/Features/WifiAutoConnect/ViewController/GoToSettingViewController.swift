@@ -68,30 +68,30 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.xButton.rx.tap
+        goToSettingView.cameraBtn.rx.tap
             .bind(to: viewModel.xButtonTapped)
             .disposed(by: disposeBag)
 
-        goToSettingView.xButton.rx.controlEvent(.touchDown)
+        goToSettingView.cameraBtn.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.xButton.setImage(UIImage(named: "PressedQuitButton"), for: .normal)
+                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "PressedQuitButton"), for: .normal)
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.xButton.rx.controlEvent(.touchUpInside)
+        goToSettingView.cameraBtn.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.xButton.transform = CGAffineTransform.identity
+                    self?.goToSettingView.cameraBtn.transform = CGAffineTransform.identity
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.xButton.rx.controlEvent(.touchUpOutside)
+        goToSettingView.cameraBtn.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.xButton.transform = CGAffineTransform.identity
+                    self?.goToSettingView.cameraBtn.transform = CGAffineTransform.identity
                 }
             })
             .disposed(by: disposeBag)
@@ -110,7 +110,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
 
         viewModel.imageDriver
             .drive { [weak self] image in
-                self?.goToSettingView.photoImageView.image = image
+
             }
             .disposed(by: disposeBag)
     }
