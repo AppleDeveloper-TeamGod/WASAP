@@ -28,7 +28,7 @@ public class CameraCoordinator: NavigationCoordinator {
         let cameraRepository = wifiAutoConnectDIContainer.makeCameraRepository()
         let cameraUseCase = wifiAutoConnectDIContainer.makeCameraUseCase(cameraRepository)
 
-        let imageAnalysisRepository = wifiAutoConnectDIContainer.makeImageAnalysisRepository()
+        let imageAnalysisRepository = wifiAutoConnectDIContainer.makeQuickImageAnalysisRepository()
         let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
         let wifiShareRepository = wifiAutoConnectDIContainer.makeWiFiShareRepository()
         let wifiShareUseCase = wifiAutoConnectDIContainer.makeWiFiShareUseCase(wifiShareRepository)

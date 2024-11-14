@@ -25,6 +25,10 @@ final public class WifiAutoConnectDIContainer {
         return DefaultImageAnalysisRepository()
     }
 
+    public func makeQuickImageAnalysisRepository() -> ImageAnalysisRepository {
+        return QuickImageAnalysisRepository()
+    }
+
     public func makeWiFiConnectRepository() -> WiFiConnectRepository {
         return DefaultWiFiConnectRepository()
     }

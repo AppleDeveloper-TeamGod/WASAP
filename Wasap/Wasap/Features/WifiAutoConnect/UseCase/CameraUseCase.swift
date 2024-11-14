@@ -62,12 +62,12 @@ final class DefaultCameraUseCase: CameraUseCase {
 
     func getPreviewImageDataStream() -> Observable<UIImage> {
         return repository.getPreviewImageStream()
-            .throttle(.seconds(1), scheduler: MainScheduler.instance)
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
     }
 
     func getQRDataStream() -> Observable<(qrString: String, corners: [CGPoint])?> {
         return repository.getQRDataStream()
-            .throttle(.seconds(1), scheduler: MainScheduler.instance)
+            .throttle(.milliseconds(500), scheduler: MainScheduler.instance)
     }
 
     func startRunning() -> Single<Void> {
