@@ -24,7 +24,7 @@ class ReceivingView: BaseView {
 
     lazy var loadingAnimation: LottieAnimationView = {
         let animation = LottieAnimationView(name: "receive")
-        animation.loopMode = .loop
+        animation.loopMode = .playOnce
         animation.play()
         return animation
     }()

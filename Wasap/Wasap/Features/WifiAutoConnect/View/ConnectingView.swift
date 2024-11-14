@@ -29,7 +29,7 @@ class ConnectingView: BaseView {
         button.isHidden = true
         return button
     }()
-    
+
     lazy var mainStatusLabel: UILabel = {
         let label = UILabel()
         label.text = "Done!"
@@ -40,7 +40,7 @@ class ConnectingView: BaseView {
         label.isHidden = true
         return label
     }()
-    
+
     lazy var subStatusLabel: UILabel = {
         let label = UILabel()
         label.text = "연결 되었어요!".localized()
@@ -71,7 +71,7 @@ class ConnectingView: BaseView {
         self.addSubview(backgroundView)
         self.addSubViews(loadingAnimation, mainStatusLabel, subStatusLabel, quitButton, shareButton)
     }
-    
+
     func setConstraints() {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
 

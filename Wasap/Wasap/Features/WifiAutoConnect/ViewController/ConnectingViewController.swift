@@ -63,7 +63,10 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
                 self?.connectingView.mainStatusLabel.isHidden = false
                 self?.connectingView.subStatusLabel.isHidden = false
                 self?.connectingView.quitButton.isHidden = false
-                self?.connectingView.shareButton.isHidden = false
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self?.connectingView.shareButton.isHidden = false
+                }
             }
             .disposed(by: disposeBag)
     }
