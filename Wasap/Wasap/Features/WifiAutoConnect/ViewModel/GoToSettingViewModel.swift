@@ -18,6 +18,7 @@ public class GoToSettingViewModel: BaseViewModel {
     // MARK: - Input
     public let setButtonTapped = PublishRelay<Void>()
     public let xButtonTapped = PublishRelay<Void>()
+    public let copyButtonTapped = PublishRelay<Void>()
 
     // MARK: - Output
     public let ssidDriver: Driver<String>
@@ -50,9 +51,16 @@ public class GoToSettingViewModel: BaseViewModel {
         setButtonTapped
             .subscribe(onNext: {
                 goToSettingUseCase.openSettings()
-                goToSettingUseCase.copyPassword(pw: password)
             })
             .disposed(by: disposeBag)
+
+        copyButtonTapped
+            .subscribe(onNext: {
+                goToSettingUseCase.copyPassword(pw: password)
+                Toaster.shared.toast("복사 되었습니다.", delay: 2.0,top: 327)
+            })
+            .disposed(by: disposeBag)
+
     }
 }
 
