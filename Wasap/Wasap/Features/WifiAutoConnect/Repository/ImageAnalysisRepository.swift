@@ -312,19 +312,20 @@ public final class QuickImageAnalysisRepository: ImageAnalysisRepository {
             let requestHandler = VNImageRequestHandler(cgImage: cgImage,
                                                        orientation: orientation,
                                                        options: [:])
-            do {
-                try requestHandler.perform([englishRequest])
+            Task {
+                do {
+                    try requestHandler.perform([self.englishRequest])
 
-                self.handleOCRResults([englishRequest]) { result in
+                    let result = await self.handleOCRResults([self.englishRequest])
                     guard let result else {
                         single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
                         return
                     }
                     single(.success(result))
+                } catch {
+                    single(.failure(ImageAnalysisError.ocrFailed("Failed to perform OCR: \(error.localizedDescription)")))
                 }
 
-            } catch {
-                single(.failure(ImageAnalysisError.ocrFailed("Failed to perform OCR: \(error.localizedDescription)")))
             }
 
             return Disposables.create()
@@ -340,79 +341,39 @@ public final class QuickImageAnalysisRepository: ImageAnalysisRepository {
         return request
     }
 
-    let ssidAnalysisQueue = DispatchQueue(label: "Quickimageanalysis.ssidAnalysisQueue", qos: .userInitiated)
-    let passwordAnalysisQueue = DispatchQueue(label: "Quickimageanalysis.passwordAnalysisQueue", qos: .userInitiated)
-    let analysisGroup = DispatchGroup()
-
-    private func handleOCRResults(_ requests: [VNRequest], completion: @escaping (OCRResultVO?) -> Void) {
-        var ssidBoundingBox: CGRect? = nil
-        var passwordBoundingBox: CGRect? = nil
-        var ssidText: String? = nil
-        var passwordText: String? = nil
+    private func handleOCRResults(_ requests: [VNRequest]) async -> OCRResultVO? {
 
         let allObservations = requests.compactMap { $0.results as? [VNRecognizedTextObservation] }.flatMap { $0 }
 
         let extractedBoxes = self.filterAndExtractTextBoxes(allObservations)
 
-
-        // 1. ID(또는 PW) key와 value가 가로로 나란한 경우
-        var ssidBox: (CGRect, String)?
-        ssidAnalysisQueue.async(group: analysisGroup) {
-            if let firstIDBox = extractedBoxes.idBoxes.first {
-                if firstIDBox.content.isEmpty {
-                    ssidBox = self.findClosestRightText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
-                } else {
-                    ssidBox = (firstIDBox.contentBox, firstIDBox.content)
-                }
-            }
-        }
-
-        var passwordBox: (CGRect, String)?
-        passwordAnalysisQueue.async(group: analysisGroup) {
-            if let firstPWBox = extractedBoxes.pwBoxes.first {
-                if firstPWBox.content.isEmpty {
-                    passwordBox = self.findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
-                } else {
-                    passwordBox = (firstPWBox.contentBox, firstPWBox.content)
-                }
-            }
-        }
-
-        // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
-        ssidAnalysisQueue.async(group: analysisGroup) {
-            if (ssidBox == nil) || (ssidBox?.1 == "") {
-                ssidBox = self.findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
-            }
-        }
-        passwordAnalysisQueue.async(group: analysisGroup) {
-            if (passwordBox == nil) || (passwordBox?.1 == "") {
-                passwordBox = self.findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
-            }
-        }
-
         let delimiters = CharacterSet(charactersIn: "/,")
 
-        ssidAnalysisQueue.async(group: analysisGroup) {
-            if let ssidBox = ssidBox {
-                let ssidValue = ssidBox.1.components(separatedBy: delimiters).first ?? ssidBox.1
-                ssidText = ssidValue.replacingOccurrences(of: " ", with: "")
-                ssidBoundingBox = ssidBox.0
+        async let ssidTask: (rect: CGRect, text: String)? = await { () async -> (rect: CGRect, text: String)? in
+            if let ssid = ssidBox(with: extractedBoxes) {
+                let separatedSsidValue = ssid.1.components(separatedBy: delimiters).first ?? ssid.1
+                let ssidText: String = separatedSsidValue.replacingOccurrences(of: " ", with: "")
+                return (ssid.0, ssidText)
+            } else {
+                return nil
             }
-        }
+        }()
 
-        passwordAnalysisQueue.async(group: analysisGroup) {
-            if let passwordBox = passwordBox {
-                let passwordValue = passwordBox.1.components(separatedBy: delimiters).first ?? passwordBox.1
-                passwordText = passwordValue.replacingOccurrences(of: " ", with: "")
-                passwordBoundingBox = passwordBox.0
+        async let passwordTask: (rect: CGRect, text: String)? = await { () async -> (rect: CGRect, text: String)? in
+            if let password = passwordBox(with: extractedBoxes) {
+                let separatedSsidValue = password.1.components(separatedBy: delimiters).first ?? password.1
+                let passwordText: String = separatedSsidValue.replacingOccurrences(of: " ", with: "")
+                return (password.0, passwordText)
+            } else {
+                return nil
             }
-        }
+        }()
 
-        let workItem = DispatchWorkItem {
-            completion(OCRResultVO(ssidBoundingBox: ssidBoundingBox, passwordBoundingBox: passwordBoundingBox, ssid: ssidText, password: passwordText))
-        }
 
-        analysisGroup.notify(queue: .main, work: workItem)
+        let ssidResult = await ssidTask
+        let passwordResult = await passwordTask
+
+        return OCRResultVO(ssidBoundingBox: ssidResult?.rect, passwordBoundingBox: passwordResult?.rect, ssid: ssidResult?.text, password: passwordResult?.text)
     }
 
     private func filterAndExtractTextBoxes(_ observations: [VNRecognizedTextObservation]) -> ExtractedBoxes {
@@ -442,6 +403,40 @@ public final class QuickImageAnalysisRepository: ImageAnalysisRepository {
         pwBoxes.sort { $0.index! < $1.index! }
 
         return ExtractedBoxes(idBoxes: idBoxes, pwBoxes: pwBoxes, otherBoxes: otherBoxes)
+    }
+
+    private func ssidBox(with extractedBoxes: ExtractedBoxes) -> (rect: CGRect, text: String)? {
+        var foundBox: (rect: CGRect, text: String)? = nil
+        // 1. ID(또는 PW) key와 value가 가로로 나란한 경우
+        if let firstIDBox = extractedBoxes.idBoxes.first {
+            if firstIDBox.content.isEmpty {
+                foundBox = self.findClosestRightText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            } else {
+                foundBox = (firstIDBox.contentBox, firstIDBox.content)
+            }
+        }
+        // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
+        if (foundBox == nil) || (foundBox?.1 == "") {
+            foundBox = self.findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+        }
+        return foundBox
+    }
+
+    private func passwordBox(with extractedBoxes: ExtractedBoxes) -> (rect: CGRect, text: String)? {
+        var foundBox: (rect: CGRect, text: String)? = nil
+        // 1. ID(또는 PW) key와 value가 가로로 나란한 경우
+        if let firstPWBox = extractedBoxes.pwBoxes.first {
+            if firstPWBox.content.isEmpty {
+                foundBox = self.findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            } else {
+                foundBox = (firstPWBox.contentBox, firstPWBox.content)
+            }
+        }
+        // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
+        if (foundBox == nil) || (foundBox?.1 == "") {
+            foundBox = self.findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+        }
+        return foundBox
     }
 
     private func identifyKeyword(originalText: String, boundingBox: CGRect) -> KeywordBox {
