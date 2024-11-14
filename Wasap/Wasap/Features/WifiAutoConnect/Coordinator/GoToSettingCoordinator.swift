@@ -30,6 +30,7 @@ public class GoToSettingCoordinator: NavigationCoordinator {
 
     public enum FinishFlow {
         case popToRoot
+        case popToRetry
     }
 
     public func start() {
@@ -53,6 +54,8 @@ extension GoToSettingCoordinator: GoToSettingCoordinatorController {
         switch flow {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
+        case .popToRetry:
+            finishUntil(WifiReConnectCoordinator.self)
         }
     }
 }

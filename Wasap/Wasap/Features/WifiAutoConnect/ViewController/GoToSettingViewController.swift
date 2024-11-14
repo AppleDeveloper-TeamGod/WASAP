@@ -83,7 +83,11 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .disposed(by: disposeBag)
 
         goToSettingView.cameraBtn.rx.tap
-            .bind(to: viewModel.xButtonTapped)
+            .bind(to: viewModel.cameraButtonTapped)
+            .disposed(by: disposeBag)
+
+        goToSettingView.backBtn.rx.tap
+            .bind(to: viewModel.backButtonTapped)
             .disposed(by: disposeBag)
 
         goToSettingView.cameraBtn.rx.controlEvent(.touchDown)
