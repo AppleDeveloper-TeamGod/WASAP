@@ -50,6 +50,8 @@ extension CameraCoordinator: CameraCoordinatorController {
             let coordinator = ScanCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, previewImage: imageData)
             start(childCoordinator: coordinator)
         case .connectWithQR(let ssid, let password):
+            self.removeChildCoordinators()
+
             let coordinator = ConnectingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: nil, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         case .receiving(ssid: let ssid, password: let password):
