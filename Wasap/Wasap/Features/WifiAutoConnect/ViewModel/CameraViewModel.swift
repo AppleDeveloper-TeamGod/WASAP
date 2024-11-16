@@ -100,8 +100,6 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, _ in
                 owner.cameraUseCase.stopRunning()
-                owner.wifiShareUseCase.stopBrowsing()
-                isBrowsing.accept(false)
             }
             .disposed(by: disposeBag)
 
@@ -320,6 +318,8 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, wifiInfo in
                 owner.coordinatorController?.performTransition(to: .receiving(ssid: wifiInfo.ssid, password: wifiInfo.password))
+                owner.wifiShareUseCase.stopBrowsing()
+                isBrowsing.accept(false)
             }
             .disposed(by: disposeBag)
 
