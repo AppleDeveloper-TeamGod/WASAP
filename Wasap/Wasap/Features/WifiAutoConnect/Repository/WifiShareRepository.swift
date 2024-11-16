@@ -33,6 +33,7 @@ final public class DefaultWiFiShareRepository: NSObject, WiFiShareRepository {
     private var ssidToSend: String = ""
     private var passwordToSend: String = ""
 
+    private var connectedPeersSet = Set<MCPeerID>()
     private let connectedPeerCountSubject = BehaviorSubject<Int>(value: 0)
     private let receivedWiFiInfoSubject = PublishSubject<(ssid: String, password: String)>()
 
@@ -138,16 +139,16 @@ final public class DefaultWiFiShareRepository: NSObject, WiFiShareRepository {
 }
 
 extension DefaultWiFiShareRepository: MCSessionDelegate {
-    /// 세션에서 피어의 연결 상태가 변경될 때 호출. 연결된 피어를 관리하고 상태에 따라 peers 배열을 업데이트
+    /// 세션에서 피어의 연결 상태가 변경될 때 호출. 연결된 피어를 관리하고 상태에 따라 peers set를 업데이트
     public func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        DispatchQueue.main.async {
-            self.connectedPeerCountSubject.onNext(session.connectedPeers.count)
-        }
-
         /// 새로운 피어가 연결되었을 때
         switch state {
         case .connected:
+            if self.connectedPeersSet.insert(peerID).inserted {
+                self.connectedPeerCountSubject.onNext(self.connectedPeersSet.count)
+            }
             Log.debug("Connected to peer: \(peerID)")
+
             if isHost {
                 Log.debug("Sending WiFi info to \(peerID) (SSID: \(ssidToSend), Password: \(passwordToSend))")
                 sendWiFiInfo(ssid: ssidToSend, password: passwordToSend, peerID: peerID)
@@ -196,8 +197,8 @@ extension DefaultWiFiShareRepository: MCNearbyServiceBrowserDelegate {
 
     /// 연결이 끊어진 피어를 처리
     public func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        DispatchQueue.main.async {
-            self.connectedPeerCountSubject.onNext(self.session.connectedPeers.count)
+        if self.connectedPeersSet.remove(peerID) != nil {
+            self.connectedPeerCountSubject.onNext(self.connectedPeersSet.count)
         }
         Log.debug("Lost connection with peer: \(peerID)")
     }
