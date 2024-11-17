@@ -243,6 +243,7 @@ class GoToSettingView: BaseView {
             $0.top.equalTo(ssidStackView.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(17)
             $0.height.equalTo(48)
+            $0.width.equalTo(220)
         }
 
         copyButton.snp.makeConstraints {

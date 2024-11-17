@@ -13,7 +13,6 @@ import VisionKit
 public class WifiReConnectViewController: RxBaseViewController<WifiReConnectViewModel>{
 
     private let wifiReConnectView = WifiReConnectView()
-    private let imageAnalyzer = ImageAnalyzer()
 
     // MARK: VisionKit
     private let interaction: ImageAnalysisInteraction = {
@@ -26,10 +25,10 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         super.viewDidLoad()
         setupKeyboardNotifications()
         view.keyboardLayoutGuide.usesBottomSafeArea = false
-        // Live Text 상호작용 추가
+
+        /// Live Text 상호작용 추가
         wifiReConnectView.photoImageView.addInteraction(interaction)
-        // 이미지 분석 시작
-        analyzeImageForText()
+        enableLiveText()
     }
 
     public override func loadView() {
@@ -116,13 +115,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             })
             .disposed(by: disposeBag)
 
-        // MARK: BackGround 터치하면 ViewModel 트리거
-        //        wifiReConnectView.backgroundView.rx.tapGesture()
-        //            .when(.recognized)
-        //            .map { _ in } // 이벤트를 빈 값으로 변환하여 Relay로 전달
-        //            .bind(to: viewModel.bgTouched)
-        //            .disposed(by: disposeBag)
-
         // MARK: CameraBtn 터치하면 ViewModel 트리거
         wifiReConnectView.cameraButton.rx.tap
             .bind(to: viewModel.cameraButtonTapped)
@@ -152,13 +144,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 UIView.animate(withDuration: 0.15) {
                     self?.wifiReConnectView.cameraButton.setImage(UIImage(named: "GoCameraButton"), for: .normal)
                 }
-            })
-            .disposed(by: disposeBag)
-
-        // MARK: ViewModel에서 Keyboard hide 전달 받기
-        viewModel.bgTouchedDriver
-            .drive(onNext: { [weak self] isTouch in
-                self?.wifiReConnectView.endEditing(true)
             })
             .disposed(by: disposeBag)
 
@@ -233,6 +218,15 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 }
             })
             .disposed(by: disposeBag)
+
+        // MARK: LiveText 기능 추가
+        viewModel.liveTextAnalysis
+            .asDriver()
+            .drive(onNext: { [weak self] analysis in
+                guard let self = self else { return }
+                self.interaction.analysis = analysis // ImageAnalysisInteraction에 연결
+            })
+            .disposed(by: disposeBag)
     }
 
     //MARK: 키보드 세팅
@@ -298,18 +292,10 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         wifiReConnectView.pwField.layer.borderColor = UIColor.clear.cgColor
     }
 
-    private func analyzeImageForText() {
+    // MARK: LiveText 호출
+    private func enableLiveText() {
         guard let image = wifiReConnectView.photoImageView.image else { return }
-
-        Task {
-            let configuration = ImageAnalyzer.Configuration([.text]) // 텍스트만 분석하도록 설정
-            // 이미지 분석 수행
-            let analysis = try await self.imageAnalyzer.analyze(image, configuration: configuration)
-            DispatchQueue.main.async {
-                // 분석 결과를 ImageAnalysisInteraction에 연결하여 상호작용 가능하게 함
-                self.interaction.analysis = analysis
-            }
-        }
+        viewModel.prepareLiveText(from: image) // ViewModel 호출
     }
 
     // MARK: 키보드 deinit
