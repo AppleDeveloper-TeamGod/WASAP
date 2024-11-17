@@ -42,24 +42,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
                     self?.goToSettingView.settingBtn.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                     self?.goToSettingView.settingBtn.titleLabel?.font = FontStyle.button.font
                     self?.goToSettingView.settingBtn.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
-                    self?.goToSettingView.settingBtn.setTitleColor(.black, for: .normal)
-                    self?.goToSettingView.settingBtn.backgroundColor = .green300
-                    self?.goToSettingView.settingBtn.layer.borderWidth = 1
-                    self?.goToSettingView.settingBtn.layer.borderColor = UIColor.clear.cgColor
-                }
-            })
-            .disposed(by: disposeBag)
-
-        goToSettingView.copyButton.rx.tap
-            .bind(to: viewModel.copyButtonTapped)
-            .disposed(by: disposeBag)
-
-        goToSettingView.copyButton.rx.controlEvent(.touchDown)
-            .subscribe(onNext: { [weak self] in
-                UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.copyButton.setImage(UIImage(named: "Check"), for: .normal)
-                    self?.goToSettingView.copyButton.setTitle("", for: .normal)
-                    self?.goToSettingView.copyButton.backgroundColor = .green500
                 }
             })
             .disposed(by: disposeBag)
@@ -82,34 +64,96 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             })
             .disposed(by: disposeBag)
 
+        goToSettingView.copyButton.rx.tap
+            .bind(to: viewModel.copyButtonTapped)
+            .disposed(by: disposeBag)
+
+        goToSettingView.copyButton.rx.controlEvent(.touchDown)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.copyButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
+                }
+            })
+            .disposed(by: disposeBag)
+
+        goToSettingView.copyButton.rx.controlEvent(.touchUpInside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.copyButton.setImage(UIImage(named: "Check"), for: .normal)
+                    self?.goToSettingView.copyButton.setTitle("", for: .normal)
+                    self?.goToSettingView.copyButton.backgroundColor = .green500
+                }
+            })
+            .disposed(by: disposeBag)
+
+        goToSettingView.copyButton.rx.controlEvent(.touchUpOutside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.copyButton.setImage(UIImage(named: "Check"), for: .normal)
+                    self?.goToSettingView.copyButton.setTitle("", for: .normal)
+                    self?.goToSettingView.copyButton.backgroundColor = .green500
+                }
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: CameraBtn 터치하면 ViewModel 트리거
         goToSettingView.cameraBtn.rx.tap
             .bind(to: viewModel.cameraButtonTapped)
+            .disposed(by: disposeBag)
+
+        // MARK: CameraBtn 터치시 이벤트
+        goToSettingView.cameraBtn.rx.controlEvent(.touchDown)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "PressedGoCameraButton"), for: .normal)
+                }
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: CameraBtn 땔 시 이벤트
+        goToSettingView.cameraBtn.rx.controlEvent(.touchUpInside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "GoCameraButton"), for: .normal)
+                }
+            })
+            .disposed(by: disposeBag)
+
+        // MARK: CameraBtn 땔 시 이벤트
+        goToSettingView.cameraBtn.rx.controlEvent(.touchUpOutside)
+            .subscribe(onNext: { [weak self] in
+                UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "GoCameraButton"), for: .normal)
+                }
+            })
             .disposed(by: disposeBag)
 
         goToSettingView.backBtn.rx.tap
             .bind(to: viewModel.backButtonTapped)
             .disposed(by: disposeBag)
 
-        goToSettingView.cameraBtn.rx.controlEvent(.touchDown)
+        goToSettingView.backBtn.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "PressedQuitButton"), for: .normal)
+                    self?.goToSettingView.backBtn.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.cameraBtn.rx.controlEvent(.touchUpInside)
+        goToSettingView.backBtn.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.cameraBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.backBtn.transform = CGAffineTransform.identity
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.cameraBtn.rx.controlEvent(.touchUpOutside)
+        goToSettingView.backBtn.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.cameraBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.backBtn.transform = CGAffineTransform.identity
                 }
             })
             .disposed(by: disposeBag)
