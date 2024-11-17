@@ -188,7 +188,7 @@ public class CameraViewModel: BaseViewModel {
             .filter { _, isEnabled in isEnabled }
             .compactMap { image, _ in image }
             .withUnretained(self)
-            .flatMapLatest { owner, image -> Single<OCRResultVO> in
+            .flatMap { owner, image -> Single<OCRResultVO> in
                 owner.imageAnalysisUseCase.performOCR(on: image)
             }
             .withUnretained(self)

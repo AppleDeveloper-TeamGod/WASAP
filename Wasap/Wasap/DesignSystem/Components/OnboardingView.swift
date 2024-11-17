@@ -25,7 +25,7 @@ final class OnboardingView: BaseView {
         return imageView
     }()
 
-    private lazy var skipButton: UIButton = {
+    public lazy var skipButton: UIButton = {
         let button = UIButton()
         button.setTitle("Skip", for: .normal)
         button.setTitleColor(.gray400, for: .normal)
@@ -38,14 +38,12 @@ final class OnboardingView: BaseView {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.isPagingEnabled = true
         scrollView.delegate = self
-        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width * 2, height: UIScreen.main.bounds.height * 0.55)
         return scrollView
     }()
 
     // MARK: - Bottom Area
     public lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
-        pageControl.numberOfPages = 2
         pageControl.currentPageIndicatorTintColor = .textPrimaryHigh
         pageControl.pageIndicatorTintColor = .gray300
         return pageControl
@@ -64,22 +62,6 @@ extension OnboardingView: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageIndex = round(scrollView.contentOffset.x / self.frame.width)
         pageControl.currentPage = Int(pageIndex)
-    }
-
-    public func setScrollViewContents() {
-        let onboardingPage1: UIView = {
-            let rect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.55)
-            let page = OnboardingPage1(frame: rect)
-            return page
-        }()
-
-        let onboardingPage2: UIView = {
-            let rect = CGRect(x: UIScreen.main.bounds.width, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.55)
-            let page = OnboardingPage2(frame: rect)
-            return page
-        }()
-
-        self.scrollView.addSubViews(onboardingPage1, onboardingPage2)
     }
 }
 
