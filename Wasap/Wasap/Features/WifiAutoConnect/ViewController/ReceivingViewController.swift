@@ -9,11 +9,15 @@ import RxSwift
 import RxCocoa
 import UIKit
 
-public class ReceivingViewController: RxBaseViewController<ReceivingViewModel> {
+public class ReceivingViewController: RxBaseViewController<ReceivingViewModel>, UIAdaptivePresentationControllerDelegate {
     private let receivingView = ReceivingView()
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.presentationController?.delegate = self
+
+        Log.print("Notification sent: receivingViewDidPresent")
+        NotificationCenter.default.post(name: .receivingViewDidPresent, object: nil)
     }
 
     public override func loadView() {
@@ -44,6 +48,15 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel> {
         viewModel.ssidDriver
             .drive(receivingView.ssidLabel.rx.text)
             .disposed(by: disposeBag)
-
     }
+
+    deinit {
+        Log.print("Notification sent: receivingViewDidDismiss")
+        NotificationCenter.default.post(name: .receivingViewDidDismiss, object: nil)
+    }
+}
+
+extension Notification.Name {
+    static let receivingViewDidPresent = Notification.Name("receivingViewDidPresent")
+    static let receivingViewDidDismiss = Notification.Name("receivingViewDidDismiss")
 }
