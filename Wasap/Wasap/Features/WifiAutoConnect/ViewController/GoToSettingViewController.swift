@@ -57,9 +57,9 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         goToSettingView.copyButton.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.copyButton.setImage(UIImage(named: "check"), for: .normal)
+                    self?.goToSettingView.copyButton.setImage(UIImage(named: "Check"), for: .normal)
                     self?.goToSettingView.copyButton.setTitle("", for: .normal)
-                    self?.goToSettingView.copyButton.backgroundColor = .black
+                    self?.goToSettingView.copyButton.backgroundColor = .green500
                 }
             })
             .disposed(by: disposeBag)
