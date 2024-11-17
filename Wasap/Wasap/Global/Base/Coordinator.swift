@@ -120,5 +120,7 @@ public protocol GoToSettingCoordinatorController: AnyObject {
     func performFinish(to flow: GoToSettingCoordinator.FinishFlow)
 }
 
-
+public protocol OnboardingCoordinatorController: AnyObject {
+    func performTransition(to flow: OnboardingCoordinator.Flow)
+}
 
