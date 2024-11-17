@@ -62,12 +62,10 @@ public class GoToSettingViewModel: BaseViewModel {
             })
             .disposed(by: disposeBag)
 
-
-
         copyButtonTapped
             .subscribe(onNext: {
                 goToSettingUseCase.copyPassword(pw: password)
-                Toaster.shared.toast("복사 되었습니다.", delay: 2.0,top: 300)
+                Toaster.shared.toast("복사 되었습니다.", delay: 2.0,top: 280)
             })
             .disposed(by: disposeBag)
 

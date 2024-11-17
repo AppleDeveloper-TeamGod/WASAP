@@ -15,7 +15,7 @@ class GoToSettingView: BaseView {
         return view
     }()
 
-    lazy var cameraBtn : UIButton = {
+    lazy var cameraButton : UIButton = {
         let button = UIButton()
         button.setImage(
             UIImage(named: "GoCameraButton"), for: .normal)
@@ -94,10 +94,8 @@ class GoToSettingView: BaseView {
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
         label.textColor = .gray300
-//        label.backgroundColor = .neutral450
         label.font = FontStyle.password_M.font.withSize(18)
         label.font = .preferredFont(forTextStyle: .headline)
-//        label.layer.masksToBounds = true
         label.textAlignment = .left
         return label
     }()
@@ -159,14 +157,11 @@ class GoToSettingView: BaseView {
             let nsRange = NSRange(wifiIDRange, in: description)
             attributedString.addAttribute(.foregroundColor, value: UIColor.primary200, range: nsRange)
         }
-
         label.attributedText = attributedString
         return label
     }()
 
-
-
-    lazy var backBtn: UIButton = {
+    lazy var backButton: UIButton = {
         let button = UIButton()
         button.setTitle("<", for: .normal)
         button.setTitleColor(.primary200, for: .normal)
@@ -178,7 +173,7 @@ class GoToSettingView: BaseView {
         return button
     }()
 
-    lazy var settingBtn: UIButton = {
+    lazy var settingButton: UIButton = {
         let button = UIButton()
         button.setTitle("아이폰 설정으로 가기", for: .normal)
         button.setTitleColor(.black, for: .normal)
@@ -193,7 +188,7 @@ class GoToSettingView: BaseView {
     }()
 
     lazy var btnStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [backBtn, settingBtn])
+        let stackView = UIStackView(arrangedSubviews: [backButton, settingButton])
         stackView.axis = .horizontal
         stackView.spacing = 10
         return stackView
@@ -211,7 +206,7 @@ class GoToSettingView: BaseView {
     
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        backgroundView.addSubViews(cameraBtn,titleStackView,memoView,
+        backgroundView.addSubViews(cameraButton,titleStackView,memoView,
                                    infoStackView,infoSecondLabel,btnStackView)
         memoView.addSubViews(ssidStackView,pwStackView,copyButton)
     }
@@ -221,7 +216,7 @@ class GoToSettingView: BaseView {
             $0.edges.equalToSuperview()
         }
 
-        cameraBtn.snp.makeConstraints {
+        cameraButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(68)
             $0.trailing.equalToSuperview().inset(24)
             $0.width.height.equalTo(32)
@@ -277,11 +272,11 @@ class GoToSettingView: BaseView {
             $0.height.equalTo(52)
         }
 
-        backBtn.snp.makeConstraints {
+        backButton.snp.makeConstraints {
             $0.width.equalTo(99)
         }
 
-        settingBtn.snp.makeConstraints {
+        settingButton.snp.makeConstraints {
             $0.width.equalTo(236)
         }
     }

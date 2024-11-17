@@ -32,38 +32,42 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
     }
 
     private func bind(_ viewModel: GoToSettingViewModel) {
-        goToSettingView.settingBtn.rx.tap
+        // MARK: ViewController -> ViewModel
+
+        // MARK: settingButton
+        goToSettingView.settingButton.rx.tap
             .bind(to: viewModel.setButtonTapped)
             .disposed(by: disposeBag)
 
-        goToSettingView.settingBtn.rx.controlEvent(.touchDown)
+        goToSettingView.settingButton.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingBtn.transform = CGAffineTransform(scaleX: 1, y: 0.95)
-                    self?.goToSettingView.settingBtn.titleLabel?.font = FontStyle.button.font
-                    self?.goToSettingView.settingBtn.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+                    self?.goToSettingView.settingButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
+                    self?.goToSettingView.settingButton.titleLabel?.font = FontStyle.button.font
+                    self?.goToSettingView.settingButton.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.settingBtn.rx.controlEvent(.touchUpInside)
+        goToSettingView.settingButton.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
-                    self?.goToSettingView.settingBtn.backgroundColor = .primary200
+                    self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
+                    self?.goToSettingView.settingButton.backgroundColor = .primary200
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.settingBtn.rx.controlEvent(.touchUpOutside)
+        goToSettingView.settingButton.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
-                    self?.goToSettingView.settingBtn.backgroundColor = .primary200
+                    self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
+                    self?.goToSettingView.settingButton.backgroundColor = .primary200
                 }
             })
             .disposed(by: disposeBag)
 
+        // MARK: copyButton
         goToSettingView.copyButton.rx.tap
             .bind(to: viewModel.copyButtonTapped)
             .disposed(by: disposeBag)
@@ -79,7 +83,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         goToSettingView.copyButton.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
                     self?.goToSettingView.copyButton.setImage(UIImage(named: "Check"), for: .normal)
                     self?.goToSettingView.copyButton.setTitle("", for: .normal)
                     self?.goToSettingView.copyButton.backgroundColor = .green500
@@ -90,7 +94,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         goToSettingView.copyButton.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
                     self?.goToSettingView.copyButton.setImage(UIImage(named: "Check"), for: .normal)
                     self?.goToSettingView.copyButton.setTitle("", for: .normal)
                     self?.goToSettingView.copyButton.backgroundColor = .green500
@@ -98,65 +102,65 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             })
             .disposed(by: disposeBag)
 
-        // MARK: CameraBtn 터치하면 ViewModel 트리거
-        goToSettingView.cameraBtn.rx.tap
+        // MARK: cameraButton
+        goToSettingView.cameraButton.rx.tap
             .bind(to: viewModel.cameraButtonTapped)
             .disposed(by: disposeBag)
 
-        // MARK: CameraBtn 터치시 이벤트
-        goToSettingView.cameraBtn.rx.controlEvent(.touchDown)
+        goToSettingView.cameraButton.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "PressedGoCameraButton"), for: .normal)
+                    self?.goToSettingView.cameraButton.setImage(UIImage(named: "PressedGoCameraButton"), for: .normal)
                 }
             })
             .disposed(by: disposeBag)
 
-        // MARK: CameraBtn 땔 시 이벤트
-        goToSettingView.cameraBtn.rx.controlEvent(.touchUpInside)
+        goToSettingView.cameraButton.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "GoCameraButton"), for: .normal)
+                    self?.goToSettingView.cameraButton.setImage(UIImage(named: "GoCameraButton"), for: .normal)
                 }
             })
             .disposed(by: disposeBag)
 
-        // MARK: CameraBtn 땔 시 이벤트
-        goToSettingView.cameraBtn.rx.controlEvent(.touchUpOutside)
+        goToSettingView.cameraButton.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.cameraBtn.setImage(UIImage(named: "GoCameraButton"), for: .normal)
+                    self?.goToSettingView.cameraButton.setImage(UIImage(named: "GoCameraButton"), for: .normal)
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.backBtn.rx.tap
+        // MARK: backButton
+        goToSettingView.backButton.rx.tap
             .bind(to: viewModel.backButtonTapped)
             .disposed(by: disposeBag)
 
-        goToSettingView.backBtn.rx.controlEvent(.touchDown)
+        goToSettingView.backButton.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.backBtn.transform = CGAffineTransform(scaleX: 1, y: 0.95)
+                    self?.goToSettingView.backButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.backBtn.rx.controlEvent(.touchUpInside)
+        goToSettingView.backButton.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.backBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.backButton.transform = CGAffineTransform.identity
                 }
             })
             .disposed(by: disposeBag)
 
-        goToSettingView.backBtn.rx.controlEvent(.touchUpOutside)
+        goToSettingView.backButton.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.backBtn.transform = CGAffineTransform.identity
+                    self?.goToSettingView.backButton.transform = CGAffineTransform.identity
                 }
             })
             .disposed(by: disposeBag)
+
+        // MARK: ViewModel -> ViewController
 
         viewModel.ssidDriver
             .drive { [ weak self] ssid in
