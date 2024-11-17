@@ -17,7 +17,8 @@ class GoToSettingView: BaseView {
 
     lazy var cameraBtn : UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "GoCameraButton"), for: .normal)
+        button.setImage(
+            UIImage(named: "GoCameraButton"), for: .normal)
         return button
     }()
 
@@ -43,7 +44,7 @@ class GoToSettingView: BaseView {
         let stackView = UIStackView(arrangedSubviews: [titleLabel1, titleLabel2])
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.spacing = 3
+        stackView.spacing = 4
         return stackView
     }()
     
@@ -58,8 +59,8 @@ class GoToSettingView: BaseView {
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
         label.text = "와이파이 ID"
-        label.textColor = .white
-        label.font = FontStyle.subTitle.font.withSize(10)
+        label.textColor = .gray400
+        label.font = FontStyle.subTitle.font.withSize(12)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         label.textAlignment = .left
         return label
@@ -67,13 +68,9 @@ class GoToSettingView: BaseView {
 
     lazy var ssidFieldLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
-        label.backgroundColor = UIColor.neutral450
-        label.font = FontStyle.password_M.font.withSize(15)
-        label.layer.cornerRadius = 13
-        label.layer.masksToBounds = true
+        label.textColor = .gray300
+        label.font = FontStyle.password_M.font.withSize(18)
         label.textAlignment = .left
-        label.text = "SSID" // 기본 텍스트 설정 (예시)
         return label
     }()
 
@@ -87,8 +84,8 @@ class GoToSettingView: BaseView {
     lazy var pwLabel: UILabel = {
         let label = UILabel()
         label.text = "비밀번호"
-        label.textColor = .white
-        label.font = FontStyle.subTitle.font.withSize(10)
+        label.textColor = .gray400
+        label.font = FontStyle.subTitle.font.withSize(12)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         label.textAlignment = .left
         return label
@@ -96,13 +93,11 @@ class GoToSettingView: BaseView {
 
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .white
-        label.backgroundColor = .neutral450
-        label.text = "비밀번호"
-        label.font = FontStyle.password_M.font.withSize(15)
+        label.textColor = .gray300
+//        label.backgroundColor = .neutral450
+        label.font = FontStyle.password_M.font.withSize(18)
         label.font = .preferredFont(forTextStyle: .headline)
-        label.layer.cornerRadius = 13
-        label.layer.masksToBounds = true
+//        label.layer.masksToBounds = true
         label.textAlignment = .left
         return label
     }()
@@ -128,7 +123,7 @@ class GoToSettingView: BaseView {
 
     lazy var infoIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "info_icon")
+        imageView.image = UIImage(named: "Info_icon")
         return imageView
     }()
 
@@ -227,26 +222,25 @@ class GoToSettingView: BaseView {
         }
 
         cameraBtn.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(71)
-            $0.trailing.equalToSuperview().inset(20)
-            $0.width.height.equalTo(26)
+            $0.top.equalToSuperview().offset(68)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.width.height.equalTo(32)
         }
 
         titleStackView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(116)
-            $0.leading.equalToSuperview().inset(24)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(59)
         }
 
         memoView.snp.makeConstraints {
             $0.top.equalTo(titleStackView.snp.bottom).offset(32)
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.height.equalTo(152)
+            $0.height.equalTo(158)
         }
 
         ssidStackView.snp.makeConstraints{
-            $0.top.equalToSuperview().offset(17)
-            $0.leading.trailing.equalToSuperview().inset(17)
+            $0.top.leading.trailing.equalToSuperview().inset(17)
             $0.height.equalTo(48)
         }
 
@@ -268,18 +262,18 @@ class GoToSettingView: BaseView {
         }
 
         infoStackView.snp.makeConstraints {
-            $0.top.equalTo(memoView.snp.bottom).offset(18)
+            $0.top.equalTo(memoView.snp.bottom).offset(12)
             $0.leading.trailing.equalToSuperview().inset(24)
         }
 
         infoSecondLabel.snp.makeConstraints {
             $0.top.equalTo(infoStackView.snp.bottom).offset(1)
-            $0.leading.equalToSuperview().inset(46)
+            $0.leading.equalToSuperview().inset(50)
         }
 
         btnStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.top.equalTo(infoSecondLabel.snp.bottom).offset(297)
+            $0.top.equalTo(infoSecondLabel.snp.bottom).offset(300)
             $0.height.equalTo(52)
         }
 

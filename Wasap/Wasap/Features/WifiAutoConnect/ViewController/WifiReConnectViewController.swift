@@ -1,8 +1,8 @@
 //
-//  ViewController.swift
+//  WifiReConnectViewController.swift
 //  Wasap
 //
-//  Created by chongin on 10/3/24.
+//  Created by 김상준 on 10/3/24.
 //
 import UIKit
 import RxSwift
@@ -26,7 +26,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         super.viewDidLoad()
         setupKeyboardNotifications()
         view.keyboardLayoutGuide.usesBottomSafeArea = false
-
         // Live Text 상호작용 추가
         wifiReConnectView.photoImageView.addInteraction(interaction)
         // 이미지 분석 시작
@@ -105,7 +104,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform.identity
-                    self?.wifiReConnectView.reConnectButton.backgroundColor = .primary200
                 }
             })
             .disposed(by: disposeBag)
@@ -114,7 +112,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform.identity
-                    self?.wifiReConnectView.reConnectButton.backgroundColor = .primary200
                 }
             })
             .disposed(by: disposeBag)
@@ -144,7 +141,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         wifiReConnectView.cameraButton.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.wifiReConnectView.cameraButton.transform = CGAffineTransform.identity
+                    self?.wifiReConnectView.cameraButton.setImage(UIImage(named: "GoCameraButton"), for: .normal)
                 }
             })
             .disposed(by: disposeBag)
@@ -153,7 +150,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         wifiReConnectView.cameraButton.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.wifiReConnectView.cameraButton.transform = CGAffineTransform.identity
+                    self?.wifiReConnectView.cameraButton.setImage(UIImage(named: "GoCameraButton"), for: .normal)
                 }
             })
             .disposed(by: disposeBag)
@@ -259,7 +256,8 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
     private func handleKeyboardWillShow() {
         wifiReConnectView.pwStackView.snp.remakeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-24)
+            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-20)
+            $0.height.equalTo(86)
         }
 
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
@@ -277,6 +275,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
         wifiReConnectView.pwStackView.snp.remakeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
             $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-197)
+            $0.height.equalTo(86)
         }
 
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
