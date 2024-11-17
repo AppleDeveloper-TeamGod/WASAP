@@ -8,7 +8,6 @@
 import RxSwift
 import UIKit
 
-
 public protocol ImageAnalysisUseCase {
     func performOCR(on image: UIImage) -> Single<(UIImage, String?, String?)>
     func performOCR(on image: UIImage) -> Single<OCRResultVO>
