@@ -141,6 +141,7 @@ public class WifiReConnectViewModel: BaseViewModel {
             .disposed(by: disposeBag)
     }
 
+    // MARK: liveText
     public func prepareLiveText(from image: UIImage) {
         Task {
             do {
