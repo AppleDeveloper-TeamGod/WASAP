@@ -63,6 +63,12 @@ public class OnboardingViewController: RxBaseViewController<OnboardingViewModel>
             .drive { [weak self] pageNumber in
                 self?.onboardingView.pageControl.currentPage = pageNumber
                 self?.onboardingView.scrollView.contentOffset.x = CGFloat(pageNumber) * Self.contentWidth
+
+                if pageNumber == OnboardingViewModel.onboardingPages.count - 1 {
+                    self?.onboardingView.nextButton.setTitle("시작하기".localized(), for: .normal)
+                } else {
+                    self?.onboardingView.nextButton.setTitle("다음".localized(), for: .normal)
+                }
             }
             .disposed(by: disposeBag)
     }
