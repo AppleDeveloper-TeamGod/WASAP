@@ -27,7 +27,8 @@ public class OnboardingCoordinator: NavigationCoordinator {
         // TODO: DI로 생성하기
         let viewModel = OnboardingViewModel(coordinatorController: self)
         let viewController = OnboardingViewController(viewModel: viewModel)
-
+        
+        self.navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.pushViewController(viewController, animated: true)
     }
 
