@@ -8,11 +8,14 @@
 import UIKit
 import RxSwift
 
+enum OnboardingDimensions {
+    static let contentWidth = UIScreen.main.bounds.width
+    static let contentHeight = UIScreen.main.bounds.height * 0.55
+}
+
 public class OnboardingViewController: RxBaseViewController<OnboardingViewModel> {
     private let onboardingView = OnboardingView()
     private let onboardingPages: [UIView.Type]
-    private static let contentWidth = UIScreen.main.bounds.width
-    private static let contentHeight = UIScreen.main.bounds.height * 0.55
 
     override public init(viewModel: OnboardingViewModel) {
         self.onboardingPages = OnboardingViewModel.onboardingPages
@@ -44,26 +47,18 @@ public class OnboardingViewController: RxBaseViewController<OnboardingViewModel>
             .disposed(by: disposeBag)
 
         self.onboardingView.scrollView.rx.contentOffset
-            .withUnretained(self)
-            .map { owner, offset in
-                let pageIndex = round(offset.x / Self.contentWidth)
-                return Int(pageIndex)
-            }
-            .bind(to: viewModel.currentPageInput)
+            .bind(to: viewModel.currentScrollViewOffset)
             .disposed(by: disposeBag)
 
         self.onboardingView.pageControl.rx.controlEvent(.valueChanged)
             .compactMap { [weak self] _ in
                 self?.onboardingView.pageControl.currentPage
             }
-            .bind(to: viewModel.currentPageInput)
+            .bind(to: viewModel.currentPageControlInput)
             .disposed(by: disposeBag)
 
         viewModel.currentPageOutput
             .drive { [weak self] pageNumber in
-                self?.onboardingView.pageControl.currentPage = pageNumber
-                self?.onboardingView.scrollView.contentOffset.x = CGFloat(pageNumber) * Self.contentWidth
-
                 if pageNumber == OnboardingViewModel.onboardingPages.count - 1 {
                     self?.onboardingView.nextButton.setTitle("시작하기".localized(), for: .normal)
                 } else {
@@ -71,11 +66,17 @@ public class OnboardingViewController: RxBaseViewController<OnboardingViewModel>
                 }
             }
             .disposed(by: disposeBag)
+
+        viewModel.changeViaPageControl
+            .drive { [weak self] pageNumber in
+                self?.onboardingView.scrollView.contentOffset.x = CGFloat(pageNumber) * OnboardingDimensions.contentWidth
+            }
+            .disposed(by: disposeBag)
     }
 
     private func setScrollViewContents(_ onboardingPages: [UIView.Type]) {
-        let contentWidth = Self.contentWidth
-        let contentHeight = Self.contentHeight
+        let contentWidth = OnboardingDimensions.contentWidth
+        let contentHeight = OnboardingDimensions.contentHeight
 
         self.onboardingView.pageControl.numberOfPages = onboardingPages.count
 
