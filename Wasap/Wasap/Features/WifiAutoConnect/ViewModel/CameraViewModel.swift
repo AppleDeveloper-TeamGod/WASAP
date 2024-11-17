@@ -38,6 +38,7 @@ public class CameraViewModel: BaseViewModel {
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
     private var currentZoomValue = BehaviorRelay<CGFloat>(value: 2.0)
     private var captureRect = BehaviorRelay<CGRect?>(value: nil)
+    private let isScanningEnabled = BehaviorRelay<Bool>(value: true)
 
     // MARK: - Init & Binding
     public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorController: CameraCoordinatorController) {
@@ -78,6 +79,9 @@ public class CameraViewModel: BaseViewModel {
         super.init()
 
         let isCameraConfigured = PublishRelay<Void>()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidPresent), name: .receivingViewDidPresent, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .receivingViewDidDismiss, object: nil)
 
         viewDidLoad
             .withUnretained(self)
@@ -178,6 +182,9 @@ public class CameraViewModel: BaseViewModel {
             .flatMapLatest { owner, _ in
                 owner.cameraUseCase.getPreviewImageDataStream()
             }
+            .withLatestFrom(isScanningEnabled) { ($0, $1) }
+            .filter { _, isEnabled in isEnabled }
+            .compactMap { image, _ in image }
             .withUnretained(self)
             .flatMapLatest { owner, image -> Single<OCRResultVO> in
                 owner.imageAnalysisUseCase.performOCR(on: image)
@@ -229,7 +236,9 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         getQRDataStream
-            .compactMap { $0 }
+            .withLatestFrom(isScanningEnabled) { ($0, $1) }
+            .filter { _, isEnabled in isEnabled }
+            .compactMap { qrDataWithCorners, _ in qrDataWithCorners }
             .map(\.qrString)
             .distinctUntilChanged()
             .withUnretained(self)
@@ -322,7 +331,6 @@ public class CameraViewModel: BaseViewModel {
                 isBrowsing.accept(false)
             }
             .disposed(by: disposeBag)
-
     }
 
     private func adjustedZoomValue(zoomValue: CGFloat) -> CGFloat {
@@ -335,5 +343,19 @@ public class CameraViewModel: BaseViewModel {
         } else {
             return zoomValue
         }
+    }
+
+    @objc private func handleReceivingViewDidPresent() {
+        Log.print("Notification received: receivingViewDidPresent")
+        isScanningEnabled.accept(false)
+    }
+
+    @objc private func handleReceivingViewDidDismiss() {
+        Log.print("Notification received: receivingViewDidDismiss")
+        isScanningEnabled.accept(true)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
