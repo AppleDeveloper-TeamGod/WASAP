@@ -7,8 +7,10 @@
 import RxSwift
 import RxCocoa
 import UIKit
+import VisionKit
 
 public class WifiReConnectViewModel: BaseViewModel {
+    private let imageAnalyzer = ImageAnalyzer()
 
     // MARK: - Coordinator
     private weak var coordinatorController: WifiReConnectCoordinatorController?
@@ -20,7 +22,6 @@ public class WifiReConnectViewModel: BaseViewModel {
     public let pwFieldTouched = PublishRelay<Void>()
     public let keyboardWillShow = PublishRelay<Void>()
     public let keyboardWillHide = PublishRelay<Void>()
-    public let bgTouched = PublishRelay<Void>()
 
     public let ssidText = BehaviorRelay<String>(value: "")
     public let pwText = BehaviorRelay<String>(value: "")
@@ -34,8 +35,8 @@ public class WifiReConnectViewModel: BaseViewModel {
     public let btnColorChangeDriver: Driver<Bool>
     public let ssidTextFieldTouchedDriver: Driver<Bool>
     public let pwTextFieldTouchedDriver: Driver<Bool>
-    public let bgTouchedDriver: Driver<Bool>
     public let keyboardVisible = PublishRelay<Bool>()
+    public let liveTextAnalysis = BehaviorRelay<ImageAnalysis?>(value: nil)
 
     public init(wifiConnectUseCase: WiFiConnectUseCase,
                 coordinatorController: WifiReConnectCoordinatorController,
@@ -61,9 +62,6 @@ public class WifiReConnectViewModel: BaseViewModel {
         let pwTextFieldColorChangeRelay = BehaviorRelay<Bool>(value: false)
         self.pwTextFieldTouchedDriver = pwTextFieldColorChangeRelay.asDriver()
 
-        let bgtouchedRelay = BehaviorRelay<Bool>(value: false)
-        self.bgTouchedDriver = bgtouchedRelay.asDriver()
-
         super.init()
 
         // MARK: 키보드 보일 때
@@ -77,13 +75,6 @@ public class WifiReConnectViewModel: BaseViewModel {
         keyboardWillHide
             .subscribe(onNext: { [weak self] in
                 self?.keyboardVisible.accept(false)
-            })
-            .disposed(by: disposeBag)
-
-        // MARK: 백그라운드 터치 할 때
-        bgTouched
-            .subscribe(onNext: { () in
-                bgtouchedRelay.accept(true)
             })
             .disposed(by: disposeBag)
 
@@ -148,5 +139,24 @@ public class WifiReConnectViewModel: BaseViewModel {
                 ))
             })
             .disposed(by: disposeBag)
+    }
+
+    public func prepareLiveText(from image: UIImage) {
+        Task {
+            do {
+                let configuration = ImageAnalyzer.Configuration([.text]) // 텍스트만 분석
+                let analysis = try await ImageAnalyzer().analyze(image, configuration: configuration)
+
+                // 분석 결과를 Relay에 저장
+                DispatchQueue.main.async {
+                    self.liveTextAnalysis.accept(analysis)
+                }
+            } catch {
+                print("Live Text analysis failed: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.liveTextAnalysis.accept(nil)
+                }
+            }
+        }
     }
 }
