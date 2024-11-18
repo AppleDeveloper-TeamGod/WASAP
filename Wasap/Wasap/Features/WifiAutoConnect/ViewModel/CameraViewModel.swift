@@ -294,6 +294,7 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         shutterButtonDidTap
+            .throttle(.seconds(3), latest: false, scheduler: MainScheduler.instance)
             .withLatestFrom(captureRect)
             .withUnretained(self)
             .flatMapLatest { owner, rect in
