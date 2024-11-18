@@ -100,6 +100,7 @@ public class CameraViewModel: BaseViewModel {
             .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
             .subscribe { _ in
                 SplashController.shared.finishSplash()
+                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 5.0)
             }
             .disposed(by: disposeBag)
 
@@ -263,13 +264,6 @@ public class CameraViewModel: BaseViewModel {
             .subscribe { owner, wifiInfo in
                 Log.print("qr 발견!! : \(wifiInfo)")
                 owner.coordinatorController?.performTransition(to: .connectWithQR(ssid: wifiInfo.ssid ?? "", password: wifiInfo.password ?? ""))
-            }
-            .disposed(by: disposeBag)
-
-        isCameraRunning
-            .withUnretained(self)
-            .subscribe { owner, _ in
-                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 5.0)
             }
             .disposed(by: disposeBag)
 
