@@ -81,7 +81,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
 
         viewModel.ssidRect
             .drive { [weak self] rect in
-                if let rect {
+                if let rect, self?.checkRect(rect) == true {
                     self?.cameraView.ssidRectLayer.frame = rect
                 } else {
                     self?.cameraView.ssidRectLayer.frame = .zero
@@ -92,7 +92,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
 
         viewModel.passwordRect
             .drive { [weak self] rect in
-                if let rect {
+                if let rect, self?.checkRect(rect) == true {
                     self?.cameraView.passwordRectLayer.frame = rect
                 } else {
                     self?.cameraView.passwordRectLayer.frame = .zero
@@ -128,5 +128,12 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
         } completion: { _ in
             onboardingView.removeFromSuperview()
         }
+    }
+
+    /// 알맞은 프레임 영역 안에 있다면 true, 범위 밖으로 벗어나면 false
+    private func checkRect(_ rect: CGRect) -> Bool {
+        let cameraFrameRect = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.74).insetByPercentage(0.1)
+
+        return rect.intersection(cameraFrameRect) == rect
     }
 }

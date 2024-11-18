@@ -305,7 +305,7 @@ extension DefaultCameraRepository: AVCaptureMetadataOutputObjectsDelegate {
                 }
 
                 if convertedCorners.filter({ point in
-                    point.x <= 0 || point.y <= 0 || point.x >= videoPreviewLayer.bounds.width || point.y >= videoPreviewLayer.bounds.height
+                    point.x <= 0 || point.y <= 0 || point.x >= UIScreen.main.bounds.width || point.y >= UIScreen.main.bounds.height * 0.78
                 }).isEmpty {
                     self.capturedQRDataStream.onNext((qrCodeString, convertedCorners))
                 }
