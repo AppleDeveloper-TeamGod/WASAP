@@ -104,6 +104,8 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, _ in
                 owner.cameraUseCase.stopRunning()
+                owner.wifiShareUseCase.stopBrowsing()
+                isBrowsing.accept(false)
             }
             .disposed(by: disposeBag)
 
