@@ -17,7 +17,7 @@ class ConnectingView: BaseView {
     }()
 
     lazy var loadingAnimation: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "connecting_v2")
+        let animation = LottieAnimationView(name: "connectAni")
         animation.loopMode = .loop
         animation.play()
         return animation
