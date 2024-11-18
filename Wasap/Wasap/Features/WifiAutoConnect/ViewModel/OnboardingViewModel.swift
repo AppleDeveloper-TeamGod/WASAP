@@ -20,12 +20,12 @@ public class OnboardingViewModel: BaseViewModel {
     public var currentScrollViewOffset = PublishRelay<CGPoint>()
 
     // MARK: - Output
-    public lazy var currentPageOutput: Driver<Int> = {
+    public lazy var currentPageOutput: Driver<Int> = { [unowned self] in
         self.currentPageOutputRelay
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: 0)
     }()
-    public lazy var changeViaPageControl: Driver<Int> = {
+    public lazy var changeViaPageControl: Driver<Int> = { [unowned self] in
         self.changeViaPageControlRelay
             .asDriver(onErrorDriveWith: .empty())
     }()
@@ -46,17 +46,24 @@ public class OnboardingViewModel: BaseViewModel {
         super.init()
 
         skipButtonDidTap
-            .subscribe { _ in
+            .observe(on: MainScheduler.asyncInstance)
+            .withUnretained(self)
+            .subscribe { owner, _ in
                 Log.print("Skip!")
+                owner.coordinatorController?.performStartSplash()
+                owner.coordinatorController?.performTransition(to: .camera)
             }
             .disposed(by: disposeBag)
 
         nextButtonDidTap
             .withLatestFrom(self.currentPage)
+            .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
             .subscribe { owner, currentPageNum in
                 if currentPageNum == Self.onboardingPages.count - 1 {
                     Log.print("카메라로 이동!")
+                    owner.coordinatorController?.performStartSplash()
+                    coordinatorController.performTransition(to: .camera)
                 } else {
                     owner.currentPage.onNext(currentPageNum + 1)
                     owner.changeViaPageControlRelay.accept(currentPageNum + 1)

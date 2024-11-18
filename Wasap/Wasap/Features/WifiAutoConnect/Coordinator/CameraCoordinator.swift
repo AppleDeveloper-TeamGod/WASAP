@@ -35,7 +35,7 @@ public class CameraCoordinator: NavigationCoordinator {
         let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self)
         let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
 
-        self.navigationController.pushViewController(cameraViewController, animated: true)
+        self.navigationController.setViewControllers([cameraViewController], animated: true)
     }
 
     public func finish() {
@@ -56,5 +56,9 @@ extension CameraCoordinator: CameraCoordinatorController {
             let coordinator = ReceivingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
+    }
+
+    public func performFinishSplash() {
+        SplashController.shared.finishSplash()
     }
 }
