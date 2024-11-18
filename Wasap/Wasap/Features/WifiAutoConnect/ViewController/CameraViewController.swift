@@ -72,7 +72,9 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
 
                     let rect = CGRect(x: minX, y: minY, width: width, height: height)
                     self?.cameraView.qrRectLayer.frame = rect
+                    self?.cameraView.qrRectLayer.isHidden = false
                 } else {
+                    self?.cameraView.qrRectLayer.isHidden = true
                     self?.cameraView.qrRectLayer.frame = .zero
                 }
                 self?.cameraView.setNeedsLayout()
@@ -83,7 +85,9 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .drive { [weak self] rect in
                 if let rect, self?.checkRect(rect) == true {
                     self?.cameraView.ssidRectLayer.frame = rect
+                    self?.cameraView.ssidRectLayer.isHidden = false
                 } else {
+                    self?.cameraView.ssidRectLayer.isHidden = true
                     self?.cameraView.ssidRectLayer.frame = .zero
                 }
                 self?.cameraView.setNeedsLayout()
@@ -94,7 +98,9 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .drive { [weak self] rect in
                 if let rect, self?.checkRect(rect) == true {
                     self?.cameraView.passwordRectLayer.frame = rect
+                    self?.cameraView.passwordRectLayer.isHidden = false
                 } else {
+                    self?.cameraView.passwordRectLayer.isHidden = true
                     self?.cameraView.passwordRectLayer.frame = .zero
                 }
                 self?.cameraView.setNeedsLayout()
