@@ -79,11 +79,12 @@ public class CameraViewModel: BaseViewModel {
         super.init()
 
         let isCameraConfigured = PublishRelay<Void>()
+        let sharedIsCameraConfigured = isCameraConfigured.share()
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidPresent), name: .receivingViewDidPresent, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .receivingViewDidDismiss, object: nil)
 
-        viewDidLoad
+        viewWillAppear
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 cameraUseCase.configureCamera()
@@ -97,7 +98,10 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         viewDidAppear
-            .bind(to: isCameraConfigured)
+            .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .subscribe { _ in
+                SplashController.shared.finishSplash()
+            }
             .disposed(by: disposeBag)
 
         viewDidDisappear
@@ -165,7 +169,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        isCameraConfigured
+        sharedIsCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _  in
                 owner.cameraUseCase.startRunning()
@@ -179,7 +183,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        isCameraConfigured
+        sharedIsCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 owner.cameraUseCase.getPreviewImageDataStream()
@@ -218,7 +222,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        let getQRDataStream = isCameraConfigured
+        let getQRDataStream = sharedIsCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ -> Observable<(qrString: String, corners: [CGPoint])?> in
                 owner.cameraUseCase.getQRDataStream()
@@ -255,11 +259,18 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        isCameraConfigured
+        sharedIsCameraConfigured
             .withUnretained(self)
             .subscribe { owner, _ in
                 let (minimum, maximum) = owner.cameraUseCase.getMinMaxZoomFactor()
                 minMaxZoomFactorRelay.accept((min: minimum ?? 1.0, max: maximum ?? 1.0))
+            }
+            .disposed(by: disposeBag)
+
+        isCameraRunning
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 5.0)
             }
             .disposed(by: disposeBag)
 
@@ -301,7 +312,7 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         /// 공유 수신
-        isCameraConfigured
+        sharedIsCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 wifiShareUseCase.startBrowsing()

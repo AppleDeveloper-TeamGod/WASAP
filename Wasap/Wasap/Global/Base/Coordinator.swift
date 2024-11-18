@@ -114,6 +114,7 @@ public protocol WifiReConnectCoordinatorController: AnyObject {
 
 public protocol CameraCoordinatorController: AnyObject {
     func performTransition(to flow: CameraCoordinator.Flow)
+    func performFinishSplash()
 }
 
 public protocol GoToSettingCoordinatorController: AnyObject {
@@ -122,5 +123,6 @@ public protocol GoToSettingCoordinatorController: AnyObject {
 
 public protocol OnboardingCoordinatorController: AnyObject {
     func performTransition(to flow: OnboardingCoordinator.Flow)
+    func performStartSplash()
 }
 

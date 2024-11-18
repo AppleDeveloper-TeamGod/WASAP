@@ -8,6 +8,7 @@
 import UIKit
 
 public class OnboardingCoordinator: NavigationCoordinator {
+
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public var navigationController: UINavigationController
@@ -27,18 +28,30 @@ public class OnboardingCoordinator: NavigationCoordinator {
         // TODO: DI로 생성하기
         let viewModel = OnboardingViewModel(coordinatorController: self)
         let viewController = OnboardingViewController(viewModel: viewModel)
-        
+
         self.navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.pushViewController(viewController, animated: true)
     }
 
     public func finish() {
-        self.navigationController.popViewController(animated: true)
+        DispatchQueue.main.async {
+            self.navigationController.popViewController(animated: false)
+        }
     }
 }
 
 extension OnboardingCoordinator: OnboardingCoordinatorController {
     public func performTransition(to flow: Flow) {
+        switch flow {
+        case .camera:
+            DispatchQueue.main.async {
+                let coordinator = CameraCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer)
+                self.switch(childCoordinator: coordinator)
+            }
+        }
+    }
 
+    public func performStartSplash() {
+        SplashController.shared.startSplash()
     }
 }
