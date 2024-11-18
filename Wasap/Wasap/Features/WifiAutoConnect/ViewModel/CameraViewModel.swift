@@ -79,7 +79,6 @@ public class CameraViewModel: BaseViewModel {
         super.init()
 
         let isCameraConfigured = PublishRelay<Void>()
-        let sharedIsCameraConfigured = isCameraConfigured.share()
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidPresent), name: .receivingViewDidPresent, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .receivingViewDidDismiss, object: nil)
@@ -169,7 +168,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        sharedIsCameraConfigured
+        isCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _  in
                 owner.cameraUseCase.startRunning()
@@ -183,7 +182,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        sharedIsCameraConfigured
+        isCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 owner.cameraUseCase.getPreviewImageDataStream()
@@ -222,7 +221,15 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        let getQRDataStream = sharedIsCameraConfigured
+        isCameraConfigured
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                let (minimum, maximum) = owner.cameraUseCase.getMinMaxZoomFactor()
+                minMaxZoomFactorRelay.accept((min: minimum ?? 1.0, max: maximum ?? 1.0))
+            }
+            .disposed(by: disposeBag)
+
+        let getQRDataStream = isCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ -> Observable<(qrString: String, corners: [CGPoint])?> in
                 owner.cameraUseCase.getQRDataStream()
@@ -256,14 +263,6 @@ public class CameraViewModel: BaseViewModel {
             .subscribe { owner, wifiInfo in
                 Log.print("qr 발견!! : \(wifiInfo)")
                 owner.coordinatorController?.performTransition(to: .connectWithQR(ssid: wifiInfo.ssid ?? "", password: wifiInfo.password ?? ""))
-            }
-            .disposed(by: disposeBag)
-
-        sharedIsCameraConfigured
-            .withUnretained(self)
-            .subscribe { owner, _ in
-                let (minimum, maximum) = owner.cameraUseCase.getMinMaxZoomFactor()
-                minMaxZoomFactorRelay.accept((min: minimum ?? 1.0, max: maximum ?? 1.0))
             }
             .disposed(by: disposeBag)
 
@@ -312,7 +311,7 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         /// 공유 수신
-        sharedIsCameraConfigured
+        isCameraConfigured
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 wifiShareUseCase.startBrowsing()

@@ -82,6 +82,10 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
 
     public func configureCamera() -> Single<AVCaptureSession> {
         let configureStream = Single<AVCaptureSession>.create { [weak self] single in
+            if let captureSession = self?.captureSession {
+                single(.success(captureSession))
+                return Disposables.create()
+            }
             let session = AVCaptureSession()
             session.beginConfiguration()
 
