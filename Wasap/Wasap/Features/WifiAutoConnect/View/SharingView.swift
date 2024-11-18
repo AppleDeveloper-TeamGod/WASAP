@@ -7,12 +7,29 @@
 
 import UIKit
 import SnapKit
+import Lottie
 
 class SharingView: BaseView {
     lazy var backgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .primary200
         return view
+    }()
+
+    lazy var firstAnimation: LottieAnimationView = {
+        let animation = LottieAnimationView(name: "shareIntroAni")
+        animation.loopMode = .playOnce
+        animation.play { [weak self] _ in
+            self?.startSecondAnimation()
+        }
+        return animation
+    }()
+
+    lazy var secondAnimation: LottieAnimationView = {
+        let animation = LottieAnimationView(name: "shareWaveAni")
+        animation.loopMode = .loop
+        animation.isHidden = true
+        return animation
     }()
 
     lazy var backButton: UIButton = {
@@ -47,12 +64,8 @@ class SharingView: BaseView {
         label.font = FontStyle.title.font.withSize(50.5)
         label.addLabelSpacing(fontStyle: FontStyle.title)
         label.textAlignment = .center
-        label.backgroundColor = .neutralBlack
-
-        label.layer.cornerRadius = 52.5
-        label.layer.borderWidth = 2
-        label.layer.borderColor = UIColor.gray500.cgColor
-        label.layer.masksToBounds = true
+        label.alpha = 0.0
+        label.isHidden = true
         return label
     }()
 
@@ -82,11 +95,21 @@ class SharingView: BaseView {
 
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(peerCountLabel, titleLabel, stopShareButton, backButton, shareQRButton, shareQRLabel)
+        self.addSubViews(secondAnimation, firstAnimation, peerCountLabel, titleLabel, stopShareButton, backButton, shareQRButton, shareQRLabel)
     }
-    
+
     func setConstraints() {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
+
+        firstAnimation.snp.makeConstraints {
+            $0.centerX.equalTo(peerCountLabel.snp.centerX)
+            $0.centerY.equalTo(peerCountLabel.snp.centerY)
+        }
+
+        secondAnimation.snp.makeConstraints {
+            $0.centerX.equalTo(firstAnimation.snp.centerX)
+            $0.centerY.equalTo(firstAnimation.snp.centerY)
+        }
 
         backButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(71)
@@ -124,5 +147,17 @@ class SharingView: BaseView {
             $0.leading.trailing.equalToSuperview().inset(27)
             $0.height.equalTo(52)
         }
+    }
+
+    private func startSecondAnimation() {
+        firstAnimation.isHidden = true
+        secondAnimation.isHidden = false
+        secondAnimation.play()
+
+        UIView.animate(withDuration: 0.8, delay: 0.0, options: [.curveEaseInOut],
+                       animations: { [weak self] in
+            self?.peerCountLabel.isHidden = false
+            self?.peerCountLabel.alpha = 1.0
+        })
     }
 }
