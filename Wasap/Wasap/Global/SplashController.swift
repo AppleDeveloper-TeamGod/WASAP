@@ -26,9 +26,10 @@ public final class SplashController {
             self.splashWindow = UIWindow(windowScene: windowScene)
             self.splashWindow!.frame = windowScene.coordinateSpace.bounds
             self.splashWindow!.windowLevel = .alert + 1 // 다른 UI 위에 표시
-            self.splashWindow!.backgroundColor = .blue.withAlphaComponent(0.5)
+            self.splashWindow!.backgroundColor = .clear
 
             let splashView = SplashView(frame: self.splashWindow!.bounds)
+            splashView.backgroundColor = .green200
             self.splashWindow!.addSubview(splashView)
             self.splashWindow!.isHidden = false
         }
@@ -37,8 +38,10 @@ public final class SplashController {
     public func finishSplash() {
         Log.print("Finish Splash")
         UIView.animate(withDuration: 2.0, delay: 1) {
-            self.splashWindow?.isHidden = true
+//            self.splashWindow?.subviews.first?.alpha = 0.0
+            self.splashWindow?.alpha = 0.0
         } completion: { _ in
+            self.splashWindow?.isHidden = true
             self.splashWindow?.removeFromSuperview()
         }
     }
@@ -47,11 +50,10 @@ public final class SplashController {
 import Lottie
 
 private class SplashView: BaseView {
-    private lazy var lottieAnimation: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "OnBoarding2")
-        animation.loopMode = .loop
-        animation.play()
-        return animation
+    private lazy var lottieAnimation: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "Logo"))
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }()
 
     func setViewHierarchy() {
