@@ -51,16 +51,16 @@ public class CameraViewModel: BaseViewModel {
         self.previewLayer = previewLayerRelay.asDriver(onErrorDriveWith: .empty())
 
         let qrCodeCornersRelay = BehaviorRelay<[CGPoint]?>(value: nil)
-        let qrCodeNoResponseTrigger = qrCodeCornersRelay.debounce(.seconds(2), scheduler: MainScheduler.instance).map({ _ -> [CGPoint]? in nil })
+        let qrCodeNoResponseTrigger = qrCodeCornersRelay.debounce(.milliseconds(1500), scheduler: MainScheduler.asyncInstance).map({ _ -> [CGPoint]? in nil })
         self.qrCodePoints = Observable.merge(qrCodeCornersRelay.asObservable(), qrCodeNoResponseTrigger).asDriver(onErrorJustReturn: nil)
 
 
         let ssidRelay = BehaviorRelay<CGRect?>(value: nil)
-        let ssidNoResponseTrigger = ssidRelay.debounce(.seconds(2), scheduler: MainScheduler.instance).map({ _ -> CGRect? in nil })
+        let ssidNoResponseTrigger = ssidRelay.debounce(.milliseconds(1500), scheduler: MainScheduler.asyncInstance).map({ _ -> CGRect? in nil })
         self.ssidRect = Observable.merge(ssidRelay.asObservable(), ssidNoResponseTrigger).asDriver(onErrorJustReturn: nil)
 
         let passwordRelay = BehaviorRelay<CGRect?>(value: nil)
-        let passwordNoResponseTrigger = passwordRelay.debounce(.seconds(2), scheduler: MainScheduler.instance).map({ _ -> CGRect? in nil })
+        let passwordNoResponseTrigger = passwordRelay.debounce(.milliseconds(1500), scheduler: MainScheduler.asyncInstance).map({ _ -> CGRect? in nil })
         self.passwordRect = Observable.merge(passwordRelay.asObservable(), passwordNoResponseTrigger).asDriver(onErrorJustReturn: nil)
 
         let zoomValueRelay = PublishRelay<CGFloat>()
@@ -255,6 +255,7 @@ public class CameraViewModel: BaseViewModel {
             .compactMap { qrDataWithCorners, _ in qrDataWithCorners }
             .map(\.qrString)
             .distinctUntilChanged()
+            .debounce(.seconds(2), scheduler: MainScheduler.asyncInstance)
             .withUnretained(self)
             .compactMap { owner, qrString in
                 owner.imageAnalysisUseCase.parseWiFiInfo(from: qrString)
