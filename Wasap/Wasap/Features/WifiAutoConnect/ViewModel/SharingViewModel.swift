@@ -28,7 +28,10 @@ public class SharingViewModel: BaseViewModel {
         self.wifiShareUseCase = wifiShareUseCase
 
         let connectedPeerCountRelay = BehaviorRelay<Int>(value: 0)
-        self.connectedPeerCount = connectedPeerCountRelay.asDriver()
+        self.connectedPeerCount = connectedPeerCountRelay
+            .debounce(.milliseconds(100), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: 0)
 
         let isAdvertising = BehaviorRelay<Bool>(value: false)
 
