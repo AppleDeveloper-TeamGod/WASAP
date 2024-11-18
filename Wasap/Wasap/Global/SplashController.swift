@@ -51,7 +51,7 @@ import Lottie
 
 private class SplashView: BaseView {
     private lazy var lottieAnimation: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "Logo"))
+        let imageView = UIImageView(image: UIImage(named: "SplashLogo"))
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
