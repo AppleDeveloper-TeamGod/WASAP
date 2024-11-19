@@ -27,7 +27,8 @@ class GoToSettingView: BaseView {
         label.text = "인식된 정보를 확인하고,"
         label.textColor = .gray200
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 21)
+        label.font = FontStyle.title.font.withSize(21)
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         return label
     }()
 
@@ -36,7 +37,8 @@ class GoToSettingView: BaseView {
         label.text = "설정에서 시도하세요."
         label.textColor = .green300
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 21)
+        label.font = FontStyle.title.font.withSize(21)
+        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         return label
     }()
 
@@ -70,6 +72,7 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.textColor = .gray300
         label.font = FontStyle.password_M.font.withSize(18)
+        label.addLabelSpacing(fontStyle: FontStyle.password_S)
         label.textAlignment = .left
         return label
     }()
@@ -95,7 +98,7 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.textColor = .gray300
         label.font = FontStyle.password_M.font.withSize(18)
-        label.font = .preferredFont(forTextStyle: .headline)
+        label.addLabelSpacing(fontStyle: FontStyle.password_S)
         label.textAlignment = .left
         return label
     }()
@@ -111,6 +114,8 @@ class GoToSettingView: BaseView {
         let button = UIButton()
         button.setTitle("복사하기", for: .normal)
         button.setTitleColor(.green200, for: .normal)
+        button.titleLabel?.font = FontStyle.button.font.withSize(13)
+        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
         button.backgroundColor = .clear
 
         button.layer.cornerRadius = 20
@@ -128,25 +133,26 @@ class GoToSettingView: BaseView {
     lazy var infoFirstLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.textColor = .white
+        label.textColor = .gray400
         label.textAlignment = .left
         label.text = "WiFi 비밀번호를 복사해 두면"
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
 
     lazy var infoStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [infoIcon, infoFirstLabel])
         stackView.axis = .horizontal
-        stackView.spacing = 6
+        stackView.spacing = 10
         return stackView
     }()
 
     lazy var infoSecondLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.textColor = .gray100
+        label.textColor = .gray400
         label.textAlignment = .left
-        label.font = FontStyle.subTitle.font.withSize(16)
+        label.font = UIFont.systemFont(ofSize: 14)
 
         let wifiID = "설정 > Wi-Fi"
         let description = "\(wifiID) "+"에서 쉽게 연결할 수 있습니다."
@@ -164,6 +170,8 @@ class GoToSettingView: BaseView {
     lazy var backButton: UIButton = {
         let button = UIButton()
         button.setTitle("<", for: .normal)
+        button.titleLabel?.font = FontStyle.button.font
+        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
         button.setTitleColor(.primary200, for: .normal)
         button.backgroundColor = .clear
 
@@ -176,6 +184,8 @@ class GoToSettingView: BaseView {
     lazy var settingButton: UIButton = {
         let button = UIButton()
         button.setTitle("아이폰 설정으로 가기", for: .normal)
+        button.titleLabel?.font = FontStyle.button.font
+        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = FontStyle.button.font
         button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
@@ -263,7 +273,7 @@ class GoToSettingView: BaseView {
         }
 
         infoSecondLabel.snp.makeConstraints {
-            $0.top.equalTo(infoStackView.snp.bottom).offset(1)
+            $0.top.equalTo(infoStackView.snp.bottom).offset(3)
             $0.leading.equalToSuperview().inset(50)
         }
 
