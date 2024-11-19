@@ -71,6 +71,20 @@ final class CameraView: BaseView {
         return button
     }()
 
+    public lazy var tipButtonView: UIStackView = {
+        let tipImageView = UIImageView(image: UIImage(named: "HelpCircle"))
+        tipImageView.contentMode = .scaleAspectFit
+
+        let tipLabel = UILabel()
+        tipLabel.text = "사용 팁".localized()
+        tipLabel.font = FontStyle.caption.font
+        tipLabel.textColor = .gray200
+
+        let stackView = UIStackView(arrangedSubviews: [tipImageView, tipLabel])
+        stackView.axis = .vertical
+        return stackView
+    }()
+
     private lazy var minusImage: UIImageView = {
         let minusImage = UIImageView(image: UIImage(systemName: "minus"))
         minusImage.sizeToFit()
@@ -130,7 +144,7 @@ final class CameraView: BaseView {
     func setViewHierarchy() {
         self.addSubViews(previewContainerView, photoFrameView, bottomBackgroundView, zoomSlider)
 
-        self.bottomBackgroundView.addSubview(takePhotoButton)
+        self.bottomBackgroundView.addSubViews(takePhotoButton, tipButtonView)
 
         self.previewContainerView.layer.addSublayer(qrRectLayer)
         self.previewContainerView.layer.addSublayer(ssidRectLayer)
@@ -162,6 +176,13 @@ final class CameraView: BaseView {
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview().offset(-16)
             $0.width.height.equalTo(85)
+        }
+
+        tipButtonView.snp.makeConstraints {
+            $0.centerY.equalTo(self.takePhotoButton)
+            $0.width.equalTo(40)
+            $0.height.equalTo(60)
+            $0.centerX.equalToSuperview().offset(superViewWidth * 0.3)
         }
 
         minusImage.snp.makeConstraints {
