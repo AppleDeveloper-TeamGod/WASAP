@@ -255,7 +255,7 @@ public class CameraViewModel: BaseViewModel {
             .compactMap { qrDataWithCorners, _ in qrDataWithCorners }
             .map(\.qrString)
             .distinctUntilChanged()
-            .debounce(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .debounce(.milliseconds(1500), scheduler: MainScheduler.asyncInstance)
             .withUnretained(self)
             .compactMap { owner, qrString in
                 owner.imageAnalysisUseCase.parseWiFiInfo(from: qrString)

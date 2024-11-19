@@ -91,7 +91,23 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
 
             session.sessionPreset = .photo
 
-            guard let backCamera = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back) else {
+            let deviceTypes: [AVCaptureDevice.DeviceType] = [
+                .builtInTripleCamera, // Triple camera
+                .builtInDualCamera,   // Dual camera
+                .builtInWideAngleCamera // Standard wide-angle camera
+            ]
+
+            let discoverySession = AVCaptureDevice.DiscoverySession(
+                deviceTypes: deviceTypes,
+                mediaType: .video,
+                position: .back
+            )
+
+            for device in discoverySession.devices {
+                print("Available camera: \(device.localizedName) - Type: \(device.deviceType)")
+            }
+
+            guard let backCamera = discoverySession.devices.first else {
                 session.commitConfiguration()
                 single(.failure(CameraErrors.cameraNotFound))
                 return Disposables.create()
