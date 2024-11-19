@@ -48,6 +48,10 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .bind(to: viewModel.zoomPinchGestureDidChange)
             .disposed(by: disposeBag)
 
+        cameraView.tipButtonView.rx.tapGesture().map { _ in () }
+            .bind(to: viewModel.tipButtonDidTap)
+            .disposed(by: disposeBag)
+
         viewModel.previewLayer
             .drive { [weak self] previewLayer in
                 Log.debug("preview layer on VC : \(previewLayer)")

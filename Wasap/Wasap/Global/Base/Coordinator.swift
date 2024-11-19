@@ -103,7 +103,7 @@ public protocol NavigationCoordinator: Coordinator {
 }
 
 public protocol SheetCoordinator: Coordinator {
-    var sheetController: UIViewController { get }
+    var parentViewController: UIViewController { get }
 }
 
 // MARK: - CoordinatorController ( 추가 )

@@ -24,6 +24,7 @@ public class CameraViewModel: BaseViewModel {
     public var zoomPinchGestureDidChange = PublishRelay<UIPinchGestureRecognizer>()
     public var zoomControlButtonDidTap = PublishRelay<Void>()
     public var shutterButtonDidTap = PublishRelay<Void>()
+    public var tipButtonDidTap = PublishRelay<Void>()
 
     // MARK: - Output
     public var previewLayer: Driver<AVCaptureVideoPreviewLayer>
@@ -349,6 +350,14 @@ public class CameraViewModel: BaseViewModel {
                 owner.coordinatorController?.performTransition(to: .receiving(ssid: wifiInfo.ssid, password: wifiInfo.password))
                 owner.wifiShareUseCase.stopBrowsing()
                 isBrowsing.accept(false)
+            }
+            .disposed(by: disposeBag)
+
+        /// TipButton
+        tipButtonDidTap
+            .withUnretained(self)
+            .subscribe { owner, _ in
+                owner.coordinatorController?.performTransition(to: .tip)
             }
             .disposed(by: disposeBag)
     }
