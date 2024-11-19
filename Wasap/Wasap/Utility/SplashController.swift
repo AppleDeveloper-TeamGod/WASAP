@@ -37,12 +37,14 @@ public final class SplashController {
 
     public func finishSplash() {
         Log.print("Finish Splash")
+        guard self.splashWindow != nil else { return }
         UIView.animate(withDuration: 2.0, delay: 1) {
 //            self.splashWindow?.subviews.first?.alpha = 0.0
             self.splashWindow?.alpha = 0.0
         } completion: { _ in
             self.splashWindow?.isHidden = true
             self.splashWindow?.removeFromSuperview()
+            self.splashWindow = nil
         }
     }
 }

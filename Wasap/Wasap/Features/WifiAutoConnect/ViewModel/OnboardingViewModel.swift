@@ -63,7 +63,7 @@ public class OnboardingViewModel: BaseViewModel {
                 if currentPageNum == Self.onboardingPages.count - 1 {
                     Log.print("카메라로 이동!")
                     owner.coordinatorController?.performStartSplash()
-                    coordinatorController.performTransition(to: .camera)
+                    owner.coordinatorController?.performTransition(to: .camera)
                 } else {
                     owner.currentPage.onNext(currentPageNum + 1)
                     owner.changeViaPageControlRelay.accept(currentPageNum + 1)

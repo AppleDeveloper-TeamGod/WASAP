@@ -18,14 +18,13 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
         bind(viewModel)
     }
 
-    override public func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.startOnboarding()
-    }
-
     @MainActor required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        Log.print("view will appear in camera view controller")
     }
 
     public override func loadView() {
@@ -119,21 +118,6 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
                 self?.cameraView.zoomSlider.maximumValue = Float(value.max)
             }
             .disposed(by: disposeBag)
-    }
-
-    private func startOnboarding() {
-        let onboardingView = OnboardingView()
-        self.navigationController?.view.addSubview(onboardingView)
-
-        onboardingView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        UIView.animate(withDuration: 1.0, delay: 2.0) {
-            onboardingView.alpha = 0.0
-        } completion: { _ in
-            onboardingView.removeFromSuperview()
-        }
     }
 
     /// 알맞은 프레임 영역 안에 있다면 true, 범위 밖으로 벗어나면 false
