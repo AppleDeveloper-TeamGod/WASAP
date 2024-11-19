@@ -59,7 +59,7 @@ extension TipView {
             $0.top.equalToSuperview().inset(88)
             $0.centerX.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(0.9)
-            $0.height.equalToSuperview().multipliedBy(0.55)
+            $0.height.equalToSuperview().multipliedBy(0.60)
         }
 
         self.pageControl.snp.makeConstraints {

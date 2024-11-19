@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import RxSwift
+import RxGesture
 import CoreLocation
 
 public class CameraViewController: RxBaseViewController<CameraViewModel> {
@@ -48,7 +49,9 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .bind(to: viewModel.zoomPinchGestureDidChange)
             .disposed(by: disposeBag)
 
-        cameraView.tipButtonView.rx.tapGesture().map { _ in () }
+        cameraView.tipButtonView.rx.tapGesture()
+            .filter { event in event.numberOfTouches > 0 }
+            .map { _ in () }
             .bind(to: viewModel.tipButtonDidTap)
             .disposed(by: disposeBag)
 

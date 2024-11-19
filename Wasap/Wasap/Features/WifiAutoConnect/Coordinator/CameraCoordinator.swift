@@ -14,6 +14,7 @@ public class CameraCoordinator: NavigationCoordinator {
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
     public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer) {
+        Log.debug("CameraCoordinator init")
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
     }

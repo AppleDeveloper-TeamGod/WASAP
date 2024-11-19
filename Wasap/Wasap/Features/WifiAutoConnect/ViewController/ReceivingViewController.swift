@@ -16,8 +16,8 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel>, 
         super.viewDidLoad()
         self.presentationController?.delegate = self
 
-        Log.print("Notification sent: receivingViewDidPresent")
-        NotificationCenter.default.post(name: .receivingViewDidPresent, object: nil)
+        Log.print("Notification sent: viewDidPresent")
+        NotificationCenter.default.post(name: .viewDidPresent, object: nil)
     }
 
     public override func loadView() {
@@ -51,12 +51,12 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel>, 
     }
 
     deinit {
-        Log.print("Notification sent: receivingViewDidDismiss")
-        NotificationCenter.default.post(name: .receivingViewDidDismiss, object: nil)
+        Log.print("Notification sent: viewDidDismiss")
+        NotificationCenter.default.post(name: .viewDidDismiss, object: nil)
     }
 }
 
 extension Notification.Name {
-    static let receivingViewDidPresent = Notification.Name("receivingViewDidPresent")
-    static let receivingViewDidDismiss = Notification.Name("receivingViewDidDismiss")
+    static let viewDidPresent = Notification.Name("modalViewDidPresent")
+    static let viewDidDismiss = Notification.Name("modalViewDidDismiss")
 }

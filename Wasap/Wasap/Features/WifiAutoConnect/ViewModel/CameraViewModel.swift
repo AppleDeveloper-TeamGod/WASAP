@@ -39,7 +39,7 @@ public class CameraViewModel: BaseViewModel {
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
     private var currentZoomValue = BehaviorRelay<CGFloat>(value: 2.0)
     private var captureRect = BehaviorRelay<CGRect?>(value: nil)
-    private let isScanningEnabled = BehaviorRelay<Bool>(value: true)
+    private let isModalPresented = BehaviorRelay<Bool>(value: false)
 
     // MARK: - Init & Binding
     public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorController: CameraCoordinatorController) {
@@ -81,8 +81,8 @@ public class CameraViewModel: BaseViewModel {
 
         let isCameraConfigured = PublishRelay<Void>()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidPresent), name: .receivingViewDidPresent, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .receivingViewDidDismiss, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidPresent), name: .viewDidPresent, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .viewDidDismiss, object: nil)
 
         viewDidLoad
             .withUnretained(self)
@@ -201,8 +201,8 @@ public class CameraViewModel: BaseViewModel {
             .flatMapLatest { owner, _ in
                 owner.cameraUseCase.getPreviewImageDataStream()
             }
-            .withLatestFrom(isScanningEnabled) { ($0, $1) }
-            .filter { _, isEnabled in isEnabled }
+            .withLatestFrom(isModalPresented) { ($0, $1) }
+            .filter { _, isPresented in !isPresented }
             .compactMap { image, _ in image }
             .withUnretained(self)
             .flatMap { owner, image -> Single<OCRResultVO> in
@@ -254,6 +254,7 @@ public class CameraViewModel: BaseViewModel {
                 }
                 return qrDataWithCorners
             }
+            .share()
 
         getQRDataStream
             .withUnretained(self)
@@ -263,8 +264,8 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         getQRDataStream
-            .withLatestFrom(isScanningEnabled) { ($0, $1) }
-            .filter { _, isEnabled in isEnabled }
+            .withLatestFrom(isModalPresented) { ($0, $1) }
+            .filter { _, isPresented in !isPresented }
             .compactMap { qrDataWithCorners, _ in qrDataWithCorners }
             .map(\.qrString)
             .distinctUntilChanged()
@@ -344,7 +345,10 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        receivedWiFiInfo
+        Observable.combineLatest(receivedWiFiInfo, isModalPresented)
+            .filter { !$1 }
+            .map(\.0)
+            .distinctUntilChanged(\.ssid)
             .withUnretained(self)
             .subscribe { owner, wifiInfo in
                 owner.coordinatorController?.performTransition(to: .receiving(ssid: wifiInfo.ssid, password: wifiInfo.password))
@@ -375,13 +379,13 @@ public class CameraViewModel: BaseViewModel {
     }
 
     @objc private func handleReceivingViewDidPresent() {
-        Log.print("Notification received: receivingViewDidPresent")
-        isScanningEnabled.accept(false)
+        Log.print("Notification received: viewDidPresent")
+        isModalPresented.accept(true)
     }
 
     @objc private func handleReceivingViewDidDismiss() {
-        Log.print("Notification received: receivingViewDidDismiss")
-        isScanningEnabled.accept(true)
+        Log.print("Notification received: viewDidDismiss")
+        isModalPresented.accept(false)
     }
 
     deinit {
