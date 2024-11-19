@@ -83,6 +83,19 @@ public class CameraViewModel: BaseViewModel {
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidPresent), name: .receivingViewDidPresent, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .receivingViewDidDismiss, object: nil)
 
+        viewDidLoad
+            .withUnretained(self)
+            .flatMapLatest { owner, _ in
+                cameraUseCase.configureCamera()
+            }
+            .subscribe {
+                Log.debug("Camera Configure Completed")
+                isCameraConfigured.accept($0)
+            } onError: { error in
+                Log.error("\(error.localizedDescription)")
+            }
+            .disposed(by: disposeBag)
+
         viewWillAppear
             .withUnretained(self)
             .flatMapLatest { owner, _ in
@@ -100,7 +113,6 @@ public class CameraViewModel: BaseViewModel {
             .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
             .subscribe { _ in
                 SplashController.shared.finishSplash()
-                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 5.0)
             }
             .disposed(by: disposeBag)
 
@@ -127,7 +139,7 @@ public class CameraViewModel: BaseViewModel {
                 if pinchScale <= 1.0 {
                     return (1.0 - exp(1.0 - pinchScale)) * 3 + $1
                 } else {
-                    return pinchScale - 1.0 + $1
+                    return (pinchScale - 1.0 + $1) * 1.5
                 }
             })
             .distinctUntilChanged {
@@ -150,7 +162,7 @@ public class CameraViewModel: BaseViewModel {
                 if pinchScale <= 1.0 {
                     return (1.0 - exp(1.0 - pinchScale)) * 3 + $1
                 } else {
-                    return pinchScale - 1.0 + $1
+                    return (pinchScale - 1.0 + $1) * 1.5
                 }
             })
             .map { [weak self] value in
@@ -165,7 +177,7 @@ public class CameraViewModel: BaseViewModel {
         isCameraConfigured
             .observe(on: MainScheduler.instance)
             .subscribe { _ in
-                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 5.0,top: 24)
+                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 5.0, top: 24)
             }
             .disposed(by: disposeBag)
 
