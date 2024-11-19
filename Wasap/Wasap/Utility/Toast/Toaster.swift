@@ -55,7 +55,7 @@ public final class Toaster {
         }
     }
 
-    public func toast(_ message: String, duration: TimeInterval = 1.0, delay: TimeInterval = 2.0,top: Int) {
+    public func toast(_ message: String, duration: TimeInterval = 1.0, delay: TimeInterval = 2.0, top: Int = 24) {
         guard let connectedViewController else {
             Log.error("Error! No connected view")
             return
