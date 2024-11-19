@@ -127,7 +127,7 @@ class GoToSettingView: BaseView {
 
     lazy var infoIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "InfoIcon")
+        imageView.image = UIImage(named: "InfoTextIcon")
         return imageView
     }()
 
