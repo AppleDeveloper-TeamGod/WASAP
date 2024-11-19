@@ -1,34 +1,20 @@
 //
-//  OnboardingView.swift
+//  TipView.swift
 //  Wasap
 //
-//  Created by chongin on 11/9/24.
+//  Created by chongin on 11/19/24.
 //
 
 import UIKit
 import SnapKit
 import Lottie
 
-final class OnboardingView: BaseView {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    @MainActor required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Top Area
-    private lazy var logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "AppIconLabel"))
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-
-    public lazy var skipButton: UIButton = {
+final class TipView: BaseView {
+    public lazy var xbutton: UIButton = {
         let button = UIButton()
-        button.setTitle("Skip", for: .normal)
-        button.setTitleColor(.gray400, for: .normal)
+        button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        button.tintColor = .gray400
+        button.setPreferredSymbolConfiguration(.init(pointSize: 36), forImageIn: .normal)
         return button
     }()
 
@@ -49,54 +35,40 @@ final class OnboardingView: BaseView {
         return pageControl
     }()
 
-    public lazy var nextButton: UIButton = {
+    public lazy var bottomCloseButton: UIButton = {
         let button = UIButton()
-        button.setTitle("다음".localized(), for: .normal)
+        button.setTitle("닫기".localized(), for: .normal)
         button.backgroundColor = .green200
         button.layer.cornerRadius = 25
         return button
     }()
 }
 
-/// Scroll할 때 PageControl도 따라오도록 설정
-extension OnboardingView: UIScrollViewDelegate {
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let pageIndex = round(scrollView.contentOffset.x / self.frame.width)
-        pageControl.currentPage = Int(pageIndex)
-    }
-}
-
-extension OnboardingView {
+extension TipView {
     func setViewHierarchy() {
-        self.addSubViews(logoImageView, skipButton, scrollView, pageControl, nextButton)
-
+        self.addSubViews(xbutton, scrollView, pageControl, bottomCloseButton)
     }
 
     func setConstraints() {
-        self.logoImageView.snp.makeConstraints {
-            $0.top.leading.equalTo(safeAreaLayoutGuide).offset(16)
-            $0.height.equalTo(32)
-        }
-
-        self.skipButton.snp.makeConstraints {
-            $0.top.trailing.equalTo(safeAreaLayoutGuide).inset(16)
-            $0.height.equalTo(32)
+        self.xbutton.snp.makeConstraints {
+            $0.top.trailing.equalToSuperview().inset(20)
+            $0.width.height.equalTo(36)
         }
 
         self.scrollView.snp.makeConstraints {
-            $0.top.equalTo(logoImageView.snp.bottom).offset(84)
-            $0.leading.equalToSuperview()
+            $0.top.equalToSuperview().inset(88)
+            $0.centerX.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.9)
             $0.height.equalToSuperview().multipliedBy(0.55)
-            $0.width.equalToSuperview()
         }
 
         self.pageControl.snp.makeConstraints {
-            $0.bottom.equalTo(self.nextButton.snp.top).offset(-16)
+            $0.bottom.equalTo(self.bottomCloseButton.snp.top).offset(-16)
             $0.centerX.equalToSuperview()
         }
 
-        self.nextButton.snp.makeConstraints {
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-28)
+        self.bottomCloseButton.snp.makeConstraints {
+            $0.bottom.equalTo(safeAreaLayoutGuide).inset(16)
             $0.centerX.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(0.9)
             $0.height.equalTo(52)
@@ -104,26 +76,46 @@ extension OnboardingView {
     }
 }
 
-final class OnboardingPage1: BaseView {
+/// Scroll할 때 PageControl도 따라오도록 설정
+extension TipView: UIScrollViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let pageIndex = round(scrollView.contentOffset.x / self.frame.width)
+        pageControl.currentPage = Int(pageIndex)
+    }
+}
+
+
+final class TipPage1: BaseView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .gray50
+    }
+    
+    @MainActor required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     private lazy var imageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "Onboarding1"))
+        let imageView = UIImageView(image: UIImage(named: "ScanTip"))
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "누구나 쉽게, 사진으로 연결.".localized()
+        label.text = "안내문 인식 팁".localized()
         label.font = FontStyle.subTitle.font
-        label.textColor = .label
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Wi-Fi 안내문을 실시간 인식하여 네트워크 연결!".localized()
+        label.text = "안내문을 중앙에 두고 초록색 박스가 나타나면 정확한 인식을 위해 잠시 기다려 주세요.".localized()
         label.font = FontStyle.caption.font
+        label.numberOfLines = 0
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
@@ -134,26 +126,37 @@ final class OnboardingPage1: BaseView {
 
     func setConstraints() {
         self.imageView.snp.makeConstraints {
-            $0.width.equalTo(265)
-            $0.height.equalTo(self.imageView.snp.width)
+            $0.height.equalToSuperview().multipliedBy(0.63)
+            $0.width.equalTo(self.imageView.snp.height).multipliedBy(1.4)
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview()
         }
 
         self.titleLabel.snp.makeConstraints {
-            $0.top.equalTo(self.imageView.snp.bottom).offset(56)
+            $0.top.equalTo(self.imageView.snp.bottom).offset(36)
+            $0.width.equalToSuperview().multipliedBy(0.9)
             $0.centerX.equalToSuperview()
         }
 
         self.descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(self.titleLabel.snp.bottom).offset(20)
+            $0.top.equalTo(self.titleLabel.snp.bottom).offset(16)
+            $0.width.equalToSuperview().multipliedBy(0.9)
             $0.centerX.equalToSuperview()
         }
     }
 }
 
 
-final class OnboardingPage2: BaseView {
+final class TipPage2: BaseView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .gray50
+    }
+
+    @MainActor required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     private lazy var lottieAnimation: LottieAnimationView = {
         let animation = LottieAnimationView(name: "OnBoarding2")
         animation.loopMode = .loop
@@ -163,17 +166,20 @@ final class OnboardingPage2: BaseView {
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "같이 쓰는 것도, 쉽게.".localized()
+        label.text = "Wi-Fi 공유 받기".localized()
         label.font = FontStyle.subTitle.font
         label.textColor = .label
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "wasap을 통해 Wi-Fi를 공유받아 바로 연결!".localized()
+        label.text = "wasap을 친구가 Wi-Fi를 공유하면 첫 화면에서 '공유 알림'을 받을 수 있습니다.".localized()
         label.font = FontStyle.caption.font
+        label.numberOfLines = 0
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
@@ -184,19 +190,21 @@ final class OnboardingPage2: BaseView {
 
     func setConstraints() {
         self.lottieAnimation.snp.makeConstraints {
-            $0.width.equalTo(265)
-            $0.height.equalTo(self.lottieAnimation.snp.width)
+            $0.height.equalToSuperview().multipliedBy(0.63)
+            $0.width.equalTo(self.lottieAnimation.snp.width).multipliedBy(1.4)
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview()
         }
 
         self.titleLabel.snp.makeConstraints {
-            $0.top.equalTo(self.lottieAnimation.snp.bottom).offset(56)
+            $0.top.equalTo(self.lottieAnimation.snp.bottom).offset(36)
+            $0.width.equalToSuperview().multipliedBy(0.9)
             $0.centerX.equalToSuperview()
         }
 
         self.descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(self.titleLabel.snp.bottom).offset(20)
+            $0.top.equalTo(self.titleLabel.snp.bottom).offset(16)
+            $0.width.equalToSuperview().multipliedBy(0.9)
             $0.centerX.equalToSuperview()
         }
     }

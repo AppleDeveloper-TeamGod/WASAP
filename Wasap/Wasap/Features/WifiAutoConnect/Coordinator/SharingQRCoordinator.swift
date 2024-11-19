@@ -14,14 +14,14 @@ public protocol SharingQRCoordinatorController: AnyObject {
 public class SharingQRCoordinator: NSObject, SheetCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
-    public let sheetController: UIViewController
+    public let parentViewController: UIViewController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
     let ssid: String?
     let password: String?
 
     public init(sheetController: UIViewController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, ssid: String?, password: String?) {
-        self.sheetController = sheetController
+        self.parentViewController = sheetController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
         self.password = password
@@ -52,11 +52,11 @@ public class SharingQRCoordinator: NSObject, SheetCoordinator {
         }
 
         viewController.presentationController?.delegate = self
-        self.sheetController.present(viewController, animated: true)
+        self.parentViewController.present(viewController, animated: true)
     }
 
     public func finish() {
-        self.sheetController.dismiss(animated: true)
+        self.parentViewController.dismiss(animated: true)
     }
 }
 

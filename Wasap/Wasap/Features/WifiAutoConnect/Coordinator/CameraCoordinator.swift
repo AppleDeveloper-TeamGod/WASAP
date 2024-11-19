@@ -22,6 +22,7 @@ public class CameraCoordinator: NavigationCoordinator {
         case analysis(imageData: UIImage)
         case connectWithQR(ssid: String, password: String)
         case receiving(ssid : String?, password : String?)
+        case tip
     }
 
     public func start() {
@@ -54,6 +55,9 @@ extension CameraCoordinator: CameraCoordinatorController {
             start(childCoordinator: coordinator)
         case .receiving(ssid: let ssid, password: let password):
             let coordinator = ReceivingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, ssid: ssid, password: password)
+            start(childCoordinator: coordinator)
+        case .tip:
+            let coordinator = TipCoordinator(parentViewController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer)
             start(childCoordinator: coordinator)
         }
     }
