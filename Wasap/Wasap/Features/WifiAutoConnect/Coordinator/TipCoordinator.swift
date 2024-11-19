@@ -11,7 +11,7 @@ public protocol TipCoordinatorController: AnyObject {
     func performFinish(to finishFlow: TipCoordinator.FinishFlow)
 }
 
-public class TipCoordinator: NSObject, SheetCoordinator {
+public final class TipCoordinator: NSObject, SheetCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public var parentViewController: UIViewController
@@ -19,6 +19,7 @@ public class TipCoordinator: NSObject, SheetCoordinator {
     private var viewController: UIViewController? = nil
 
     public init(parentViewController: UIViewController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer) {
+        Log.debug("TipCoordinator init")
         self.parentViewController = parentViewController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
     }
@@ -33,8 +34,8 @@ public class TipCoordinator: NSObject, SheetCoordinator {
 
     public func start() {
         // TODO: DI로 생성하기
-        let viewModel = TipViewModel(coordinatorController: self)
-        self.viewController = TipViewController(viewModel: viewModel)
+        let viewModel = wifiAutoConnectDIContainer.makeTipViewModel(coordinatorController: self)
+        self.viewController = wifiAutoConnectDIContainer.makeTipViewController(viewModel)
         viewController?.view.backgroundColor = .gray50
         viewController?.modalPresentationStyle = .pageSheet
         if let sheet = viewController?.sheetPresentationController {

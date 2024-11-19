@@ -101,6 +101,10 @@ final public class WifiAutoConnectDIContainer {
         return SharingQRViewModel(wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
     }
 
+    public func makeTipViewModel(coordinatorController: TipCoordinatorController) -> TipViewModel {
+        return TipViewModel(coordinatorController: coordinatorController)
+    }
+
     // MARK: ViewController
     public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {
         return ScanViewController(viewModel: viewModel)
@@ -132,5 +136,9 @@ final public class WifiAutoConnectDIContainer {
 
     public func makeSharingQRViewController(_ viewModel: SharingQRViewModel) -> SharingQRViewController {
         return SharingQRViewController(viewModel: viewModel)
+    }
+
+    public func makeTipViewController(_ viewModel: TipViewModel) -> TipViewController {
+        return TipViewController(viewModel: viewModel)
     }
 }
