@@ -29,7 +29,7 @@ public final class SplashController {
             self.splashWindow!.backgroundColor = .clear
 
             let splashView = SplashView(frame: self.splashWindow!.bounds)
-            splashView.backgroundColor = .green200
+            splashView.backgroundColor = .gray500
             self.splashWindow!.addSubview(splashView)
             self.splashWindow!.isHidden = false
         }
@@ -64,7 +64,7 @@ private class SplashView: BaseView {
 
     func setConstraints() {
         self.lottieAnimation.snp.makeConstraints {
-            $0.width.equalTo(265)
+            $0.width.equalTo(135)
             $0.height.equalTo(self.lottieAnimation.snp.width)
             $0.center.equalToSuperview()
         }
