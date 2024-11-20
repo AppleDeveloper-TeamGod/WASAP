@@ -35,6 +35,8 @@ public final class Toaster {
 
                 toastView.toastLabel.text = message
 
+                toastView.toastLabel.textColor = .orange
+
                 connectedViewController.view.addSubview(toastView)
 
                 toastView.snp.makeConstraints {

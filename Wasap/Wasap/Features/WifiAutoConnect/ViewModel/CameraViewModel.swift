@@ -40,6 +40,7 @@ public class CameraViewModel: BaseViewModel {
     private var currentZoomValue = BehaviorRelay<CGFloat>(value: 2.0)
     private var captureRect = BehaviorRelay<CGRect?>(value: nil)
     private let isModalPresented = BehaviorRelay<Bool>(value: false)
+    private let isNotWifiQR = PublishRelay<Void>()
 
     // MARK: - Init & Binding
     public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorController: CameraCoordinatorController) {
@@ -248,8 +249,12 @@ public class CameraViewModel: BaseViewModel {
             .flatMapLatest { owner, _ -> Observable<(qrString: String, corners: [CGPoint])?> in
                 owner.cameraUseCase.getQRDataStream()
             }
-            .map { qrDataWithCorners -> (qrString: String, corners: [CGPoint])? in
-                guard let qrDataWithCorners, qrDataWithCorners.qrString.lowercased().hasPrefix("wifi:") else {
+            .map { [weak self] qrDataWithCorners -> (qrString: String, corners: [CGPoint])? in
+                guard let qrDataWithCorners else {
+                    return nil
+                }
+                guard qrDataWithCorners.qrString.lowercased().hasPrefix("wifi:") else {
+                    self?.isNotWifiQR.accept(())
                     return nil
                 }
                 return qrDataWithCorners
@@ -268,7 +273,6 @@ public class CameraViewModel: BaseViewModel {
             .filter { _, isPresented in !isPresented }
             .compactMap { qrDataWithCorners, _ in qrDataWithCorners }
             .map(\.qrString)
-            .distinctUntilChanged()
             .debounce(.milliseconds(1500), scheduler: MainScheduler.asyncInstance)
             .withUnretained(self)
             .compactMap { owner, qrString in
@@ -362,6 +366,14 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .subscribe { owner, _ in
                 owner.coordinatorController?.performTransition(to: .tip)
+            }
+            .disposed(by: disposeBag)
+
+        /// Wifi QR이 아닐 때
+        isNotWifiQR
+            .throttle(.seconds(5), latest: false, scheduler: MainScheduler.asyncInstance)
+            .subscribe { _ in
+                Toaster.shared.importantToast("Wifi QR이 아닙니다")
             }
             .disposed(by: disposeBag)
     }
