@@ -52,7 +52,7 @@ import Lottie
 
 private class SplashView: BaseView {
     private lazy var lottieAnimation: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "SplashAni")
+        let animation = LottieAnimationView(name: "SplashAnimation")
         animation.loopMode = .playOnce
         animation.play()
         return animation
