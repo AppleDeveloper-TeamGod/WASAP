@@ -27,7 +27,7 @@ class GoToSettingView: BaseView {
         label.text = "인식된 정보를 확인하고,"
         label.textColor = .gray200
         label.textAlignment = .left
-        label.font = FontStyle.title.font.withSize(21)
+        label.font = FontStyle.subTitle.font.withSize(21)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         return label
     }()
@@ -37,7 +37,7 @@ class GoToSettingView: BaseView {
         label.text = "설정에서 시도하세요."
         label.textColor = .green300
         label.textAlignment = .left
-        label.font = FontStyle.title.font.withSize(21)
+        label.font = FontStyle.subTitle.font.withSize(21)
         label.addLabelSpacing(fontStyle: FontStyle.subTitle)
         return label
     }()
@@ -114,8 +114,9 @@ class GoToSettingView: BaseView {
         let button = UIButton()
         button.setTitle("복사하기", for: .normal)
         button.setTitleColor(.green200, for: .normal)
-        button.titleLabel?.font = FontStyle.button.font.withSize(13)
+        button.titleLabel?.font = FontStyle.button.font.withSize(14)
         button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+
         button.backgroundColor = .clear
 
         button.layer.cornerRadius = 20
@@ -126,7 +127,7 @@ class GoToSettingView: BaseView {
 
     lazy var infoIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "Info_icon")
+        imageView.image = UIImage(named: "InfoTextIcon")
         return imageView
     }()
 
