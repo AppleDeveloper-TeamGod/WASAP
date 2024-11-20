@@ -155,7 +155,7 @@ final class OnboardingPage1: BaseView {
 
 final class OnboardingPage2: BaseView {
     private lazy var lottieAnimation: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "OnBoarding2")
+        let animation = LottieAnimationView(name: "OB2page")
         animation.loopMode = .loop
         animation.play()
         return animation

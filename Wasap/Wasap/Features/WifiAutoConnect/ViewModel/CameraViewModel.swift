@@ -177,9 +177,9 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         isCameraConfigured
-            .observe(on: MainScheduler.instance)
+            .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
             .subscribe { _ in
-                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 5.0, top: 24)
+                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 3.0, top: 24)
             }
             .disposed(by: disposeBag)
 

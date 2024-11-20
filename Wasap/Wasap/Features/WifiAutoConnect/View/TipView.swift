@@ -158,7 +158,7 @@ final class TipPage2: BaseView {
     }
 
     private lazy var lottieAnimation: LottieAnimationView = {
-        let animation = LottieAnimationView(name: "OnBoarding2")
+        let animation = LottieAnimationView(name: "OB2page")
         animation.loopMode = .loop
         animation.play()
         return animation
@@ -191,7 +191,7 @@ final class TipPage2: BaseView {
     func setConstraints() {
         self.lottieAnimation.snp.makeConstraints {
             $0.height.equalToSuperview().multipliedBy(0.63)
-            $0.width.equalTo(self.lottieAnimation.snp.width).multipliedBy(1.4)
+            $0.width.equalTo(self.lottieAnimation.snp.height).multipliedBy(1.4)
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview()
         }

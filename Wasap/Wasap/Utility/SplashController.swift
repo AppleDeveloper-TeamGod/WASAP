@@ -39,7 +39,6 @@ public final class SplashController {
         Log.print("Finish Splash")
         guard self.splashWindow != nil else { return }
         UIView.animate(withDuration: 2.0, delay: 1) {
-//            self.splashWindow?.subviews.first?.alpha = 0.0
             self.splashWindow?.alpha = 0.0
         } completion: { _ in
             self.splashWindow?.isHidden = true
@@ -52,10 +51,11 @@ public final class SplashController {
 import Lottie
 
 private class SplashView: BaseView {
-    private lazy var lottieAnimation: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "SplashLogo"))
-        imageView.contentMode = .scaleAspectFit
-        return imageView
+    private lazy var lottieAnimation: LottieAnimationView = {
+        let animation = LottieAnimationView(name: "SplashAni")
+        animation.loopMode = .playOnce
+        animation.play()
+        return animation
     }()
 
     func setViewHierarchy() {
@@ -64,9 +64,10 @@ private class SplashView: BaseView {
 
     func setConstraints() {
         self.lottieAnimation.snp.makeConstraints {
-            $0.width.equalTo(135)
-            $0.height.equalTo(self.lottieAnimation.snp.width)
-            $0.center.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.9)
+            $0.height.equalToSuperview().multipliedBy(0.7)
+            $0.bottom.equalToSuperview().inset(44)
+            $0.centerX.equalToSuperview()
         }
     }
 }
