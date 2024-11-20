@@ -26,14 +26,14 @@ public class RootCoordinator: Coordinator {
     public func start() {
         let navigationController = UINavigationController()
         navigationController.setNavigationBarHidden(true, animated: false)
-//        if let isFirstLaunch: Bool = UserDefaultsManager.shared.get(.isFirstLaunch), isFirstLaunch == false {
-//            let cameraCoordinator = CameraCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
-//            start(childCoordinator: cameraCoordinator)
-//        } else {
+        if let isFirstLaunch: Bool = UserDefaultsManager.shared.get(.isFirstLaunch), isFirstLaunch == false {
+            let cameraCoordinator = CameraCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
+            start(childCoordinator: cameraCoordinator)
+        } else {
             UserDefaultsManager.shared.set(value: false, forKey: .isFirstLaunch)
             let onboardingCoordinator = OnboardingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
             start(childCoordinator: onboardingCoordinator)
-//        }
+        }
 
         window?.rootViewController = navigationController
         Toaster.shared.connect(to: navigationController)
