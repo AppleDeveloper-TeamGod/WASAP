@@ -151,16 +151,30 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
 
     private func showDimmingEffect() {
         Log.debug("showDimmingEffect called")
-        UIView.animate(withDuration: 0.3, animations: {
-            self.cameraView.dimmingView.alpha = 0.4
-        })
+
+        let fadeAnimation = CABasicAnimation(keyPath: "opacity")
+        fadeAnimation.fromValue = cameraView.dimmingLayer.opacity
+        fadeAnimation.toValue = 0.4
+        fadeAnimation.duration = 0.3
+        fadeAnimation.fillMode = .forwards
+        fadeAnimation.isRemovedOnCompletion = false
+
+        cameraView.dimmingLayer.opacity = 0.4
+        cameraView.dimmingLayer.add(fadeAnimation, forKey: "fadeIn")
     }
 
     private func hideDimmingEffect() {
         Log.debug("hideDimmingEffect called")
-        UIView.animate(withDuration: 0.3, animations: {
-            self.cameraView.dimmingView.alpha = 0.0
-        })
+
+        let fadeAnimation = CABasicAnimation(keyPath: "opacity")
+        fadeAnimation.fromValue = cameraView.dimmingLayer.opacity
+        fadeAnimation.toValue = 0.0
+        fadeAnimation.duration = 0.3
+        fadeAnimation.fillMode = .forwards
+        fadeAnimation.isRemovedOnCompletion = false
+
+        cameraView.dimmingLayer.opacity = 0.0
+        cameraView.dimmingLayer.add(fadeAnimation, forKey: "fadeOut")
     }
 
     /// 알맞은 프레임 영역 안에 있다면 true, 범위 밖으로 벗어나면 false
