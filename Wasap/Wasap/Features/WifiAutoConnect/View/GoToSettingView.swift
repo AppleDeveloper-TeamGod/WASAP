@@ -58,7 +58,7 @@ class GoToSettingView: BaseView {
 
     lazy var memoView: UIView = {
         let view = UIView()
-        view.backgroundColor = .neutral450 
+        view.backgroundColor = .neutral450
         view.layer.cornerRadius = 20
         view.layer.masksToBounds = false // Gradient를 위해 false 설정
         return view
@@ -318,6 +318,12 @@ class GoToSettingView: BaseView {
                     ],
             width: 1,
             cornerRadius: 20
+        )
+        memoView.applyShadow(
+            offset: CGSize(width: 0, height: 4), // x: 0, y: 4
+            radius: 4,                          // 블러 반경
+            color: .black,                      // 그림자 색상
+            opacity: 0.25                       // 투명도
         )
     }
 }

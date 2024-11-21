@@ -49,13 +49,24 @@ class WifiReConnectView: BaseView {
         return stackView
     }()
 
+    lazy var photoContainerView: UIView = {
+        let containerView = UIView()
+        containerView.layer.shadowColor = UIColor.black.cgColor
+        containerView.layer.shadowOpacity = 0.25
+        containerView.layer.shadowOffset = CGSize(width: 0, height: 4) // 아래로 이동
+        containerView.layer.shadowRadius = 4
+        containerView.backgroundColor = .clear // 투명 배경
+        return containerView
+    }()
+
     lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.isUserInteractionEnabled = true
-        imageView.layer.masksToBounds = true
+        imageView.layer.masksToBounds = true // 둥근 모서리 내부 잘리기
         return imageView
     }()
+
 
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
@@ -146,9 +157,13 @@ class WifiReConnectView: BaseView {
 
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        backgroundView.addSubViews(labelStackView,photoImageView,
+        backgroundView.addSubViews(labelStackView,photoContainerView,
                                    ssidStackView,pwStackView,
                                    reConnectButton,cameraButton)
+
+        // `photoImageView`를 컨테이너에 추가
+        photoContainerView.addSubview(photoImageView)
+
     }
 
     func setConstraints() {
@@ -167,10 +182,14 @@ class WifiReConnectView: BaseView {
             $0.bottom.equalTo(photoImageView.snp.top).offset(-50)
         }
 
-        photoImageView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24)
-            $0.bottom.equalTo(ssidStackView.snp.top).offset(-29)
-            $0.height.equalTo(224)
+        photoContainerView.snp.makeConstraints {
+                $0.leading.trailing.equalToSuperview().inset(24)
+                $0.bottom.equalTo(ssidStackView.snp.top).offset(-29)
+                $0.height.equalTo(224)
+            }
+
+        photoImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview() // 컨테이너와 동일 크기
         }
 
         ssidStackView.snp.makeConstraints {
@@ -200,5 +219,16 @@ class WifiReConnectView: BaseView {
             $0.bottom.equalToSuperview().offset(-83)
             $0.height.equalTo(52)
         }
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        photoContainerView.applyShadow(
+            offset: CGSize(width: 0, height: 4), // x: 0, y: 4
+            radius: 4,                          // 블러 반경
+            color: .black,                      // 그림자 색상
+            opacity: 0.25                       // 투명도
+        )
     }
 }
