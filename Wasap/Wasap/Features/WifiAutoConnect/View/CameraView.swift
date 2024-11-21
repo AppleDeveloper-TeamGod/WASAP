@@ -77,7 +77,7 @@ final class CameraView: BaseView {
 
         let tipLabel = UILabel()
         tipLabel.text = "사용 팁".localized()
-        tipLabel.font = FontStyle.caption.font
+        tipLabel.font = .tgCaption
         tipLabel.textColor = .gray200
 
         let stackView = UIStackView(arrangedSubviews: [tipImageView, tipLabel])

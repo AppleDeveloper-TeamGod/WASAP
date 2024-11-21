@@ -36,8 +36,8 @@ class SharingView: BaseView {
         let button = UIButton()
         button.setTitle("뒤로가기".localized(), for: .normal)
         button.setTitleColor(.neutral500, for: .normal)
-        button.titleLabel?.font = FontStyle.button.font
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.titleLabel?.font = .tgButton
+        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
         button.setImage(UIImage(named: "BackButton"), for: .normal)
         return button
     }()
@@ -52,29 +52,31 @@ class SharingView: BaseView {
         let label = UILabel()
         label.text = "QR 공유".localized()
         label.textColor = .neutral500
-        label.font = FontStyle.caption.font
-        label.addLabelSpacing(fontStyle: FontStyle.caption)
+        label.font = .tgCaption
+        label.addLabelSpacing(fontStyle: .tgCaption)
         label.textAlignment = .center
         return label
     }()
 
+    // MARK:  폰트 체크
     lazy var peerCountLabel: UILabel = {
         let label = UILabel()
         label.textColor = .textPrimaryHigh
         label.font = FontStyle.title.font.withSize(50.5)
-        label.addLabelSpacing(fontStyle: FontStyle.title)
+        label.addLabelSpacing(fontStyle: .tgTitle)
         label.textAlignment = .center
         label.alpha = 0.0
         label.isHidden = true
         return label
     }()
 
+    // MARK:  폰트 체크
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "공유중".localized()
         label.textColor = .neutral500
         label.font = FontStyle.subTitle.font.withSize(20)
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.addLabelSpacing(fontStyle: .tgSubTitle)
         label.textAlignment = .center
         return label
     }()
@@ -83,8 +85,8 @@ class SharingView: BaseView {
         let button = UIButton()
         button.setTitle("공유 그만하기".localized(), for: .normal)
         button.setTitleColor(.textPrimaryHigh, for: .normal)
-        button.titleLabel?.font = FontStyle.button.font
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.titleLabel?.font = .tgButton
+        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
         button.backgroundColor = .neutral500
 
         button.layer.cornerRadius = 25

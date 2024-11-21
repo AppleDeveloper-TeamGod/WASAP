@@ -25,8 +25,8 @@ class SharingQRView: BaseView {
         let label = UILabel()
         label.text = "QR로 공유하기".localized()
         label.textColor = .neutral500
-        label.font = FontStyle.title.font
-        label.addLabelSpacing(fontStyle: FontStyle.title)
+        label.font = .tgTitle
+        label.addLabelSpacing(fontStyle: .tgTitle)
         label.textAlignment = .center
         return label
     }()
@@ -44,8 +44,8 @@ class SharingQRView: BaseView {
         let button = UIButton()
         button.setTitle("닫기".localized(), for: .normal)
         button.setTitleColor(.textPrimaryHigh, for: .normal)
-        button.titleLabel?.font = FontStyle.button.font
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.titleLabel?.font = .tgButton
+        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
         button.backgroundColor = .neutral500
 
         button.layer.cornerRadius = 25
