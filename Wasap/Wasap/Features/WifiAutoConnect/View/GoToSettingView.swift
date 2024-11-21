@@ -22,13 +22,19 @@ class GoToSettingView: BaseView {
         return button
     }()
 
+    lazy var infoIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "InfoTextIcon")
+        return imageView
+    }()
+
     lazy var titleLabel1: UILabel = {
         let label = UILabel()
         label.text = "인식된 정보를 확인하고,"
         label.textColor = .gray200
         label.textAlignment = .left
-        label.font = FontStyle.subTitle.font.withSize(21)
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.font = .tgTitle.withSize(22)
+        label.addLabelSpacing(fontStyle: .tgTitle)
         return label
     }()
 
@@ -37,8 +43,8 @@ class GoToSettingView: BaseView {
         label.text = "설정에서 시도하세요."
         label.textColor = .green300
         label.textAlignment = .left
-        label.font = FontStyle.subTitle.font.withSize(21)
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.font = .tgTitle.withSize(22)
+        label.addLabelSpacing(fontStyle: .tgTitle)
         return label
     }()
 
@@ -58,12 +64,22 @@ class GoToSettingView: BaseView {
         return view
     }()
 
+    lazy var memoText: UILabel = {
+        let label = UILabel()
+        label.text = "Wi-Fi 정보"
+        label.textColor = .gray100
+        label.font = .tgSubTitle
+        label.addLabelSpacing(fontStyle: .tgSubTitle)
+        label.textAlignment = .left
+        return label
+    }()
+
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
         label.text = "와이파이 ID"
         label.textColor = .gray400
-        label.font = FontStyle.subTitle.font.withSize(12)
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.font = .tgCaption
+        label.addLabelSpacing(fontStyle: .tgCaption)
         label.textAlignment = .left
         return label
     }()
@@ -71,8 +87,8 @@ class GoToSettingView: BaseView {
     lazy var ssidFieldLabel: UILabel = {
         let label = UILabel()
         label.textColor = .gray300
-        label.font = FontStyle.password_M.font.withSize(18)
-        label.addLabelSpacing(fontStyle: FontStyle.password_S)
+        label.font = .tgPasswordS
+        label.addLabelSpacing(fontStyle: .tgPasswordS)
         label.textAlignment = .left
         return label
     }()
@@ -88,8 +104,8 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "비밀번호"
         label.textColor = .gray400
-        label.font = FontStyle.subTitle.font.withSize(12)
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.font = .tgCaption
+        label.addLabelSpacing(fontStyle: .tgCaption)
         label.textAlignment = .left
         return label
     }()
@@ -97,8 +113,8 @@ class GoToSettingView: BaseView {
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
         label.textColor = .gray300
-        label.font = FontStyle.password_M.font.withSize(18)
-        label.addLabelSpacing(fontStyle: FontStyle.password_S)
+        label.font = .tgPasswordS
+        label.addLabelSpacing(fontStyle: .tgPasswordS)
         label.textAlignment = .left
         return label
     }()
@@ -114,8 +130,8 @@ class GoToSettingView: BaseView {
         let button = UIButton()
         button.setTitle("복사하기", for: .normal)
         button.setTitleColor(.green200, for: .normal)
-        button.titleLabel?.font = FontStyle.button.font.withSize(14)
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.titleLabel?.font = .tgButton.withSize(14)
+        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
 
         button.backgroundColor = .clear
 
@@ -125,54 +141,50 @@ class GoToSettingView: BaseView {
         return button
     }()
 
-    lazy var infoIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "InfoTextIcon")
-        return imageView
-    }()
-
     lazy var infoFirstLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = .gray400
-        label.textAlignment = .left
-        label.text = "WiFi 비밀번호를 복사해 두면"
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.textAlignment = .center
+        label.text = "WiFi 비밀번호를 복사해,"
+        label.font = .tgSubTitle
+        label.addLabelSpacing(fontStyle: .tgSubTitle)
         return label
-    }()
-
-    lazy var infoStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [infoIcon, infoFirstLabel])
-        stackView.axis = .horizontal
-        stackView.spacing = 10
-        return stackView
     }()
 
     lazy var infoSecondLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = .gray400
-        label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.textAlignment = .center
+        label.font = .tgSubTitle
+        label.addLabelSpacing(fontStyle: .tgSubTitle)
 
         let wifiID = "설정 > Wi-Fi"
-        let description = "\(wifiID) "+"에서 쉽게 연결할 수 있습니다."
+        let description = "\(wifiID) "+"에서 이어서 연결하세요."
 
         // 글자 색깔 넣기
         let attributedString = NSMutableAttributedString(string: description)
         if let wifiIDRange = description.range(of: wifiID) {
             let nsRange = NSRange(wifiIDRange, in: description)
-            attributedString.addAttribute(.foregroundColor, value: UIColor.primary200, range: nsRange)
+            attributedString.addAttribute(.foregroundColor, value: UIColor.green300, range: nsRange)
         }
         label.attributedText = attributedString
         return label
     }()
 
+    lazy var infoStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [infoFirstLabel,infoSecondLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 4
+        return stackView
+    }()
+
     lazy var backButton: UIButton = {
         let button = UIButton()
-        button.setTitle("<", for: .normal)
-        button.titleLabel?.font = FontStyle.button.font
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.setImage(UIImage(named: "BackIcon"), for: .normal)
+        button.titleLabel?.font = .tgButton
+        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
         button.setTitleColor(.primary200, for: .normal)
         button.backgroundColor = .clear
 
@@ -185,11 +197,9 @@ class GoToSettingView: BaseView {
     lazy var settingButton: UIButton = {
         let button = UIButton()
         button.setTitle("아이폰 설정으로 가기", for: .normal)
-        button.titleLabel?.font = FontStyle.button.font
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.titleLabel?.font = .tgButton
+        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = FontStyle.button.font
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
         button.backgroundColor = .primary200
 
         button.layer.cornerRadius = 14
@@ -218,8 +228,8 @@ class GoToSettingView: BaseView {
     func setViewHierarchy() {
         self.addSubview(backgroundView)
         backgroundView.addSubViews(cameraButton,titleStackView,memoView,
-                                   infoStackView,infoSecondLabel,btnStackView)
-        memoView.addSubViews(ssidStackView,pwStackView,copyButton)
+                                   infoStackView,btnStackView)
+        memoView.addSubViews(memoText,infoIcon,ssidStackView,pwStackView,copyButton)
     }
     
     func setConstraints() {
@@ -240,47 +250,52 @@ class GoToSettingView: BaseView {
         }
 
         memoView.snp.makeConstraints {
-            $0.top.equalTo(titleStackView.snp.bottom).offset(32)
+            $0.top.equalTo(titleStackView.snp.bottom).offset(50)
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.height.equalTo(158)
+            $0.height.equalTo(221)
+        }
+
+        infoIcon.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(14)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.width.height.equalTo(16)
+        }
+
+        memoText.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(32)
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
 
         ssidStackView.snp.makeConstraints{
-            $0.top.leading.trailing.equalToSuperview().inset(17)
+            $0.top.equalTo(memoText.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(48)
         }
 
         pwStackView.snp.makeConstraints {
             $0.top.equalTo(ssidStackView.snp.bottom).offset(20)
-            $0.leading.equalToSuperview().inset(17)
+            $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(48)
             $0.width.equalTo(220)
         }
 
         copyButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(17)
-            $0.top.equalToSuperview().offset(103)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview().inset(27)
             $0.width.equalTo(84)
             $0.height.equalTo(38)
         }
 
-        infoIcon.snp.makeConstraints {
-            $0.width.height.equalTo(16)
-        }
-
         infoStackView.snp.makeConstraints {
-            $0.top.equalTo(memoView.snp.bottom).offset(12)
+            $0.top.equalTo(memoView.snp.bottom).offset(177)
             $0.leading.trailing.equalToSuperview().inset(24)
-        }
-
-        infoSecondLabel.snp.makeConstraints {
-            $0.top.equalTo(infoStackView.snp.bottom).offset(3)
-            $0.leading.equalToSuperview().inset(50)
+            $0.height.equalTo(52)
+            $0.width.equalTo(320)
         }
 
         btnStackView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.top.equalTo(infoSecondLabel.snp.bottom).offset(300)
+            $0.top.equalTo(infoStackView.snp.bottom).offset(50)
             $0.height.equalTo(52)
         }
 

@@ -34,8 +34,8 @@ class ScanView: BaseView {
         let label = UILabel()
         label.text = "SCAN"
         label.textColor = .textPrimaryHigh
-        label.font = FontStyle.title.font
-        label.addLabelSpacing(fontStyle: FontStyle.title)
+        label.font = .tgTitle
+        label.addLabelSpacing(fontStyle: .tgTitle)
         return label
     }()
     
@@ -43,8 +43,8 @@ class ScanView: BaseView {
         let label = UILabel()
         label.text = "스캔 완료!".localized()
         label.textColor = .textNeutralHigh
-        label.font = FontStyle.subTitle.font
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.font = .tgSubTitle
+        label.addLabelSpacing(fontStyle: .tgSubTitle)
         label.textAlignment = .center
         return label
     }()

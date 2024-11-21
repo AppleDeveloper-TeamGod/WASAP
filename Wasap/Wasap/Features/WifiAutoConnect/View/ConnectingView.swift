@@ -34,8 +34,8 @@ class ConnectingView: BaseView {
         let label = UILabel()
         label.text = "Done!"
         label.textColor = .neutral500
-        label.font = FontStyle.title.font.withSize(48)
-        label.addLabelSpacing(fontStyle: FontStyle.title)
+        label.font = .tgTitle.withSize(48)
+        label.addLabelSpacing(fontStyle: .tgTitle)
         label.textAlignment = .center
         label.isHidden = true
         return label
@@ -45,8 +45,8 @@ class ConnectingView: BaseView {
         let label = UILabel()
         label.text = "연결 되었어요!".localized()
         label.textColor = .neutral500
-        label.font = FontStyle.subTitle.font
-        label.addLabelSpacing(fontStyle: FontStyle.subTitle)
+        label.font = .tgSubTitle
+        label.addLabelSpacing(fontStyle: .tgSubTitle)
         label.textAlignment = .center
         label.isHidden = true
         return label
@@ -56,8 +56,8 @@ class ConnectingView: BaseView {
         let button = UIButton()
         button.setTitle("Wi-Fi 공유하기".localized(), for: .normal)
         button.setTitleColor(.textPrimaryHigh, for: .normal)
-        button.titleLabel?.font = FontStyle.button.font
-        button.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+        button.titleLabel?.font = .tgButton
+        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
         button.backgroundColor = .neutral500
         button.isHidden = true
 
