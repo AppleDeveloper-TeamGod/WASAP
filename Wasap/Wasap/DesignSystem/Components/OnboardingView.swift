@@ -114,7 +114,7 @@ final class OnboardingPage1: BaseView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "누구나 쉽게, 사진으로 연결.".localized()
-        label.font = FontStyle.subTitle.font
+        label.font = .tg16
         label.textColor = .label
         label.textAlignment = .center
         return label
@@ -123,7 +123,7 @@ final class OnboardingPage1: BaseView {
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = "Wi-Fi 안내문을 실시간 인식하여 네트워크 연결!".localized()
-        label.font = FontStyle.caption.font
+        label.font = .tg12
         label.textAlignment = .center
         return label
     }()
@@ -164,7 +164,7 @@ final class OnboardingPage2: BaseView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "같이 쓰는 것도, 쉽게.".localized()
-        label.font = FontStyle.subTitle.font
+        label.font = .tg16
         label.textColor = .label
         label.textAlignment = .center
         return label
@@ -173,7 +173,7 @@ final class OnboardingPage2: BaseView {
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.text = "wasap을 통해 Wi-Fi를 공유받아 바로 연결!".localized()
-        label.font = FontStyle.caption.font
+        label.font = .tg12
         label.textAlignment = .center
         return label
     }()

@@ -33,8 +33,8 @@ class ReceivingView: BaseView {
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
         label.textColor = .neutral500
-        label.font = FontStyle.title.font.withSize(18)
-        label.addLabelSpacing(fontStyle: .title)
+        label.font = .tg18
+        label.addLabelSpacing(fontStyle: .tg18)
         label.textAlignment = .center
         return label
     }()
@@ -43,8 +43,8 @@ class ReceivingView: BaseView {
         let label = UILabel()
         label.text = "Wi-Fi를 공유 받았어요!".localized()
         label.textColor = .neutral500
-        label.font = .tgSubTitle
-        label.addLabelSpacing(fontStyle: .tgSubTitle)
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
         label.textAlignment = .center
         return label
     }()
@@ -53,8 +53,8 @@ class ReceivingView: BaseView {
         let button = UIButton()
         button.setTitle("바로 연결하기".localized(), for: .normal)
         button.setTitleColor(.textPrimaryHigh, for: .normal)
-        button.titleLabel?.font = .tgButton
-        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
+        button.titleLabel?.font = .tg16
+        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         button.backgroundColor = .neutral500
 
         button.layer.cornerRadius = 25
