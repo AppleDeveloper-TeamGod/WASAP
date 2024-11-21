@@ -16,23 +16,38 @@ public struct FontProperty {
 
 // FontStyle 열거형
 public enum FontStyle {
-    case title
-    case subTitle
-    case caption
-    case button
+    case font48
+    case font26
+    case font22
+    case font20
+    case font18
+    case font16
+    case font14
+    case font12
     case password_M
     case password_S
 
+
     public var fontProperty: FontProperty {
+
         switch self {
-        case .title:
+        case .font48:
+            return FontProperty(font: .gmarketSansBold, size: 48, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+        case .font26:
             return FontProperty(font: .gmarketSansBold, size: 26, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
-        case .subTitle:
+        case .font22:
+            return FontProperty(font: .gmarketSansBold, size: 22, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+        case .font20:
+            return FontProperty(font: .gmarketSansMedium, size: 20, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+        case .font18:
+            return FontProperty(font: .gmarketSansMedium, size: 18, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+        case .font16:
             return FontProperty(font: .gmarketSansMedium, size: 16, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
-        case .caption:
+        case .font14:
+            return FontProperty(font: .gmarketSansMedium, size: 14, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+        case .font12:
             return FontProperty(font: .gmarketSansMedium, size: 12, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
-        case .button:
-            return FontProperty(font: .gmarketSansMedium, size: 16, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+
         case .password_M:
             return FontProperty(font: .robotoMonoMedium, size: 20, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0.24)
         case .password_S:
@@ -43,10 +58,14 @@ public enum FontStyle {
 
 // FontStyle 확장
 public extension FontStyle {
-    static let tgTitle = FontStyle.title
-    static let tgSubTitle = FontStyle.subTitle
-    static let tgCaption = FontStyle.caption
-    static let tgButton = FontStyle.button
+    static let tg48 = FontStyle.font48
+    static let tg26 = FontStyle.font26
+    static let tg22 = FontStyle.font22
+    static let tg20 = FontStyle.font20
+    static let tg18 = FontStyle.font18
+    static let tg16 = FontStyle.font16
+    static let tg14 = FontStyle.font14
+    static let tg12 = FontStyle.font12
     static let tgPasswordM = FontStyle.password_M
     static let tgPasswordS = FontStyle.password_S
 
@@ -74,10 +93,14 @@ extension UIFont {
             return UIFont(name: type.rawValue, size: size)!
         }
     }
-    static var tgTitle: UIFont { FontStyle.title.font }
-    static var tgSubTitle: UIFont { FontStyle.subTitle.font }
-    static var tgCaption: UIFont { FontStyle.caption.font }
-    static var tgButton: UIFont { FontStyle.button.font }
+    static var tg48: UIFont { FontStyle.tg48.font}
+    static var tg26: UIFont { FontStyle.tg26.font}
+    static var tg22: UIFont { FontStyle.tg22.font}
+    static var tg20: UIFont { FontStyle.tg20.font}
+    static var tg18: UIFont { FontStyle.tg18.font}
+    static var tg16: UIFont { FontStyle.tg16.font}
+    static var tg14: UIFont { FontStyle.tg14.font}
+    static var tg12: UIFont { FontStyle.tg12.font}
     static var tgPasswordM: UIFont { FontStyle.password_M.font }
     static var tgPasswordS: UIFont { FontStyle.password_S.font }
 }
@@ -110,13 +133,36 @@ extension UILabel {
     }
 }
 
+extension UITextField {
+    func applyFontSpacing(style: FontStyle, alignment: NSTextAlignment = .center) {
+        let lineHeightMultiple = style.fontProperty.lineHeightMultiple ?? 1.0
+        let letterSpacing = style.fontProperty.letterSpacingMultiiple * style.fontProperty.size
+
+        // NSParagraphStyle 설정
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = lineHeightMultiple
+        paragraphStyle.alignment = alignment // 정렬 설정
+        paragraphStyle.lineBreakMode = .byTruncatingTail
+
+        // 기본 텍스트 스타일 설정
+        self.defaultTextAttributes = [
+            .font: style.font,
+            .kern: letterSpacing,
+            .paragraphStyle: paragraphStyle
+        ]
+        // 텍스트 정렬 동기화
+        self.textAlignment = alignment
+    }
+}
+
+
 /*
-// 사용 예시
-lazy var titleLabel: UILabel = {
-    let label = UILabel()
-    label.text = "SCAN"
-    label.textColor = .textPrimaryHigh
-    label.applyFontSpacing(style: .tgTitle) // 폰트와 간격 설정을 간단하게
-    return label
-}()
-*/
+ // 사용 예시
+ lazy var titleLabel: UILabel = {
+ let label = UILabel()
+ label.text = "SCAN"
+ label.textColor = .textPrimaryHigh
+ label.applyFontSpacing(style: .tgTitle) // 폰트와 간격 설정을 간단하게
+ return label
+ }()
+ */

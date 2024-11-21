@@ -26,8 +26,8 @@ class WifiReConnectView: BaseView {
         label.text = "Retry!"
         label.textColor = .primary200
         label.textAlignment = .left
-        label.font = .tgTitle
-        label.addLabelSpacing(fontStyle: .tgTitle)
+        label.font = .tg26
+        label.addLabelSpacing(fontStyle: .tg26)
         return label
     }()
 
@@ -35,8 +35,8 @@ class WifiReConnectView: BaseView {
         let label = UILabel()
         label.text = "잘못된 부분이 있나봐요!".localized()
         label.textColor = .neutral400
-        label.font = .tgSubTitle
-        label.addLabelSpacing(fontStyle: .tgSubTitle)
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
         label.textAlignment = .left
         return label
     }()
@@ -72,8 +72,8 @@ class WifiReConnectView: BaseView {
         let label = UILabel()
         label.text = "와이파이 ID".localized()
         label.textColor = .neutral200
-        label.font = .tgCaption
-        label.addLabelSpacing(fontStyle: .tgCaption)
+        label.font = .tg12
+        label.addLabelSpacing(fontStyle: .tg12)
         label.textAlignment = .left
         return label
     }()
@@ -82,12 +82,11 @@ class WifiReConnectView: BaseView {
         let textField = UITextField()
         textField.textColor = .neutral200
         textField.backgroundColor = .neutral450
-        textField.font = .tgPasswordM
-
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 10
         textField.layer.masksToBounds = true
-        textField.textAlignment = .center
+        textField.font = .tgPasswordM
+        textField.applyFontSpacing(style: .tgPasswordM)
 
         return textField
     }()
@@ -103,8 +102,8 @@ class WifiReConnectView: BaseView {
         let label = UILabel()
         label.text = "비밀번호".localized()
         label.textColor = .neutral200
-        label.font = .tgCaption
-        label.addLabelSpacing(fontStyle: .tgCaption)
+        label.font = .tg12
+        label.addLabelSpacing(fontStyle: .tg12)
         label.textAlignment = .left
         return label
     }()
@@ -134,8 +133,8 @@ class WifiReConnectView: BaseView {
         let button = UIButton()
         button.setTitle("다시 연결하기".localized(), for: .normal)
         button.setTitleColor(.neutral200, for: .normal)
-        button.titleLabel?.font = .tgButton
-        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
+        button.titleLabel?.font = .tg16
+        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         button.backgroundColor = .clear
 
         button.layer.cornerRadius = 25

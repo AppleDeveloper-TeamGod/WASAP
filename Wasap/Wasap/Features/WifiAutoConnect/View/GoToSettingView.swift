@@ -33,8 +33,8 @@ class GoToSettingView: BaseView {
         label.text = "인식된 정보를 확인하고,"
         label.textColor = .gray200
         label.textAlignment = .left
-        label.font = .tgTitle.withSize(22)
-        label.addLabelSpacing(fontStyle: .tgTitle)
+        label.font = .tg22
+        label.addLabelSpacing(fontStyle: .tg22)
         return label
     }()
 
@@ -43,8 +43,8 @@ class GoToSettingView: BaseView {
         label.text = "설정에서 시도하세요."
         label.textColor = .green300
         label.textAlignment = .left
-        label.font = .tgTitle.withSize(22)
-        label.addLabelSpacing(fontStyle: .tgTitle)
+        label.font = .tg22
+        label.addLabelSpacing(fontStyle: .tg22)
         return label
     }()
 
@@ -68,8 +68,8 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "Wi-Fi 정보"
         label.textColor = .gray100
-        label.font = .tgSubTitle
-        label.addLabelSpacing(fontStyle: .tgSubTitle)
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
         label.textAlignment = .left
         return label
     }()
@@ -78,8 +78,8 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "와이파이 ID"
         label.textColor = .gray400
-        label.font = .tgCaption
-        label.addLabelSpacing(fontStyle: .tgCaption)
+        label.font = .tg12
+        label.addLabelSpacing(fontStyle: .tg12)
         label.textAlignment = .left
         return label
     }()
@@ -104,8 +104,8 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.text = "비밀번호"
         label.textColor = .gray400
-        label.font = .tgCaption
-        label.addLabelSpacing(fontStyle: .tgCaption)
+        label.font = .tg12
+        label.addLabelSpacing(fontStyle: .tg12)
         label.textAlignment = .left
         return label
     }()
@@ -130,8 +130,8 @@ class GoToSettingView: BaseView {
         let button = UIButton()
         button.setTitle("복사하기", for: .normal)
         button.setTitleColor(.green200, for: .normal)
-        button.titleLabel?.font = .tgButton.withSize(14)
-        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
+        button.titleLabel?.font = .tg14
+        button.titleLabel?.addLabelSpacing(fontStyle: .tg14)
 
         button.backgroundColor = .clear
 
@@ -147,8 +147,8 @@ class GoToSettingView: BaseView {
         label.textColor = .gray400
         label.textAlignment = .center
         label.text = "WiFi 비밀번호를 복사해,"
-        label.font = .tgSubTitle
-        label.addLabelSpacing(fontStyle: .tgSubTitle)
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
         return label
     }()
 
@@ -157,8 +157,8 @@ class GoToSettingView: BaseView {
         label.numberOfLines = 0
         label.textColor = .gray400
         label.textAlignment = .center
-        label.font = .tgSubTitle
-        label.addLabelSpacing(fontStyle: .tgSubTitle)
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
 
         let wifiID = "설정 > Wi-Fi"
         let description = "\(wifiID) "+"에서 이어서 연결하세요."
@@ -183,8 +183,8 @@ class GoToSettingView: BaseView {
     lazy var backButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "BackIcon"), for: .normal)
-        button.titleLabel?.font = .tgButton
-        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
+        button.titleLabel?.font = .tg16
+        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         button.setTitleColor(.primary200, for: .normal)
         button.backgroundColor = .clear
 
@@ -197,8 +197,8 @@ class GoToSettingView: BaseView {
     lazy var settingButton: UIButton = {
         let button = UIButton()
         button.setTitle("아이폰 설정으로 가기", for: .normal)
-        button.titleLabel?.font = .tgButton
-        button.titleLabel?.addLabelSpacing(fontStyle: .tgButton)
+        button.titleLabel?.font = .tg16
+        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .primary200
 
@@ -264,6 +264,8 @@ class GoToSettingView: BaseView {
         memoText.snp.makeConstraints {
             $0.top.equalToSuperview().inset(32)
             $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(26)
+            $0.width.equalTo(81)
         }
 
         ssidStackView.snp.makeConstraints{

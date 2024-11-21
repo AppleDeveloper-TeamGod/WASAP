@@ -43,8 +43,8 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.goToSettingView.settingButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
-                    self?.goToSettingView.settingButton.titleLabel?.font = FontStyle.button.font
-                    self?.goToSettingView.settingButton.titleLabel?.addLabelSpacing(fontStyle: FontStyle.button)
+                    self?.goToSettingView.settingButton.titleLabel?.font = .tg16
+                    self?.goToSettingView.settingButton.titleLabel?.addLabelSpacing(fontStyle: .tg16)
                 }
             })
             .disposed(by: disposeBag)
