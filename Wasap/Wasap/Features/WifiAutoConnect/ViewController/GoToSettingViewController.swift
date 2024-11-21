@@ -75,6 +75,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         goToSettingView.copyButton.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
+                    self?.goToSettingView.copyButton.backgroundColor = .green500
                     self?.goToSettingView.copyButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                 }
             })
@@ -84,9 +85,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
-                    self?.goToSettingView.copyButton.setImage(UIImage(named: "CheckIcon"), for: .normal)
-                    self?.goToSettingView.copyButton.setTitle("", for: .normal)
-                    self?.goToSettingView.copyButton.backgroundColor = .green500
+                    self?.goToSettingView.copyButton.backgroundColor = .clear
                 }
             })
             .disposed(by: disposeBag)
@@ -95,9 +94,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
-                    self?.goToSettingView.copyButton.setImage(UIImage(named: "CheckIcon"), for: .normal)
-                    self?.goToSettingView.copyButton.setTitle("", for: .normal)
-                    self?.goToSettingView.copyButton.backgroundColor = .green500
+                    self?.goToSettingView.copyButton.backgroundColor = .clear
                 }
             })
             .disposed(by: disposeBag)
