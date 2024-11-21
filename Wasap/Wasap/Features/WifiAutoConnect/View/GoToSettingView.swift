@@ -30,21 +30,21 @@ class GoToSettingView: BaseView {
 
     lazy var titleLabel1: UILabel = {
         let label = UILabel()
+        label.font = .tg22
+        label.addLabelSpacing(fontStyle: .tg22)
         label.text = "인식된 정보를 확인하고,"
         label.textColor = .gray200
         label.textAlignment = .left
-        label.font = .tg22
-        label.addLabelSpacing(fontStyle: .tg22)
         return label
     }()
 
     lazy var titleLabel2: UILabel = {
         let label = UILabel()
+        label.font = .tg22
+        label.addLabelSpacing(fontStyle: .tg22)
         label.text = "설정에서 시도하세요."
         label.textColor = .green300
         label.textAlignment = .left
-        label.font = .tg22
-        label.addLabelSpacing(fontStyle: .tg22)
         return label
     }()
 
@@ -66,30 +66,33 @@ class GoToSettingView: BaseView {
 
     lazy var memoText: UILabel = {
         let label = UILabel()
-        label.text = "Wi-Fi 정보"
-        label.textColor = .gray100
         label.font = .tg16
         label.addLabelSpacing(fontStyle: .tg16)
+        label.text = "Wi-Fi 정보"
+        label.textColor = .gray100
         label.textAlignment = .left
         return label
     }()
 
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
-        label.text = "와이파이 ID"
-        label.textColor = .gray400
         label.font = .tg12
         label.addLabelSpacing(fontStyle: .tg12)
+        label.text = "와이파이 ID"
+        label.textColor = .gray400
         label.textAlignment = .left
         return label
     }()
 
     lazy var ssidFieldLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .gray300
+        label.text = "Sample Text" // 텍스트 설정
         label.font = .tgPasswordS
-        label.addLabelSpacing(fontStyle: .tgPasswordS)
+        label.textColor = .gray300
         label.textAlignment = .left
+
+        // 스타일 적용
+        label.addLabelSpacing(fontStyle: .tgPasswordS)
         return label
     }()
 
@@ -102,20 +105,23 @@ class GoToSettingView: BaseView {
 
     lazy var pwLabel: UILabel = {
         let label = UILabel()
-        label.text = "비밀번호"
-        label.textColor = .gray400
         label.font = .tg12
         label.addLabelSpacing(fontStyle: .tg12)
+        label.text = "비밀번호"
+        label.textColor = .gray400
         label.textAlignment = .left
         return label
     }()
 
     lazy var pwFieldLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .gray300
+        label.text = "Sample Text" // 텍스트 설정
         label.font = .tgPasswordS
-        label.addLabelSpacing(fontStyle: .tgPasswordS)
+        label.textColor = .gray300
         label.textAlignment = .left
+
+        // 스타일 적용
+        label.addLabelSpacing(fontStyle: .tgPasswordS)
         return label
     }()
 
@@ -128,13 +134,11 @@ class GoToSettingView: BaseView {
 
     lazy var copyButton: UIButton = {
         let button = UIButton()
-        button.setTitle("복사하기", for: .normal)
-        button.setTitleColor(.green200, for: .normal)
         button.titleLabel?.font = .tg14
         button.titleLabel?.addLabelSpacing(fontStyle: .tg14)
-
+        button.setTitle("복사하기", for: .normal)
+        button.setTitleColor(.green200, for: .normal)
         button.backgroundColor = .clear
-
         button.layer.cornerRadius = 20
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.green200.cgColor
@@ -143,22 +147,22 @@ class GoToSettingView: BaseView {
 
     lazy var infoFirstLabel: UILabel = {
         let label = UILabel()
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
         label.numberOfLines = 0
         label.textColor = .gray400
         label.textAlignment = .center
         label.text = "WiFi 비밀번호를 복사해,"
-        label.font = .tg16
-        label.addLabelSpacing(fontStyle: .tg16)
         return label
     }()
 
     lazy var infoSecondLabel: UILabel = {
         let label = UILabel()
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
         label.numberOfLines = 0
         label.textColor = .gray400
         label.textAlignment = .center
-        label.font = .tg16
-        label.addLabelSpacing(fontStyle: .tg16)
 
         let wifiID = "설정 > Wi-Fi"
         let description = "\(wifiID) "+"에서 이어서 연결하세요."
@@ -182,9 +186,9 @@ class GoToSettingView: BaseView {
 
     lazy var backButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "BackIcon"), for: .normal)
         button.titleLabel?.font = .tg16
         button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
+        button.setImage(UIImage(named: "BackIcon"), for: .normal)
         button.setTitleColor(.primary200, for: .normal)
         button.backgroundColor = .clear
 
@@ -196,9 +200,9 @@ class GoToSettingView: BaseView {
 
     lazy var settingButton: UIButton = {
         let button = UIButton()
-        button.setTitle("아이폰 설정으로 가기", for: .normal)
         button.titleLabel?.font = .tg16
         button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
+        button.setTitle("아이폰 설정으로 가기", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .primary200
 
