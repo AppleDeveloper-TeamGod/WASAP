@@ -134,22 +134,22 @@ final class CameraView: BaseView {
         return layer
     }()
 
-    public var dimmingView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.black
-        view.alpha = 0.0 // 초기 상태는 투명
-        return view
+    public var dimmingLayer: CALayer = {
+        let layer = CALayer()
+        layer.backgroundColor = UIColor.black.cgColor
+        layer.opacity = 0.0
+        return layer
     }()
 
     override func layoutSubviews() {
         super.layoutSubviews()
         previewLayer?.frame = previewContainerView.bounds
-        dimmingView.frame = bounds
+        dimmingLayer.frame = bounds
         updatePhotoFrameLayerPath()
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, photoFrameView, bottomBackgroundView, zoomSlider, dimmingView)
+        self.addSubViews(previewContainerView, photoFrameView, bottomBackgroundView, zoomSlider)
 
         self.bottomBackgroundView.addSubViews(takePhotoButton, tipButtonView)
 
@@ -159,6 +159,8 @@ final class CameraView: BaseView {
 
         self.photoFrameView.layer.addSublayer(photoFrameLayer)
         self.photoFrameView.layer.addSublayer(photoCrossFrameLayer)
+
+        self.layer.addSublayer(dimmingLayer)
     }
 
     func setConstraints() {
