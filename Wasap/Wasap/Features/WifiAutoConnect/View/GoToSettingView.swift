@@ -8,7 +8,7 @@ import UIKit
 import SnapKit
 
 class GoToSettingView: BaseView {
-    
+
     lazy var backgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .darkBackground
@@ -55,30 +55,12 @@ class GoToSettingView: BaseView {
         stackView.spacing = 4
         return stackView
     }()
-    
-    // Memo View
+
     lazy var memoView: UIView = {
         let view = UIView()
-        view.backgroundColor = .neutral450 // 내부 배경색 설정
+        view.backgroundColor = .neutral450 
         view.layer.cornerRadius = 20
         view.layer.masksToBounds = false // Gradient를 위해 false 설정
-
-        // DispatchQueue를 사용해 테두리에 그라데이션 추가
-        DispatchQueue.main.async {
-            view.applyGradientBorder(
-                colors: [UIColor.red, UIColor.orange],
-                width: 4,
-                cornerRadius: 20
-            )
-        }
-
-        view.applyShadow(
-                    offset: CGSize(width: 0, height: 4), // x: 0, y: 4
-                    radius: 4,                          // 블러 반경
-                    color: .black,                      // 그림자 색상
-                    opacity: 0.25                       // 투명도
-                )
-
         return view
     }()
 
@@ -117,7 +99,7 @@ class GoToSettingView: BaseView {
         stackView.spacing = 4
         return stackView
     }()
-    
+
     lazy var pwLabel: UILabel = {
         let label = UILabel()
         label.text = "비밀번호"
@@ -238,18 +220,18 @@ class GoToSettingView: BaseView {
         setViewHierarchy()
         setConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func setViewHierarchy() {
         self.addSubview(backgroundView)
         backgroundView.addSubViews(cameraButton,titleStackView,memoView,
                                    infoStackView,btnStackView)
         memoView.addSubViews(memoText,infoIcon,ssidStackView,pwStackView,copyButton)
     }
-    
+
     func setConstraints() {
         backgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
