@@ -39,9 +39,11 @@ public class CameraViewModel: BaseViewModel {
     // MARK: - Properties
     private var isCameraRunning = BehaviorRelay<Bool>(value: false)
     private var currentZoomValue = BehaviorRelay<CGFloat>(value: 2.0)
-    private var captureRect = BehaviorRelay<CGRect?>(value: nil)
+    private var captureRect = BehaviorRelay<CGRect>(value: CGRect(x: 32, y: 92, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.78))
     private let isModalPresented = BehaviorRelay<Bool>(value: false)
     private let isNotWifiQR = PublishRelay<Void>()
+    private let latestSSID = BehaviorRelay<String>(value: "")
+    private let latestPassword = BehaviorRelay<String>(value: "")
 
     // MARK: - Init & Binding
     public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiConnectUseCase: WiFiConnectUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorController: CameraCoordinatorController) {
@@ -88,6 +90,7 @@ public class CameraViewModel: BaseViewModel {
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .viewDidDismiss, object: nil)
 
         viewDidLoad
+            .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 cameraUseCase.configureCamera()
@@ -101,6 +104,7 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         viewWillAppear
+            .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 cameraUseCase.configureCamera()
@@ -187,6 +191,7 @@ public class CameraViewModel: BaseViewModel {
 
         isCameraConfigured
             .withUnretained(self)
+            .observe(on: MainScheduler.asyncInstance)
             .flatMapLatest { owner, _  in
                 owner.cameraUseCase.startRunning()
             }
@@ -215,6 +220,14 @@ public class CameraViewModel: BaseViewModel {
             .subscribe { owner, ocrResult in
                 guard let videoPreviewLayer: AVCaptureVideoPreviewLayer = owner.cameraUseCase.getCapturePreviewLayer() else { return }
 
+                if let ssid = ocrResult.ssid, !ssid.isEmpty {
+                    owner.latestSSID.accept(ssid)
+                }
+
+                if let password = ocrResult.password, !password.isEmpty {
+                    owner.latestPassword.accept(password)
+                }
+
                 let convertedSSIDRect = ocrResult.ssidBoundingBox.map { box in
                     videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: box)
                 }
@@ -225,7 +238,7 @@ public class CameraViewModel: BaseViewModel {
                 ssidRelay.accept(convertedSSIDRect)
                 passwordRelay.accept(convertedPasswordRect)
 
-                var unionedRect: CGRect? = nil
+                var unionedRect: CGRect = CGRect(x: 32, y: 92, width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.78)
                 if let ssidRect = convertedSSIDRect, let passwordRect = convertedPasswordRect {
                     unionedRect = ssidRect.union(passwordRect)
                 } else if let ssidRect = convertedSSIDRect {
@@ -320,9 +333,11 @@ public class CameraViewModel: BaseViewModel {
             .flatMapLatest { owner, rect in
                 owner.cameraUseCase.takePhoto(with: rect)
             }
+            .withLatestFrom(latestSSID) { ($0, $1) }
+            .withLatestFrom(latestPassword) { (image: $0.0, ssid: $0.1, password: $1) }
             .withUnretained(self)
-            .subscribe { owner, image in
-                owner.coordinatorController?.performTransition(to: .analysis(imageData: image))
+            .subscribe { owner, info in
+                owner.coordinatorController?.performTransition(to: .connecting(imageData: info.image, ssid: info.ssid, password: info.password))
             }
             .disposed(by: disposeBag)
 
