@@ -23,20 +23,20 @@ class WifiReConnectView: BaseView {
 
     lazy var titleLabel: UILabel = {
         let label = UILabel()
+        label.font = .tg26
+        label.addLabelSpacing(fontStyle: .tg26)
         label.text = "Retry!"
         label.textColor = .primary200
         label.textAlignment = .left
-        label.font = .tg26
-        label.addLabelSpacing(fontStyle: .tg26)
         return label
     }()
 
     lazy var subLabel: UILabel = {
         let label = UILabel()
-        label.text = "잘못된 부분이 있나봐요!".localized()
-        label.textColor = .neutral400
         label.font = .tg16
         label.addLabelSpacing(fontStyle: .tg16)
+        label.text = "잘못된 부분이 있나봐요!".localized()
+        label.textColor = .neutral400
         label.textAlignment = .left
         return label
     }()
@@ -51,11 +51,14 @@ class WifiReConnectView: BaseView {
 
     lazy var photoContainerView: UIView = {
         let containerView = UIView()
-        containerView.layer.shadowColor = UIColor.black.cgColor
-        containerView.layer.shadowOpacity = 0.25
-        containerView.layer.shadowOffset = CGSize(width: 0, height: 4) // 아래로 이동
-        containerView.layer.shadowRadius = 4
+        containerView.applyShadow(
+            offset: CGSize(width: 0, height: 4),
+            radius: 4,
+            color: .black,
+            opacity: 0.25
+        )
         containerView.backgroundColor = .clear // 투명 배경
+
         return containerView
     }()
 
@@ -70,24 +73,24 @@ class WifiReConnectView: BaseView {
 
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
-        label.text = "와이파이 ID".localized()
-        label.textColor = .neutral200
         label.font = .tg12
         label.addLabelSpacing(fontStyle: .tg12)
+        label.text = "와이파이 ID".localized()
+        label.textColor = .neutral200
         label.textAlignment = .left
+
         return label
     }()
 
     lazy var ssidField: UITextField = {
         let textField = UITextField()
+        textField.font = .tgPasswordM
+        textField.applyFontSpacing(style: .tgPasswordM)
         textField.textColor = .neutral200
         textField.backgroundColor = .neutral450
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 10
         textField.layer.masksToBounds = true
-        textField.font = .tgPasswordM
-        textField.applyFontSpacing(style: .tgPasswordM)
-
         return textField
     }()
 
@@ -100,25 +103,23 @@ class WifiReConnectView: BaseView {
 
     lazy var pwLabel: UILabel = {
         let label = UILabel()
-        label.text = "비밀번호".localized()
-        label.textColor = .neutral200
         label.font = .tg12
         label.addLabelSpacing(fontStyle: .tg12)
+        label.text = "비밀번호".localized()
+        label.textColor = .neutral200
         label.textAlignment = .left
         return label
     }()
 
     lazy var pwField: UITextField = {
         let textField = UITextField()
+        textField.font = .tgPasswordM
+        textField.applyFontSpacing(style: .tgPasswordM)
         textField.textColor = .neutral200
         textField.backgroundColor = .neutral450
-        textField.font = .tgPasswordM
-
         textField.returnKeyType = .done
         textField.layer.cornerRadius = 10
         textField.layer.masksToBounds = true
-        textField.textAlignment = .center
-
         return textField
     }()
 
@@ -131,12 +132,11 @@ class WifiReConnectView: BaseView {
 
     lazy var reConnectButton: UIButton = {
         let button = UIButton()
-        button.setTitle("다시 연결하기".localized(), for: .normal)
-        button.setTitleColor(.neutral200, for: .normal)
         button.titleLabel?.font = .tg16
         button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
+        button.setTitle("다시 연결하기".localized(), for: .normal)
+        button.setTitleColor(.neutral200, for: .normal)
         button.backgroundColor = .clear
-
         button.layer.cornerRadius = 25
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.neutral200.cgColor
@@ -159,8 +159,6 @@ class WifiReConnectView: BaseView {
         backgroundView.addSubViews(labelStackView,photoContainerView,
                                    ssidStackView,pwStackView,
                                    reConnectButton,cameraButton)
-
-        // `photoImageView`를 컨테이너에 추가
         photoContainerView.addSubview(photoImageView)
 
     }
@@ -223,11 +221,11 @@ class WifiReConnectView: BaseView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        photoContainerView.applyShadow(
-            offset: CGSize(width: 0, height: 4), // x: 0, y: 4
-            radius: 4,                          // 블러 반경
-            color: .black,                      // 그림자 색상
-            opacity: 0.25                       // 투명도
-        )
+//        photoContainerView.applyShadow(
+//            offset: CGSize(width: 0, height: 4),
+//            radius: 4,
+//            color: .black,
+//            opacity: 0.25
+//        )
     }
 }

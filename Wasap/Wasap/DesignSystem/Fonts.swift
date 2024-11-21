@@ -107,51 +107,51 @@ extension UIFont {
 
 // UILabel 확장
 extension UILabel {
-    func addLabelSpacing(fontStyle: FontStyle) {
+    func addLabelSpacing(fontStyle: FontStyle, lineBreakMode: NSLineBreakMode = .byTruncatingTail) {
+        // FontStyle에서 필요한 값 가져오기
         let lineHeightMultiple = fontStyle.fontProperty.lineHeightMultiple ?? 1.0
-        let letterSpacing = fontStyle.fontProperty.letterSpacingMultiiple * font.pointSize
+        let letterSpacing = fontStyle.fontProperty.letterSpacingMultiiple * fontStyle.fontProperty.size
 
-        if let labelText = text, !labelText.isEmpty {
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineHeightMultiple = lineHeightMultiple
-            paragraphStyle.alignment = .center
+        // NSParagraphStyle 설정
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = lineHeightMultiple
+        paragraphStyle.lineBreakMode = lineBreakMode
 
-            attributedText = NSAttributedString(
-                string: labelText,
-                attributes: [
-                    .kern: letterSpacing,
-                    .paragraphStyle: paragraphStyle
-                ]
-            )
-        }
-    }
+        // 기존 텍스트 가져오기
+        let currentText = text ?? ""
+        let currentFont = font ?? fontStyle.font
 
-    // 간단하게 폰트와 스타일 한 번에 설정
-    func applyFontSpacing(style: FontStyle) {
-        self.font = style.font
-        self.addLabelSpacing(fontStyle: style)
+        // AttributedString 생성
+        attributedText = NSAttributedString(
+            string: currentText,
+            attributes: [
+                .font: currentFont,
+                .kern: letterSpacing, // 자간 설정
+                .paragraphStyle: paragraphStyle
+            ]
+        )
     }
 }
 
+
 extension UITextField {
-    func applyFontSpacing(style: FontStyle, alignment: NSTextAlignment = .center) {
+    func applyFontSpacing(style: FontStyle) {
         let lineHeightMultiple = style.fontProperty.lineHeightMultiple ?? 1.0
         let letterSpacing = style.fontProperty.letterSpacingMultiiple * style.fontProperty.size
 
         // NSParagraphStyle 설정
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = lineHeightMultiple
-        paragraphStyle.alignment = alignment // 정렬 설정
+        paragraphStyle.alignment = .center
         paragraphStyle.lineBreakMode = .byTruncatingTail
 
         // 기본 텍스트 스타일 설정
         self.defaultTextAttributes = [
             .font: style.font,
             .kern: letterSpacing,
-            .paragraphStyle: paragraphStyle
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: UIColor.neutral200
         ]
-        // 텍스트 정렬 동기화
-        self.textAlignment = alignment
     }
 }
 
