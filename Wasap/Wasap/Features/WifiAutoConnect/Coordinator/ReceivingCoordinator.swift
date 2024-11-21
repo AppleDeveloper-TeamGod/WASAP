@@ -68,7 +68,7 @@ extension ReceivingCoordinator: ReceivingCoordinatorController {
         switch flow {
         case .connecting(ssid: let ssid, password: let password):
             finishCurrentCoordinator()
-            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: UIImage(), ssid: ssid, password: password)
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, image: UIImage(), ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }

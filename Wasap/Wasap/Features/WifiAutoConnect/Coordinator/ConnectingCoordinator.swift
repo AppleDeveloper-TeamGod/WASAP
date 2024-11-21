@@ -18,18 +18,18 @@ public class ConnectingCoordinator: NavigationCoordinator {
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
     
-    let imageData: UIImage
+    let image: UIImage
     let ssid: String?
     let password: String?
     
     private weak var connectingViewController: ConnectingViewController?
     
-    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, imageData: UIImage?, ssid: String?, password: String?) {
+    public init(navigationController: UINavigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer, image: UIImage?, ssid: String?, password: String?) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
         self.password = password
-        self.imageData = imageData ?? UIImage()
+        self.image = image ?? UIImage()
     }
     
     public enum FinishFlow {
@@ -71,12 +71,12 @@ extension ConnectingCoordinator: ConnectingCoordinatorController {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
         case .finishWithError:
-            if let parentCoordinator = parentCoordinator as? ScanCoordinator {
-                finishCurrentCoordinator()
-                parentCoordinator.performTransition(to: .retry(imageData: imageData, ssid: ssid, password: password))
+            if let parentCoordinator = parentCoordinator as? CameraCoordinator {
+                let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
+                start(childCoordinator: coordinator)
             } else if let parentCoordinator = parentCoordinator as? WifiReConnectCoordinator {
-                finishCurrentCoordinator()
-                parentCoordinator.performTransition(to: .gotoSetting(imageData: imageData, ssid: ssid ?? "", password: password ?? ""))
+                let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
+                self.switch(childCoordinator: coordinator)
             } else if let parentCoordinator = parentCoordinator as? ReceivingCoordinator {
                 finishCurrentCoordinator()
                 parentCoordinator.performFinish(to: .popToRoot)

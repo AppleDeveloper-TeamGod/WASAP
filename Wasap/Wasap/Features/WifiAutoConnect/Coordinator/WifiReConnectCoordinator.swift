@@ -15,7 +15,7 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
     let image: UIImage
-    let ssid : String
+    let ssid: String
     let password: String
 
     public init(navigationController: UINavigationController,
@@ -29,9 +29,8 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
     }
     
     public enum Flow {
-        case connecting(imageData: UIImage,ssid : String, password : String)
+        case connecting(image: UIImage, ssid: String, password: String)
         case camera
-        case gotoSetting(imageData: UIImage,ssid : String, password : String)
     }
 
     public enum FinishFlow {
@@ -45,7 +44,10 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
         let viewController = wifiAutoConnectDIContainer.makeWifiReConnectViewController(viewModel)
 
         self.navigationController.setNavigationBarHidden(true, animated: false)
-        self.navigationController.pushViewController(viewController, animated: true)
+        var viewControllers = self.navigationController.viewControllers
+        _ = viewControllers.popLast()
+        viewControllers.append(viewController)
+        self.navigationController.setViewControllers(viewControllers, animated: true)
     }
 
     public func finish() {
@@ -60,12 +62,8 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
             let coordinator = CameraCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer)
             start(childCoordinator: coordinator)
 
-        case .connecting(imageData: let imageData,ssid: let ssid, password: let password):
-            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: WifiAutoConnectDIContainer(),imageData: imageData, ssid: ssid, password: password)
-            start(childCoordinator: coordinator)
-
-        case .gotoSetting(imageData: let imageData,ssid: let ssid, password: let password):
-            let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
+        case .connecting(image: let image, ssid: let ssid, password: let password):
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, image: image, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         }
     }

@@ -9,23 +9,27 @@ import Foundation
 import UIKit
 
 public class GoToSettingCoordinator: NavigationCoordinator {
-    public var parentCoordinator: (any Coordinator)? = nil
+    public weak var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
     public let navigationController: UINavigationController
     private let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
 
-    let imageData : UIImage
-    let ssid : String
+    let image: UIImage
+    let ssid: String
     let password : String
 
     public init(navigationController: UINavigationController,
                 wifiAutoConnectDIContainer: WifiAutoConnectDIContainer,
-                imageData: UIImage, ssid: String, password: String) {
+                image: UIImage, ssid: String, password: String) {
         self.navigationController = navigationController
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
-        self.imageData = imageData
+        self.image = image
         self.ssid = ssid
         self.password = password
+    }
+
+    deinit {
+        Log.debug(#file + " deinit")
     }
 
     public enum FinishFlow {
@@ -36,11 +40,14 @@ public class GoToSettingCoordinator: NavigationCoordinator {
     public func start() {
         let repository = wifiAutoConnectDIContainer.makeGoToSettingRepository()
         let usecase = wifiAutoConnectDIContainer.makeGoToSettingUseCase(repository)
-        let viewModel = wifiAutoConnectDIContainer.makeGoToSettingViewModel(goToSettingUseCase: usecase, coordinatorcontroller: self, imageData: imageData, ssid: ssid, password: password)
+        let viewModel = wifiAutoConnectDIContainer.makeGoToSettingViewModel(goToSettingUseCase: usecase, coordinatorcontroller: self, imageData: image, ssid: ssid, password: password)
         let viewController = wifiAutoConnectDIContainer.makeGoToSettingViewController(viewModel)
 
         self.navigationController.setNavigationBarHidden(true, animated: false)
-        self.navigationController.pushViewController(viewController, animated: true)
+        var viewControllers = self.navigationController.viewControllers
+        _ = viewControllers.popLast()
+        viewControllers.append(viewController)
+        self.navigationController.setViewControllers(viewControllers, animated: true)
     }
 
     public func finish() {

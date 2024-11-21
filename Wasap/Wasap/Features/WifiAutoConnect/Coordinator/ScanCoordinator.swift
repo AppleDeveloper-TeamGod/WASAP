@@ -52,7 +52,7 @@ extension ScanCoordinator: ScanCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
         case .connecting(imageData: let imageData, ssid: let ssid, password: let password):
-            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, imageData: imageData, ssid: ssid, password: password)
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, image: imageData, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
         case .retry(imageData: let image, ssid: let ssid, password: let password):
             let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")

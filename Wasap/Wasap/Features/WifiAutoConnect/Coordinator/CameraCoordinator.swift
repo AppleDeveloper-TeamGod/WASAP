@@ -20,7 +20,8 @@ public class CameraCoordinator: NavigationCoordinator {
     }
 
     public enum Flow {
-        case analysis(imageData: UIImage)
+        case connecting(imageData: UIImage, ssid : String?, password : String?)
+        case retry(imageData: UIImage, ssid : String?, password : String?)
         case connectWithQR(ssid: String, password: String)
         case receiving(ssid : String?, password : String?)
         case tip
@@ -48,12 +49,15 @@ public class CameraCoordinator: NavigationCoordinator {
 extension CameraCoordinator: CameraCoordinatorController {
     public func performTransition(to flow: Flow) {
         switch flow {
-        case .analysis(let imageData):
-            let coordinator = ScanCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, previewImage: imageData)
+        case .connecting(imageData: let image, ssid: let ssid, password: let password):
+            let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, image: image, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
+        case .retry(imageData: let image, ssid: let ssid, password: let password):
+            let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
+            self.switch(childCoordinator: coordinator)
         case .connectWithQR(let ssid, let password):
-            let coordinator = ConnectingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, imageData: nil, ssid: ssid, password: password)
-            start(childCoordinator: coordinator)
+            let coordinator = ConnectingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: nil, ssid: ssid, password: password)
+            self.switch(childCoordinator: coordinator)
         case .receiving(ssid: let ssid, password: let password):
             let coordinator = ReceivingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
