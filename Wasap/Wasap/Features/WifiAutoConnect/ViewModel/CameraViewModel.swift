@@ -288,6 +288,7 @@ public class CameraViewModel: BaseViewModel {
             .filter { _, isPresented in !isPresented }
             .compactMap { qrDataWithCorners, _ in qrDataWithCorners }
             .map(\.qrString)
+            .distinctUntilChanged()
             .debounce(.milliseconds(1500), scheduler: MainScheduler.asyncInstance)
             .withUnretained(self)
             .compactMap { owner, qrString in
