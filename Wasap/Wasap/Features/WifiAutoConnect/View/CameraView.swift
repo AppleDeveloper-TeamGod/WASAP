@@ -134,15 +134,22 @@ final class CameraView: BaseView {
         return layer
     }()
 
+    public var dimmingView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black
+        view.alpha = 0.0 // 초기 상태는 투명
+        return view
+    }()
+
     override func layoutSubviews() {
         super.layoutSubviews()
-
         previewLayer?.frame = previewContainerView.bounds
+        dimmingView.frame = bounds
         updatePhotoFrameLayerPath()
     }
 
     func setViewHierarchy() {
-        self.addSubViews(previewContainerView, photoFrameView, bottomBackgroundView, zoomSlider)
+        self.addSubViews(previewContainerView, photoFrameView, bottomBackgroundView, zoomSlider, dimmingView)
 
         self.bottomBackgroundView.addSubViews(takePhotoButton, tipButtonView)
 

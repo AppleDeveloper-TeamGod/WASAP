@@ -20,6 +20,16 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel>, 
         NotificationCenter.default.post(name: .viewDidPresent, object: nil)
     }
 
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.post(name: .viewWillPresent, object: nil)
+    }
+
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.post(name: .viewWillDismiss, object: nil) // dismiss 이벤트 게시
+    }
+
     public override func loadView() {
         super.loadView()
         self.view = receivingView
@@ -59,4 +69,6 @@ public class ReceivingViewController: RxBaseViewController<ReceivingViewModel>, 
 extension Notification.Name {
     static let viewDidPresent = Notification.Name("modalViewDidPresent")
     static let viewDidDismiss = Notification.Name("modalViewDidDismiss")
+    static let viewWillPresent = Notification.Name("modalViewWillPresent")
+    static let viewWillDismiss = Notification.Name("modalViewWillDismiss")
 }

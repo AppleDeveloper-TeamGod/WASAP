@@ -17,6 +17,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
     override init(viewModel: CameraViewModel) {
         super.init(viewModel: viewModel)
         bind(viewModel)
+        setupModalNotifications()
     }
 
     @MainActor required init?(coder: NSCoder) {
@@ -125,6 +126,41 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
                 self?.cameraView.zoomSlider.maximumValue = Float(value.max)
             }
             .disposed(by: disposeBag)
+    }
+
+    private func setupModalNotifications() {
+        NotificationCenter.default.rx
+            .notification(.viewWillPresent)
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                Log.print("Notification received: viewWillPresent")
+                self?.showDimmingEffect()
+            }
+            .disposed(by: disposeBag)
+
+        NotificationCenter.default.rx
+            .notification(.viewWillDismiss)
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] _ in
+                Log.print("Notification received: viewWillDismiss")
+                self?.hideDimmingEffect()
+            }
+            .disposed(by: disposeBag)
+
+    }
+
+    private func showDimmingEffect() {
+        Log.debug("showDimmingEffect called")
+        UIView.animate(withDuration: 0.3, animations: {
+            self.cameraView.dimmingView.alpha = 0.4
+        })
+    }
+
+    private func hideDimmingEffect() {
+        Log.debug("hideDimmingEffect called")
+        UIView.animate(withDuration: 0.3, animations: {
+            self.cameraView.dimmingView.alpha = 0.0
+        })
     }
 
     /// 알맞은 프레임 영역 안에 있다면 true, 범위 밖으로 벗어나면 false
