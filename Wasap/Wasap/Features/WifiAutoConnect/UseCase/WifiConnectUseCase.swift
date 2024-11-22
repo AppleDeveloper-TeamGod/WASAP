@@ -10,6 +10,7 @@ import Foundation
 
 public protocol WiFiConnectUseCase {
     func connectToWiFi(ssid: String, password: String) -> Single<Bool>
+    func getConnectedSSID() -> String?
 }
 
 final class DefaultWiFiConnectUseCase: WiFiConnectUseCase {
@@ -21,6 +22,10 @@ final class DefaultWiFiConnectUseCase: WiFiConnectUseCase {
     
     func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
         return repository.connectToWiFi(ssid: ssid, password: password)
+    }
+
+    func getConnectedSSID() -> String? {
+        return repository.getConnectedSSID()
     }
 }
 
