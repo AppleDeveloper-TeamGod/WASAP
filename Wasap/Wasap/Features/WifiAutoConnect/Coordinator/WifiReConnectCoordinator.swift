@@ -40,7 +40,7 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
 
     public func start() {
         let repository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
-        let usecase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(repository)
+        let usecase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase()
         let viewModel = wifiAutoConnectDIContainer.makeWifiReConnectViewModel(wifiConnectUseCase: usecase, coordinatorcontroller: self, imageData: image, ssid: ssid, password: password)
         let viewController = wifiAutoConnectDIContainer.makeWifiReConnectViewController(viewModel)
 

@@ -17,6 +17,7 @@ public class CameraViewModel: BaseViewModel {
     // MARK: - UseCase
     private let cameraUseCase: CameraUseCase
     private let imageAnalysisUseCase: ImageAnalysisUseCase
+    private let wifiConnectUseCase: WiFiConnectUseCase
     private let wifiShareUseCase: WiFiShareUseCase
 
     // MARK: - Input
@@ -43,9 +44,10 @@ public class CameraViewModel: BaseViewModel {
     private let isNotWifiQR = PublishRelay<Void>()
 
     // MARK: - Init & Binding
-    public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorController: CameraCoordinatorController) {
+    public init(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiConnectUseCase: WiFiConnectUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorController: CameraCoordinatorController) {
         self.cameraUseCase = cameraUseCase
         self.imageAnalysisUseCase = imageAnalysisUseCase
+        self.wifiConnectUseCase = wifiConnectUseCase
         self.wifiShareUseCase = wifiShareUseCase
         self.coordinatorController = coordinatorController
 
@@ -343,6 +345,9 @@ public class CameraViewModel: BaseViewModel {
             .withUnretained(self)
             .flatMapLatest { owner, _ -> Observable<(ssid: String, password: String)> in
                 owner.wifiShareUseCase.getReceivedWiFiInfo()
+            }
+            .filter { [weak self] wifiInfo in
+                self?.wifiConnectUseCase.getConnectedSSID() != wifiInfo.ssid
             }
             .subscribe {
                 receivedWiFiInfo.accept($0)

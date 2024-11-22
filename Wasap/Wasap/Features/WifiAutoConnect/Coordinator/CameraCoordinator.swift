@@ -32,9 +32,11 @@ public class CameraCoordinator: NavigationCoordinator {
 
         let imageAnalysisRepository = wifiAutoConnectDIContainer.makeQuickImageAnalysisRepository()
         let imageAnalysisUseCase = wifiAutoConnectDIContainer.makeImageAnalysisUseCase(imageAnalysisRepository)
+        let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
+        let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase()
         let wifiShareRepository = wifiAutoConnectDIContainer.makeWiFiShareRepository()
         let wifiShareUseCase = wifiAutoConnectDIContainer.makeWiFiShareUseCase(wifiShareRepository)
-        let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self)
+        let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self)
         let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
 
         self.navigationController.pushViewController(cameraViewController, animated: true)

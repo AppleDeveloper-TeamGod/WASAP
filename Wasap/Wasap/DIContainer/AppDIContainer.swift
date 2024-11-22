@@ -19,6 +19,15 @@ final public class AppDIContainer {
 }
 
 final public class WifiAutoConnectDIContainer {
+    // MARK: - Properties
+    private lazy var wifiConnectRepository: WiFiConnectRepository = {
+        return DefaultWiFiConnectRepository()
+    }()
+
+    private lazy var wifiConnectUseCase: WiFiConnectUseCase = {
+        return DefaultWiFiConnectUseCase(repository: wifiConnectRepository)
+    }()
+
 
     // MARK: Repository
     public func makeImageAnalysisRepository() -> ImageAnalysisRepository {
@@ -30,7 +39,7 @@ final public class WifiAutoConnectDIContainer {
     }
 
     public func makeWiFiConnectRepository() -> WiFiConnectRepository {
-        return DefaultWiFiConnectRepository()
+        return wifiConnectRepository
     }
 
     public func makeCameraRepository() -> CameraRepository {
@@ -50,8 +59,8 @@ final public class WifiAutoConnectDIContainer {
         return DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
     }
 
-    public func makeWiFiConnectUseCase(_ repository: WiFiConnectRepository) -> WiFiConnectUseCase {
-        return DefaultWiFiConnectUseCase(repository: repository)
+    public func makeWiFiConnectUseCase() -> WiFiConnectUseCase {
+        return wifiConnectUseCase
     }
 
     public func makeCameraUseCase(_ repository: CameraRepository) -> CameraUseCase {
@@ -79,8 +88,8 @@ final public class WifiAutoConnectDIContainer {
         return ConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, ssid: ssid, password: password)
     }
 
-    public func makeCameraViewModel(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: CameraCoordinatorController) -> CameraViewModel {
-        return CameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller)
+    public func makeCameraViewModel(cameraUseCase: CameraUseCase, imageAnalysisUseCase: ImageAnalysisUseCase, wifiConnectUseCase: WiFiConnectUseCase, wifiShareUseCase: WiFiShareUseCase, coordinatorcontroller: CameraCoordinatorController) -> CameraViewModel {
+        return CameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorController: coordinatorcontroller)
     }
 
     public func makeGoToSettingViewModel(goToSettingUseCase: GoToSettingUseCase, coordinatorcontroller: GoToSettingCoordinatorController,
