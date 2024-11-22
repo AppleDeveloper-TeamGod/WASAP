@@ -77,8 +77,8 @@ class ReceivingView: BaseView {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
 
         loadingAnimation.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(33)
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(ssidLabel.snp.top).offset(2)
         }
 
         xButton.snp.makeConstraints {
@@ -89,8 +89,9 @@ class ReceivingView: BaseView {
 
         ssidLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(subLabel.snp.top).offset(-15)
+            $0.bottom.equalTo(subLabel.snp.top).offset(-11)
             $0.leading.trailing.equalToSuperview().inset(20)
+            $0.height.equalTo(30)
         }
 
         subLabel.snp.makeConstraints {
