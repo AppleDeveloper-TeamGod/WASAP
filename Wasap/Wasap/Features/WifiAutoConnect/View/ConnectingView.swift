@@ -45,8 +45,8 @@ class ConnectingView: BaseView {
         let label = UILabel()
         label.text = "연결 되었어요!".localized()
         label.textColor = .neutral500
-        label.font = .tg16
-        label.addLabelSpacing(fontStyle: .tg16)
+        label.font = .tg18
+        label.addLabelSpacing(fontStyle: .tg18)
         label.textAlignment = .center
         label.isHidden = true
         return label
@@ -78,15 +78,15 @@ class ConnectingView: BaseView {
         loadingAnimation.snp.makeConstraints { $0.edges.equalToSuperview() }
 
         quitButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(71)
-            $0.trailing.equalToSuperview().offset(-20)
+            $0.top.equalToSuperview().offset(67)
+            $0.trailing.equalToSuperview().offset(-24)
             $0.width.equalTo(26)
             $0.height.equalTo(26)
         }
 
         mainStatusLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(384)
+            $0.top.equalToSuperview().offset(356)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(45)
         }
