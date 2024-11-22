@@ -169,7 +169,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 self?.wifiReConnectView.ssidField.layer.borderColor = isEnabled ? UIColor.green200.cgColor : UIColor.neutral200.cgColor
 
                 self?.wifiReConnectView.ssidField.layer.borderWidth = isEnabled ? 4 : 0
-
+                self?.wifiReConnectView.ssidField.font = isEnabled ? .tgPasswordM : .tgPasswordS
                 /// 공백 처리 로직
                 if(isEnabled) {
                     if let copiedStr = UIPasteboard.general.string {
@@ -192,6 +192,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 self?.wifiReConnectView.pwField.layer.borderColor = isEnabled ? UIColor.green200.cgColor :  UIColor.neutral200.cgColor
 
                 self?.wifiReConnectView.pwField.layer.borderWidth = isEnabled ? 4 : 0
+                self?.wifiReConnectView.pwField.font = isEnabled ? .tgPasswordM : .tgPasswordS
 
                 /// 공백 처리 로직
                 if(isEnabled) {
