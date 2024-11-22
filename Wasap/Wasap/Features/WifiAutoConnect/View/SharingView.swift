@@ -128,7 +128,7 @@ class SharingView: BaseView {
 
         stopShareButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().offset(-83)
-            $0.leading.trailing.equalToSuperview().inset(27)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(52)
         }
     }

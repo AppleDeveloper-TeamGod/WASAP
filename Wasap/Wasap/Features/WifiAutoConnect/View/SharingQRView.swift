@@ -11,7 +11,12 @@ import SnapKit
 class SharingQRView: BaseView {
     lazy var backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .lightBackground
+        view.backgroundColor = .neutral100
+        view.layer.cornerRadius = 20
+        view.layer.borderWidth = 1.0
+        view.layer.borderColor = UIColor.neutralWhite.cgColor
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.layer.masksToBounds = true
         return view
     }()
 
@@ -63,29 +68,28 @@ class SharingQRView: BaseView {
         backgroundView.snp.makeConstraints { $0.edges.equalToSuperview() }
 
         xButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(22)
-            $0.trailing.equalToSuperview().inset(15)
-            $0.width.height.equalTo(34)
+            $0.top.equalToSuperview().offset(27)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.width.height.equalTo(26)
         }
 
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(qrCodeView.snp.top).offset(-30)
+            $0.bottom.equalTo(qrCodeView.snp.top).offset(-34)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.width.equalTo(178)
             $0.height.equalTo(25)
         }
 
         qrCodeView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalTo(closeButton.snp.top).offset(-153)
-            $0.width.equalTo(275)
-            $0.height.equalTo(275)
+            $0.width.equalTo(287)
+            $0.height.equalTo(287)
         }
 
         closeButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().offset(-83)
-            $0.leading.trailing.equalToSuperview().inset(27)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(52)
         }
     }
