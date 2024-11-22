@@ -22,7 +22,7 @@ public class ReceivingViewModel: BaseViewModel {
 
     public init(coordinatorController: ReceivingCoordinatorController, ssid: String, password: String) {
 
-        let ssidRelay = BehaviorRelay<String>(value: "‘\(ssid)’")
+        let ssidRelay = BehaviorRelay<String>(value: "‘ \(ssid) ’")
         self.ssidDriver = ssidRelay.asDriver()
 
         self.coordinatorController = coordinatorController

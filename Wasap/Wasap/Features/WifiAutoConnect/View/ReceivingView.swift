@@ -12,7 +12,12 @@ import Lottie
 class ReceivingView: BaseView {
     lazy var backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .lightBackground
+        view.backgroundColor = .neutral100
+        view.layer.cornerRadius = 40
+        view.layer.borderWidth = 1.0
+        view.layer.borderColor = UIColor.neutralWhite.cgColor
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.layer.masksToBounds = true
         return view
     }()
 
@@ -32,9 +37,9 @@ class ReceivingView: BaseView {
     // MARK: Check
     lazy var ssidLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .neutral500
-        label.font = .tg18
-        label.addLabelSpacing(fontStyle: .tg18)
+        label.textColor = .neutral450
+        label.font = .tg22
+        label.addLabelSpacing(fontStyle: .tg22)
         label.textAlignment = .center
         return label
     }()
@@ -42,7 +47,7 @@ class ReceivingView: BaseView {
     lazy var subLabel: UILabel = {
         let label = UILabel()
         label.text = "Wi-Fi를 공유 받았어요!".localized()
-        label.textColor = .neutral500
+        label.textColor = .neutral400
         label.font = .tg16
         label.addLabelSpacing(fontStyle: .tg16)
         label.textAlignment = .center
@@ -73,30 +78,30 @@ class ReceivingView: BaseView {
 
         loadingAnimation.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(ssidLabel.snp.top).offset(-8)
+            $0.bottom.equalTo(ssidLabel.snp.top).offset(2)
         }
 
         xButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(17)
-            $0.trailing.equalToSuperview().inset(17)
-            $0.width.height.equalTo(34)
+            $0.top.equalToSuperview().offset(28)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.width.height.equalTo(26)
         }
 
         ssidLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(subLabel.snp.top).offset(-12)
+            $0.bottom.equalTo(subLabel.snp.top).offset(-15)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
         subLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(connectButton.snp.top).offset(-39)
+            $0.bottom.equalTo(connectButton.snp.top).offset(-37)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
         connectButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().offset(-83)
-            $0.leading.trailing.equalToSuperview().inset(27)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(52)
         }
     }
