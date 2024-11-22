@@ -99,8 +99,8 @@ class ConnectingView: BaseView {
         }
 
         shareButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().offset(-82)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview().offset(-83)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(52)
         }
     }
