@@ -34,28 +34,17 @@ class SharingView: BaseView {
 
     lazy var backButton: UIButton = {
         let button = UIButton()
-        button.setTitle("뒤로가기".localized(), for: .normal)
-        button.setTitleColor(.neutral500, for: .normal)
-        button.titleLabel?.font = .tg16
-        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         button.setImage(UIImage(named: "BackButton"), for: .normal)
         return button
     }()
 
     lazy var shareQRButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "QRButton"), for: .normal)
+        button.setTitle("QR로 공유하기".localized(), for: .normal)
+        button.setTitleColor(.neutral500, for: .normal)
+        button.titleLabel?.font = .tg16
+        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         return button
-    }()
-
-    lazy var shareQRLabel: UILabel = {
-        let label = UILabel()
-        label.text = "QR 공유".localized()
-        label.textColor = .neutral500
-        label.font = .tg12
-        label.addLabelSpacing(fontStyle: .tg12)
-        label.textAlignment = .center
-        return label
     }()
 
     // MARK:  폰트 체크
@@ -73,7 +62,7 @@ class SharingView: BaseView {
     // MARK:  폰트 체크
     lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "공유중".localized()
+        label.text = "공유중!".localized()
         label.textColor = .neutral500
         label.font = .tg20
         label.addLabelSpacing(fontStyle: .tg20)
@@ -97,7 +86,7 @@ class SharingView: BaseView {
 
     func setViewHierarchy() {
         self.addSubview(backgroundView)
-        self.addSubViews(secondAnimation, firstAnimation, peerCountLabel, titleLabel, stopShareButton, backButton, shareQRButton, shareQRLabel)
+        self.addSubViews(secondAnimation, firstAnimation, peerCountLabel, titleLabel, stopShareButton, backButton, shareQRButton)
     }
 
     func setConstraints() {
@@ -114,22 +103,15 @@ class SharingView: BaseView {
         }
 
         backButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(71)
-            $0.leading.equalToSuperview().offset(18)
+            $0.top.equalToSuperview().offset(68)
+            $0.leading.equalToSuperview().offset(25)
             $0.height.equalTo(24)
         }
 
         shareQRButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(76)
-            $0.trailing.equalToSuperview().inset(32)
-            $0.width.height.equalTo(42)
-        }
-
-        shareQRLabel.snp.makeConstraints {
-            $0.top.equalTo(shareQRButton.snp.bottom).offset(5.05)
-            $0.centerX.equalTo(shareQRButton.snp.centerX)
-            $0.height.equalTo(17)
-            $0.width.equalTo(71)
+            $0.top.equalToSuperview().offset(69)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.height.equalTo(24)
         }
 
         peerCountLabel.snp.makeConstraints {
@@ -140,7 +122,7 @@ class SharingView: BaseView {
 
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(peerCountLabel.snp.bottom).offset(24)
+            $0.top.equalTo(peerCountLabel.snp.bottom).offset(19)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
 
