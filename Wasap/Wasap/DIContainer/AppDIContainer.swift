@@ -20,14 +20,9 @@ final public class AppDIContainer {
 
 final public class WifiAutoConnectDIContainer {
     // MARK: - Properties
-    private lazy var wifiConnectRepository: WiFiConnectRepository = {
+    private lazy var defaultWiFiConnectRepository: WiFiConnectRepository = {
         return DefaultWiFiConnectRepository()
     }()
-
-    private lazy var wifiConnectUseCase: WiFiConnectUseCase = {
-        return DefaultWiFiConnectUseCase(repository: wifiConnectRepository)
-    }()
-
 
     // MARK: Repository
     public func makeImageAnalysisRepository() -> ImageAnalysisRepository {
@@ -39,7 +34,7 @@ final public class WifiAutoConnectDIContainer {
     }
 
     public func makeWiFiConnectRepository() -> WiFiConnectRepository {
-        return wifiConnectRepository
+        return defaultWiFiConnectRepository
     }
 
     public func makeCameraRepository() -> CameraRepository {
@@ -59,8 +54,8 @@ final public class WifiAutoConnectDIContainer {
         return DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
     }
 
-    public func makeWiFiConnectUseCase() -> WiFiConnectUseCase {
-        return wifiConnectUseCase
+    public func makeWiFiConnectUseCase(_ repository: WiFiConnectRepository) -> WiFiConnectUseCase {
+        return DefaultWiFiConnectUseCase(repository: repository)
     }
 
     public func makeCameraUseCase(_ repository: CameraRepository) -> CameraUseCase {

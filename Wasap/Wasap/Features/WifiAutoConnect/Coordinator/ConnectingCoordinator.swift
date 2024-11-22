@@ -43,8 +43,8 @@ public class ConnectingCoordinator: NavigationCoordinator {
     
     public func start() {
         let wifiConnectRepository = wifiAutoConnectDIContainer.makeWiFiConnectRepository()
-        let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase()
-        
+        let wifiConnectUseCase = wifiAutoConnectDIContainer.makeWiFiConnectUseCase(wifiConnectRepository)
+
         let viewModel = wifiAutoConnectDIContainer.makeConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, ssid: ssid ?? "", password: password ?? "")
         let viewController = wifiAutoConnectDIContainer.makeConnectingViewController(viewModel)
         
