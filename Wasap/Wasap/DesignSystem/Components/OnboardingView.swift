@@ -27,8 +27,9 @@ final class OnboardingView: BaseView {
 
     public lazy var skipButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Skip", for: .normal)
-        button.setTitleColor(.gray400, for: .normal)
+        let attribute = [NSAttributedString.Key.font: UIFont.tg16, .foregroundColor: UIColor.gray400, .baselineOffset: 2]
+        let attributedTitle = NSAttributedString(string: "Skip".localized(), attributes: attribute)
+        button.setAttributedTitle(attributedTitle, for: .normal)
         return button
     }()
 
@@ -38,6 +39,7 @@ final class OnboardingView: BaseView {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.isPagingEnabled = true
         scrollView.delegate = self
+        scrollView.backgroundColor = .clear
         return scrollView
     }()
 
@@ -52,6 +54,7 @@ final class OnboardingView: BaseView {
     public lazy var nextButton: UIButton = {
         let button = UIButton()
         button.setTitle("다음".localized(), for: .normal)
+        button.setTitleColor(.gray450, for: .normal)
         button.backgroundColor = .green200
         button.layer.cornerRadius = 25
         return button
@@ -80,7 +83,7 @@ extension OnboardingView {
 
         self.skipButton.snp.makeConstraints {
             $0.top.trailing.equalTo(safeAreaLayoutGuide).inset(16)
-            $0.height.equalTo(32)
+            $0.width.equalTo(38)
         }
 
         self.scrollView.snp.makeConstraints {
@@ -114,17 +117,20 @@ final class OnboardingPage1: BaseView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "누구나 쉽게, 사진으로 연결.".localized()
-        label.font = .tg16
-        label.textColor = .label
+        label.font = .tg24
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Wi-Fi 안내문을 실시간 인식하여 네트워크 연결!".localized()
-        label.font = .tg12
+        label.text = "Wi-Fi 안내문을 실시간 인식하여\n네트워크 연결!".localized()
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
+        label.numberOfLines = 0
         label.textAlignment = .center
+        label.textColor = .gray450
         return label
     }()
 
@@ -164,17 +170,20 @@ final class OnboardingPage2: BaseView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "같이 쓰는 것도, 쉽게.".localized()
-        label.font = .tg16
-        label.textColor = .label
+        label.font = .tg24
+        label.textColor = .black
         label.textAlignment = .center
         return label
     }()
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "wasap을 통해 Wi-Fi를 공유받아 바로 연결!".localized()
-        label.font = .tg12
+        label.text = "wasap을 통해 Wi-Fi를\n공유받아 바로 연결!".localized()
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .tg16)
+        label.numberOfLines = 0
         label.textAlignment = .center
+        label.textColor = .gray450
         return label
     }()
 

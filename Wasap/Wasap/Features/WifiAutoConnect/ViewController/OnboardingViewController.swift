@@ -21,6 +21,7 @@ public class OnboardingViewController: RxBaseViewController<OnboardingViewModel>
         self.onboardingPages = OnboardingViewModel.onboardingPages
         super.init(viewModel: viewModel)
         bind(viewModel)
+
     }
 
     @MainActor required init?(coder: NSCoder) {
@@ -33,6 +34,7 @@ public class OnboardingViewController: RxBaseViewController<OnboardingViewModel>
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        onboardingView.backgroundColor = .gray50
 
         setScrollViewContents(self.onboardingPages)
     }
@@ -84,6 +86,7 @@ public class OnboardingViewController: RxBaseViewController<OnboardingViewModel>
         onboardingPages.enumerated().forEach { index, page in
             let rect = CGRect(x: contentWidth * CGFloat(index), y: 0, width: contentWidth, height: contentHeight)
             let view = page.init(frame: rect)
+            view.backgroundColor = .gray50
             self.onboardingView.scrollView.addSubview(view)
         }
     }

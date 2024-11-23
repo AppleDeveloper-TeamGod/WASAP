@@ -23,6 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 #endif
         CLLocationManager().requestWhenInUseAuthorization()
 
+#if DEBUG
+        UserDefaultsManager.shared.set(value: true, forKey: .isFirstLaunch)
+#endif
+
         return true
     }
 
