@@ -39,6 +39,7 @@ final class TipView: BaseView {
         let button = UIButton()
         button.setTitle("닫기".localized(), for: .normal)
         button.backgroundColor = .green200
+        button.setTitleColor(.gray450, for: .normal)
         button.layer.cornerRadius = 25
         return button
     }()
@@ -104,7 +105,7 @@ final class TipPage1: BaseView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "안내문 인식 팁".localized()
-        label.font = .tg16
+        label.font = .tg24
         label.textColor = .black
         label.textAlignment = .center
         return label
@@ -112,8 +113,9 @@ final class TipPage1: BaseView {
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "안내문을 중앙에 두고 초록색 박스가 나타나면 정확한 인식을 위해 잠시 기다려 주세요.".localized()
-        label.font = .tg12
+        label.text = "안내문을 중앙에 두고 초록색 박스가\n프레임에 모두 들어오도록 촬영해 주세요.".localized()
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .font16)
         label.numberOfLines = 0
         label.textColor = .black
         label.textAlignment = .center
@@ -167,7 +169,7 @@ final class TipPage2: BaseView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Wi-Fi 공유 받기".localized()
-        label.font = .tg16
+        label.font = .tg24
         label.textColor = .label
         label.textColor = .black
         label.textAlignment = .center
@@ -176,8 +178,9 @@ final class TipPage2: BaseView {
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "wasap을 친구가 Wi-Fi를 공유하면 첫 화면에서 '공유 알림'을 받을 수 있습니다.".localized()
-        label.font = .tg12
+        label.text = "wasap을 친구가 Wi-Fi를 공유하면\n첫 화면에서 '공유 알림'을 받을 수 있습니다.".localized()
+        label.font = .tg16
+        label.addLabelSpacing(fontStyle: .font16)
         label.numberOfLines = 0
         label.textColor = .black
         label.textAlignment = .center

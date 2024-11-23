@@ -21,6 +21,8 @@ public class TipViewController: RxBaseViewController<TipViewModel> {
         self.tipPages = TipViewModel.tipPages
         super.init(viewModel: viewModel)
         bind(viewModel)
+
+        tipView.backgroundColor = .gray50
     }
     
     @MainActor required init?(coder: NSCoder) {
