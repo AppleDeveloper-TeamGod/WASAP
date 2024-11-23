@@ -18,6 +18,7 @@ public struct FontProperty {
 public enum FontStyle {
     case font48
     case font26
+    case font24
     case font22
     case font20
     case font18
@@ -35,6 +36,8 @@ public enum FontStyle {
             return FontProperty(font: .gmarketSansBold, size: 48, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font26:
             return FontProperty(font: .gmarketSansBold, size: 26, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+        case .font24:
+            return FontProperty(font: .gmarketSansMedium, size: 24, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font22:
             return FontProperty(font: .gmarketSansBold, size: 22, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font20:
@@ -42,7 +45,7 @@ public enum FontStyle {
         case .font18:
             return FontProperty(font: .gmarketSansMedium, size: 18, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font16:
-            return FontProperty(font: .gmarketSansMedium, size: 16, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+            return FontProperty(font: .gmarketSansMedium, size: 16, lineHeightMultiple: 1.5, letterSpacingMultiiple: 0)
         case .font14:
             return FontProperty(font: .gmarketSansMedium, size: 14, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font12:
@@ -60,6 +63,7 @@ public enum FontStyle {
 public extension FontStyle {
     static let tg48 = FontStyle.font48
     static let tg26 = FontStyle.font26
+    static let tg24 = FontStyle.font24
     static let tg22 = FontStyle.font22
     static let tg20 = FontStyle.font20
     static let tg18 = FontStyle.font18
@@ -93,14 +97,15 @@ extension UIFont {
             return UIFont(name: type.rawValue, size: size)!
         }
     }
-    static var tg48: UIFont { FontStyle.tg48.font}
-    static var tg26: UIFont { FontStyle.tg26.font}
-    static var tg22: UIFont { FontStyle.tg22.font}
-    static var tg20: UIFont { FontStyle.tg20.font}
-    static var tg18: UIFont { FontStyle.tg18.font}
-    static var tg16: UIFont { FontStyle.tg16.font}
-    static var tg14: UIFont { FontStyle.tg14.font}
-    static var tg12: UIFont { FontStyle.tg12.font}
+    static var tg48: UIFont { FontStyle.tg48.font }
+    static var tg26: UIFont { FontStyle.tg26.font }
+    static var tg24: UIFont { FontStyle.tg24.font }
+    static var tg22: UIFont { FontStyle.tg22.font }
+    static var tg20: UIFont { FontStyle.tg20.font }
+    static var tg18: UIFont { FontStyle.tg18.font }
+    static var tg16: UIFont { FontStyle.tg16.font }
+    static var tg14: UIFont { FontStyle.tg14.font }
+    static var tg12: UIFont { FontStyle.tg12.font }
     static var tgPasswordM: UIFont { FontStyle.password_M.font }
     static var tgPasswordS: UIFont { FontStyle.password_S.font }
 }
