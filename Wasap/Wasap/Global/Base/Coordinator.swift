@@ -119,6 +119,7 @@ public protocol CameraCoordinatorController: AnyObject {
 
 public protocol GoToSettingCoordinatorController: AnyObject {
     func performFinish(to flow: GoToSettingCoordinator.FinishFlow)
+    func performPop()
 }
 
 public protocol OnboardingCoordinatorController: AnyObject {

@@ -56,6 +56,9 @@ public class GoToSettingCoordinator: NavigationCoordinator {
 }
 
 extension GoToSettingCoordinator: GoToSettingCoordinatorController {
+    public func performPop() {
+        finish()
+    }
 
     public func performFinish(to flow: FinishFlow) {
         switch flow {
