@@ -184,6 +184,10 @@ class WifiReConnectView: BaseView {
             $0.bottom.equalTo(photoImageView.snp.top).offset(-50/852 * screenHeight)
         }
 
+        subLabel.snp.makeConstraints {
+            $0.height.equalTo(26/852 * screenHeight)
+        }
+
         photoContainerView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
             $0.bottom.equalTo(ssidStackView.snp.top).offset(-29/852 * screenHeight)
