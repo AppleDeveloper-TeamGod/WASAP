@@ -42,7 +42,7 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         goToSettingView.settingButton.rx.controlEvent(.touchDown)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)   
+                    self?.goToSettingView.settingButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                 }
             })
             .disposed(by: disposeBag)
@@ -74,7 +74,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
                     self?.goToSettingView.copyButton.backgroundColor = .green500
-                    self?.goToSettingView.copyButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                 }
             })
             .disposed(by: disposeBag)
@@ -82,7 +81,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         goToSettingView.copyButton.rx.controlEvent(.touchUpInside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
                     self?.goToSettingView.copyButton.backgroundColor = .clear
                 }
             })
@@ -91,7 +89,6 @@ public class GoToSettingViewController: RxBaseViewController<GoToSettingViewMode
         goToSettingView.copyButton.rx.controlEvent(.touchUpOutside)
             .subscribe(onNext: { [weak self] in
                 UIView.animate(withDuration: 0.15) {
-                    self?.goToSettingView.settingButton.transform = CGAffineTransform.identity
                     self?.goToSettingView.copyButton.backgroundColor = .clear
                 }
             })
