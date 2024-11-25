@@ -164,30 +164,25 @@ class WifiReConnectView: BaseView {
     }
 
     func setConstraints() {
-
-        let screenHeight = UIScreen.main.bounds.height // 화면 높이
-        let screenWidth = UIScreen.main.bounds.width  // 화면 너비
-
         backgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
 
         cameraButton.snp.makeConstraints {
-            $0.bottom.equalTo(labelStackView.snp.top).offset(-16/852 * screenHeight)
-            $0.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.width.equalTo(32/393 * screenWidth)
-            $0.height.equalTo(32/852 * screenHeight)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(labelStackView.snp.top).offset(-16)
+            $0.width.height.equalTo(32)
         }
 
         labelStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalTo(photoImageView.snp.top).offset(-50/852 * screenHeight)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(photoImageView.snp.top).offset(-50)
         }
 
         photoContainerView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalTo(ssidStackView.snp.top).offset(-29/852 * screenHeight)
-            $0.height.equalTo(224/852 * screenHeight)
+                $0.leading.trailing.equalToSuperview().inset(24)
+                $0.bottom.equalTo(ssidStackView.snp.top).offset(-29)
+                $0.height.equalTo(224)
             }
 
         photoImageView.snp.makeConstraints { make in
@@ -195,35 +190,42 @@ class WifiReConnectView: BaseView {
         }
 
         ssidStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalTo(pwStackView.snp.top).offset(-8/852 * screenHeight)
-            $0.height.equalTo(86/852 * screenHeight)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(pwStackView.snp.top).offset(-8)
+            $0.height.equalTo(86)
         }
 
         ssidField.snp.makeConstraints {
-            $0.height.equalTo(60/852 * screenHeight)
-            $0.width.equalTo(345/393 * screenWidth)
+            $0.height.equalTo(60)
+            $0.width.equalTo(345)
         }
 
         pwStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-197/852 * screenHeight)
-            $0.height.equalTo(86/852 * screenHeight)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-197)
+            $0.height.equalTo(86)
         }
 
         pwField.snp.makeConstraints {
-            $0.height.equalTo(60/852 * screenHeight)
-            $0.width.equalTo(345/393 * screenWidth)
+            $0.height.equalTo(60)
+            $0.width.equalTo(345)
         }
 
         reConnectButton.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalToSuperview().offset(-83/852 * screenHeight)
-            $0.height.equalTo(52/852 * screenHeight)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalToSuperview().offset(-83)
+            $0.height.equalTo(52)
         }
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
+
+//        photoContainerView.applyShadow(
+//            offset: CGSize(width: 0, height: 4),
+//            radius: 4,
+//            color: .black,
+//            opacity: 0.25
+//        )
     }
 }
