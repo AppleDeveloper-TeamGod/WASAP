@@ -72,7 +72,6 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
         switch flow {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
-
         }
     }
 }

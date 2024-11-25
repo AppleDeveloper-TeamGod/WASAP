@@ -44,14 +44,14 @@ public class GoToSettingViewModel: BaseViewModel {
         super.init()
 
         cameraButtonTapped
-            .subscribe(onNext: { _ in
-                self.coordinatorController?.performFinish(to: .popToRoot)
+            .subscribe(onNext: { [weak self] in
+                self?.coordinatorController?.performFinish(to: .popToRoot)
             })
             .disposed(by: disposeBag)
 
         backButtonTapped
-            .subscribe(onNext: { _ in
-                self.coordinatorController?.performFinish(to: .popToRetry)
+            .subscribe(onNext: { [weak self] in
+                self?.coordinatorController?.performPop()
             })
             .disposed(by: disposeBag)
 
