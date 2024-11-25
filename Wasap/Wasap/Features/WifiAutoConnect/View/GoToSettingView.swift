@@ -237,85 +237,80 @@ class GoToSettingView: BaseView {
     }
 
     func setConstraints() {
-        let screenHeight = UIScreen.main.bounds.height // 화면 높이
-        let screenWidth = UIScreen.main.bounds.width  // 화면 너비
-
         backgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
 
         cameraButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(68/852 * screenHeight)
-            $0.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.width.equalTo(32/393 * screenWidth)
-            $0.height.equalTo(32/852 * screenHeight)
+            $0.top.equalToSuperview().offset(68)
+            $0.trailing.equalToSuperview().inset(24)
+            $0.width.height.equalTo(32)
         }
 
         titleStackView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(116/852 * screenHeight)
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.height.equalTo(59/852 * screenHeight)
+            $0.top.equalToSuperview().offset(116)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.height.equalTo(59)
         }
 
         memoView.snp.makeConstraints {
-            $0.top.equalTo(titleStackView.snp.bottom).offset(50/852 * screenHeight)
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.height.equalTo(221/852 * screenHeight)
+            $0.top.equalTo(titleStackView.snp.bottom).offset(50)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.height.equalTo(221)
         }
 
         infoIcon.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(14/852 * screenHeight)
-            $0.trailing.equalToSuperview().inset(16/393 * screenWidth)
-            $0.width.equalTo(16/393 * screenWidth)
-            $0.height.equalTo(16/852 * screenHeight)
+            $0.top.equalToSuperview().inset(14)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.width.height.equalTo(16)
         }
 
         memoText.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(32/852 * screenHeight)
-            $0.leading.trailing.equalToSuperview().inset(16/393 * screenWidth)
-            $0.height.equalTo(26/852 * screenHeight)
-            $0.width.equalTo(81/393 * screenWidth)
+            $0.top.equalToSuperview().inset(32)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(26)
+            $0.width.equalTo(81)
         }
 
         ssidStackView.snp.makeConstraints{
-            $0.top.equalTo(memoText.snp.bottom).offset(16/852 * screenHeight)
-            $0.leading.trailing.equalToSuperview().inset(16/393 * screenWidth)
-            $0.height.equalTo(48/852 * screenHeight)
+            $0.top.equalTo(memoText.snp.bottom).offset(16)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(48)
         }
 
         pwStackView.snp.makeConstraints {
-            $0.top.equalTo(ssidStackView.snp.bottom).offset(20/852 * screenHeight)
-            $0.leading.equalToSuperview().inset(16/393 * screenWidth)
-            $0.height.equalTo(48/852 * screenHeight)
-            $0.width.equalTo(220/393 * screenWidth)
+            $0.top.equalTo(ssidStackView.snp.bottom).offset(20)
+            $0.leading.equalToSuperview().inset(16)
+            $0.height.equalTo(48)
+            $0.width.equalTo(220)
         }
 
         copyButton.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(16/393 * screenWidth)
-            $0.bottom.equalToSuperview().inset(27/852 * screenHeight)
-            $0.width.equalTo(84/393 * screenWidth)
-            $0.height.equalTo(38/852 * screenHeight)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview().inset(27)
+            $0.width.equalTo(84)
+            $0.height.equalTo(38)
         }
 
         infoStackView.snp.makeConstraints {
-            $0.top.equalTo(memoView.snp.bottom).offset(177/852 * screenHeight)
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.height.equalTo(52/852 * screenHeight)
-            $0.width.equalTo(320/393 * screenWidth)
+            $0.top.equalTo(memoView.snp.bottom).offset(177)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.height.equalTo(52)
+            $0.width.equalTo(320)
         }
 
         btnStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalToSuperview().offset(-83/852 * screenHeight)
-            $0.height.equalTo(52/852 * screenHeight)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.top.equalTo(infoStackView.snp.bottom).offset(50)
+            $0.height.equalTo(52)
         }
 
         backButton.snp.makeConstraints {
-            $0.width.equalTo(99/393 * screenWidth)
+            $0.width.equalTo(99)
         }
 
         settingButton.snp.makeConstraints {
-            $0.width.equalTo(236/393 * screenWidth)
+            $0.width.equalTo(236)
         }
     }
 

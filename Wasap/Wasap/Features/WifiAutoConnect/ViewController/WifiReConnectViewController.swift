@@ -89,7 +89,7 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 UIView.animate(withDuration: 0.15) {
                     self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                     self?.wifiReConnectView.reConnectButton.setTitleColor(.black, for: .normal)
-                    self?.wifiReConnectView.reConnectButton.backgroundColor = .green200
+                    self?.wifiReConnectView.reConnectButton.backgroundColor = .green300
 
                     self?.wifiReConnectView.reConnectButton.layer.borderWidth = 1
                     self?.wifiReConnectView.reConnectButton.layer.borderColor = UIColor.clear.cgColor
@@ -247,13 +247,10 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
 
     // MARK: 키보드 보일 때 처리
     private func handleKeyboardWillShow() {
-        let screenHeight = UIScreen.main.bounds.height // 화면 높이
-        let screenWidth = UIScreen.main.bounds.width  // 화면 너비
-
         wifiReConnectView.pwStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-20/852 * screenHeight)
-            $0.height.equalTo(86/852 * screenHeight)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-20)
+            $0.height.equalTo(86)
         }
 
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
@@ -266,14 +263,12 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
 
     // MARK: 키보드 숨길 때 처리
     private func handleKeyboardWillHide() {
-        let screenHeight = UIScreen.main.bounds.height // 화면 높이
-        let screenWidth = UIScreen.main.bounds.width  // 화면 너비
         resetViewState()
 
         wifiReConnectView.pwStackView.snp.remakeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-197/852 * screenHeight)
-            $0.height.equalTo(86/852 * screenHeight)
+            $0.leading.trailing.equalToSuperview().inset(24)
+            $0.bottom.equalTo(self.view.keyboardLayoutGuide.snp.top).offset(-197)
+            $0.height.equalTo(86)
         }
 
         UIView.animate(withDuration: 0.1, delay: 0, options: [.curveEaseInOut], animations: {
