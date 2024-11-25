@@ -89,8 +89,6 @@ public class WifiReConnectViewController: RxBaseViewController<WifiReConnectView
                 UIView.animate(withDuration: 0.15) {
                     self?.wifiReConnectView.reConnectButton.transform = CGAffineTransform(scaleX: 1, y: 0.95)
                     self?.wifiReConnectView.reConnectButton.setTitleColor(.black, for: .normal)
-                    self?.wifiReConnectView.reConnectButton.titleLabel?.font = .tg16
-                    self?.wifiReConnectView.reConnectButton.titleLabel?.addLabelSpacing(fontStyle: .tg16)
                     self?.wifiReConnectView.reConnectButton.backgroundColor = .green300
 
                     self?.wifiReConnectView.reConnectButton.layer.borderWidth = 1
