@@ -24,7 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         CLLocationManager().requestWhenInUseAuthorization()
 
 #if DEBUG
-        UserDefaultsManager.shared.set(value: true, forKey: .isFirstLaunch)
+        /// 항상 첫 시작이라고 간주함. (온보딩 디버깅을 위해)
+        /// 꼭 디버그 시에만 사용
+//        UserDefaultsManager.shared.set(value: true, forKey: .isFirstLaunch)
 #endif
 
         return true
