@@ -90,7 +90,6 @@ public class CameraViewModel: BaseViewModel {
         NotificationCenter.default.addObserver(self, selector: #selector(handleReceivingViewDidDismiss), name: .viewDidDismiss, object: nil)
 
         viewDidLoad
-            .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 cameraUseCase.configureCamera()
@@ -111,7 +110,6 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         viewWillAppear
-            .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 cameraUseCase.configureCamera()
