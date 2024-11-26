@@ -103,6 +103,13 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
+        viewDidLoad
+            .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .subscribe { _ in
+                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 3.0, top: 24)
+            }
+            .disposed(by: disposeBag)
+
         viewWillAppear
             .observe(on: MainScheduler.asyncInstance)
             .withUnretained(self)
@@ -179,13 +186,6 @@ public class CameraViewModel: BaseViewModel {
             .subscribe { [weak self] newZoomValue in
                 isPinchingRelay.accept(false)
                 self?.currentZoomValue.accept(newZoomValue)
-            }
-            .disposed(by: disposeBag)
-
-        isCameraConfigured
-            .delay(.seconds(2), scheduler: MainScheduler.asyncInstance)
-            .subscribe { _ in
-                Toaster.shared.toast("안내문을 중앙에 두고 촬영하세요", delay: 3.0, top: 24)
             }
             .disposed(by: disposeBag)
 
