@@ -19,6 +19,10 @@ public class CameraCoordinator: NavigationCoordinator {
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
     }
 
+    deinit {
+        Log.debug("CameraCoordinator deinit")
+    }
+
     public enum Flow {
         case connecting(imageData: UIImage, ssid : String?, password : String?)
         case retry(imageData: UIImage, ssid : String?, password : String?)
@@ -39,8 +43,8 @@ public class CameraCoordinator: NavigationCoordinator {
         let wifiShareUseCase = wifiAutoConnectDIContainer.makeWiFiShareUseCase(wifiShareRepository)
         let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self)
         let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
-
-        self.navigationController.pushViewController(cameraViewController, animated: true)
+        
+        self.navigationController.setViewControllers([cameraViewController], animated: true)
     }
 
     public func finish() {

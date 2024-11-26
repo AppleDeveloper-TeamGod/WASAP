@@ -20,6 +20,10 @@ public class OnboardingCoordinator: NavigationCoordinator {
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
     }
 
+    deinit {
+        Log.debug("OnboardingCoordinator deinit")
+    }
+
     public enum Flow {
         case camera
     }

@@ -27,7 +27,11 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
         self.ssid = ssid
         self.password = password
     }
-    
+
+    deinit {
+        Log.debug("WifiReConnectCoordinator deinit")
+    }
+
     public enum Flow {
         case connecting(image: UIImage, ssid: String, password: String)
         case camera
@@ -43,11 +47,16 @@ public class WifiReConnectCoordinator: NavigationCoordinator {
         let viewModel = wifiAutoConnectDIContainer.makeWifiReConnectViewModel(wifiConnectUseCase: usecase, coordinatorcontroller: self, imageData: image, ssid: ssid, password: password)
         let viewController = wifiAutoConnectDIContainer.makeWifiReConnectViewController(viewModel)
 
+        if #available(iOS 18.0, *) {
+            viewController.preferredTransition = .zoom { context in
+                return .none
+            }
+        } else {
+            // Fallback on earlier versions
+        }
+
         self.navigationController.setNavigationBarHidden(true, animated: false)
-        var viewControllers = self.navigationController.viewControllers
-        _ = viewControllers.popLast()
-        viewControllers.append(viewController)
-        self.navigationController.setViewControllers(viewControllers, animated: true)
+        self.navigationController.pushViewController(viewController, animated: true)
     }
 
     public func finish() {

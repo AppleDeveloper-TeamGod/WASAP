@@ -39,11 +39,9 @@ extension Coordinator {
     }
 
     public func `switch`(childCoordinator: Coordinator) {
-        childCoordinator.parentCoordinator = self
-        if let lastCoordinator = self.childCoordinators.last {
-            finishChildCoordinator(childCoordinator: lastCoordinator)
-        }
-        start(childCoordinator: childCoordinator)
+        childCoordinator.parentCoordinator = self.parentCoordinator
+        finishCurrentCoordinator()
+        childCoordinator.parentCoordinator?.start(childCoordinator: childCoordinator)
     }
 
     /// 현재 Coordinator의 자식 중 인자로 들어온 Coordinator를 종료합니다.
@@ -76,7 +74,6 @@ extension Coordinator {
     /// finishChildCoordinator를 부르면서 결국 ``finish()`` 함수도 같이 호출합니다.
     /// parentCoordinator 정보가 사라지니 주의하세요.
     public func finishCurrentCoordinator() {
-        removeChildCoordinators()
         if let parentCoordinator {
             parentCoordinator.finishChildCoordinator(childCoordinator: self)
         }

@@ -18,7 +18,7 @@ public class ConnectingCoordinator: NavigationCoordinator {
     public let navigationController: UINavigationController
     let wifiAutoConnectDIContainer: WifiAutoConnectDIContainer
     
-    let image: UIImage
+    let image: UIImage?
     let ssid: String?
     let password: String?
     
@@ -29,9 +29,13 @@ public class ConnectingCoordinator: NavigationCoordinator {
         self.wifiAutoConnectDIContainer = wifiAutoConnectDIContainer
         self.ssid = ssid
         self.password = password
-        self.image = image ?? UIImage()
+        self.image = image
     }
-    
+
+    deinit {
+        Log.debug("ConnectingCoordinator deinit")
+    }
+
     public enum FinishFlow {
         case popToRoot
         case finishWithError
@@ -47,7 +51,7 @@ public class ConnectingCoordinator: NavigationCoordinator {
 
         let viewModel = wifiAutoConnectDIContainer.makeConnectingViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorcontroller: self, ssid: ssid ?? "", password: password ?? "")
         let viewController = wifiAutoConnectDIContainer.makeConnectingViewController(viewModel)
-        
+
         self.navigationController.setNavigationBarHidden(true, animated: false)
         self.navigationController.pushViewController(viewController, animated: true)
     }
@@ -71,11 +75,11 @@ extension ConnectingCoordinator: ConnectingCoordinatorController {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
         case .finishWithError:
-            if let parentCoordinator = parentCoordinator as? CameraCoordinator {
-                let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
-                start(childCoordinator: coordinator)
-            } else if let parentCoordinator = parentCoordinator as? WifiReConnectCoordinator {
-                let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
+            if parentCoordinator is CameraCoordinator, image != nil {
+                let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image!, ssid: ssid ?? "", password: password ?? "")
+                self.switch(childCoordinator: coordinator)
+            } else if parentCoordinator is WifiReConnectCoordinator, image != nil {
+                let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image!, ssid: ssid ?? "", password: password ?? "")
                 self.switch(childCoordinator: coordinator)
             } else if let parentCoordinator = parentCoordinator as? ReceivingCoordinator {
                 finishCurrentCoordinator()

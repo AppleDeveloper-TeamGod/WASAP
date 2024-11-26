@@ -29,7 +29,7 @@ public class GoToSettingCoordinator: NavigationCoordinator {
     }
 
     deinit {
-        Log.debug(#file + " deinit")
+        Log.debug("GoToSettingCoordinator deinit")
     }
 
     public enum FinishFlow {
