@@ -25,7 +25,6 @@ public class CameraCoordinator: NavigationCoordinator {
 
     public enum Flow {
         case connecting(imageData: UIImage, ssid : String?, password : String?)
-        case retry(imageData: UIImage, ssid : String?, password : String?)
         case connectWithQR(ssid: String, password: String)
         case receiving(ssid : String?, password : String?)
         case tip
@@ -58,9 +57,6 @@ extension CameraCoordinator: CameraCoordinatorController {
         case .connecting(imageData: let image, ssid: let ssid, password: let password):
             let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, image: image, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
-        case .retry(imageData: let image, ssid: let ssid, password: let password):
-            let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image, ssid: ssid ?? "", password: password ?? "")
-            self.switch(childCoordinator: coordinator)
         case .connectWithQR(let ssid, let password):
             let coordinator = ConnectingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: nil, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
