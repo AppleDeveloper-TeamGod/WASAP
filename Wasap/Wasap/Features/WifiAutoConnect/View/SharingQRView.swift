@@ -50,7 +50,6 @@ class SharingQRView: BaseView {
         button.setTitle("닫기".localized(), for: .normal)
         button.setTitleColor(.textPrimaryHigh, for: .normal)
         button.titleLabel?.font = .tg16
-        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         button.backgroundColor = .neutral500
 
         button.layer.cornerRadius = 25

@@ -75,7 +75,6 @@ class SharingView: BaseView {
         button.setTitle("공유 그만하기".localized(), for: .normal)
         button.setTitleColor(.textPrimaryHigh, for: .normal)
         button.titleLabel?.font = .tg16
-        button.titleLabel?.addLabelSpacing(fontStyle: .tg16)
         button.backgroundColor = .neutral500
 
         button.layer.cornerRadius = 25
