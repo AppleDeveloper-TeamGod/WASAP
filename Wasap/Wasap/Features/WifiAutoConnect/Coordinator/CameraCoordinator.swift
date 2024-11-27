@@ -43,8 +43,8 @@ public class CameraCoordinator: NavigationCoordinator {
         let wifiShareUseCase = wifiAutoConnectDIContainer.makeWiFiShareUseCase(wifiShareRepository)
         let cameraViewModel = wifiAutoConnectDIContainer.makeCameraViewModel(cameraUseCase: cameraUseCase, imageAnalysisUseCase: imageAnalysisUseCase, wifiConnectUseCase: wifiConnectUseCase, wifiShareUseCase: wifiShareUseCase, coordinatorcontroller: self)
         let cameraViewController = wifiAutoConnectDIContainer.makeCameraViewController(cameraViewModel)
-        
-        self.navigationController.setViewControllers([cameraViewController], animated: true)
+
+        self.navigationController.pushViewController(cameraViewController, animated: true)
     }
 
     public func finish() {
@@ -63,7 +63,7 @@ extension CameraCoordinator: CameraCoordinatorController {
             self.switch(childCoordinator: coordinator)
         case .connectWithQR(let ssid, let password):
             let coordinator = ConnectingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: nil, ssid: ssid, password: password)
-            self.switch(childCoordinator: coordinator)
+            start(childCoordinator: coordinator)
         case .receiving(ssid: let ssid, password: let password):
             let coordinator = ReceivingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, ssid: ssid, password: password)
             start(childCoordinator: coordinator)
