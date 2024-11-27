@@ -109,7 +109,7 @@ public class CameraViewModel: BaseViewModel {
             }
             .disposed(by: disposeBag)
 
-        viewWillAppear
+        viewDidAppear
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 cameraUseCase.configureCamera()
@@ -326,7 +326,7 @@ public class CameraViewModel: BaseViewModel {
             .disposed(by: disposeBag)
 
         shutterButtonDidTap
-            .throttle(.seconds(3), latest: false, scheduler: MainScheduler.instance)
+            .throttle(.seconds(3), latest: false, scheduler: MainScheduler.asyncInstance)
             .withLatestFrom(captureRect)
             .withUnretained(self)
             .flatMapLatest { owner, rect in
