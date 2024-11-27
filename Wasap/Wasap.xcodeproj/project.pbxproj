@@ -20,6 +20,7 @@
 		0742D4312CDC5B21009BCA85 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 0742D4302CDC5B21009BCA85 /* FirebaseFirestoreCombine-Community */; };
 		0742D4332CDC5B60009BCA85 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 0742D4322CDC5B60009BCA85 /* FirebaseStorage */; };
 		6F342CDB2CB8D0680023C159 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 6F342CDA2CB8D0680023C159 /* RxBlocking */; };
+		6F399AFD2CF709E800E40C39 /* WasapClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 6F399AE92CF709E600E40C39 /* WasapClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6FAE7AC22CADA1B600A1D1CE /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC12CADA1B600A1D1CE /* Moya */; };
 		6FAE7AC42CADA1B600A1D1CE /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC32CADA1B600A1D1CE /* ReactiveMoya */; };
 		6FAE7AC62CADA1B600A1D1CE /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC52CADA1B600A1D1CE /* RxMoya */; };
@@ -31,6 +32,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6F399AFB2CF709E800E40C39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FAE7A9D2CAD9F5600A1D1CE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F399AE82CF709E600E40C39;
+			remoteInfo = WasapClip;
+		};
 		6FB475EE2CB0181700886498 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FAE7A9D2CAD9F5600A1D1CE /* Project object */;
@@ -51,9 +59,21 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6F399AFE2CF709E800E40C39 /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+				6F399AFD2CF709E800E40C39 /* WasapClip.app in Embed App Clips */,
+			);
+			name = "Embed App Clips";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6F399AE92CF709E600E40C39 /* WasapClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WasapClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FAE7AA52CAD9F5600A1D1CE /* Wasap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wasap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB475EA2CB0181700886498 /* WasapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WasapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -66,6 +86,13 @@
 			);
 			target = 6FB475E92CB0181700886498 /* WasapTests */;
 		};
+		6F399B032CF709E800E40C39 /* Exceptions for "WasapClip" folder in "WasapClip" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6F399AE82CF709E600E40C39 /* WasapClip */;
+		};
 		6FAE7AB72CAD9F5700A1D1CE /* Exceptions for "Wasap" folder in "Wasap" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -76,6 +103,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		6F399AEA2CF709E600E40C39 /* WasapClip */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6F399B032CF709E800E40C39 /* Exceptions for "WasapClip" folder in "WasapClip" target */,
+			);
+			path = WasapClip;
+			sourceTree = "<group>";
+		};
 		6FAE7AA72CAD9F5600A1D1CE /* Wasap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -93,6 +128,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6F399AE62CF709E600E40C39 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FAE7AA22CAD9F5600A1D1CE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -143,6 +185,7 @@
 			children = (
 				6FAE7AA72CAD9F5600A1D1CE /* Wasap */,
 				6FB475EB2CB0181700886498 /* WasapTests */,
+				6F399AEA2CF709E600E40C39 /* WasapClip */,
 				0742D41B2CDC4809009BCA85 /* Frameworks */,
 				6FAE7AA62CAD9F5600A1D1CE /* Products */,
 			);
@@ -153,6 +196,7 @@
 			children = (
 				6FAE7AA52CAD9F5600A1D1CE /* Wasap.app */,
 				6FB475EA2CB0181700886498 /* WasapTests.xctest */,
+				6F399AE92CF709E600E40C39 /* WasapClip.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -160,6 +204,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6F399AE82CF709E600E40C39 /* WasapClip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F399B022CF709E800E40C39 /* Build configuration list for PBXNativeTarget "WasapClip" */;
+			buildPhases = (
+				6F399AE52CF709E600E40C39 /* Sources */,
+				6F399AE62CF709E600E40C39 /* Frameworks */,
+				6F399AE72CF709E600E40C39 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				6F399AEA2CF709E600E40C39 /* WasapClip */,
+			);
+			name = WasapClip;
+			packageProductDependencies = (
+			);
+			productName = WasapClip;
+			productReference = 6F399AE92CF709E600E40C39 /* WasapClip.app */;
+			productType = "com.apple.product-type.application.on-demand-install-capable";
+		};
 		6FAE7AA42CAD9F5600A1D1CE /* Wasap */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FAE7AB82CAD9F5700A1D1CE /* Build configuration list for PBXNativeTarget "Wasap" */;
@@ -167,10 +233,12 @@
 				6FAE7AA12CAD9F5600A1D1CE /* Sources */,
 				6FAE7AA22CAD9F5600A1D1CE /* Frameworks */,
 				6FAE7AA32CAD9F5600A1D1CE /* Resources */,
+				6F399AFE2CF709E800E40C39 /* Embed App Clips */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6F399AFC2CF709E800E40C39 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6FAE7AA72CAD9F5600A1D1CE /* Wasap */,
@@ -234,9 +302,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1600;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					6F399AE82CF709E600E40C39 = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					6FAE7AA42CAD9F5600A1D1CE = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -274,11 +345,19 @@
 			targets = (
 				6FAE7AA42CAD9F5600A1D1CE /* Wasap */,
 				6FB475E92CB0181700886498 /* WasapTests */,
+				6F399AE82CF709E600E40C39 /* WasapClip */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6F399AE72CF709E600E40C39 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FAE7AA32CAD9F5600A1D1CE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -296,6 +375,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6F399AE52CF709E600E40C39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6FAE7AA12CAD9F5600A1D1CE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -313,6 +399,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6F399AFC2CF709E800E40C39 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F399AE82CF709E600E40C39 /* WasapClip */;
+			targetProxy = 6F399AFB2CF709E800E40C39 /* PBXContainerItemProxy */;
+		};
 		6FB475EF2CB0181700886498 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FAE7AA42CAD9F5600A1D1CE /* Wasap */;
@@ -455,6 +546,99 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wasap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wasap";
 			};
 			name = Test;
+		};
+		6F399AFF2CF709E800E40C39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WasapClip/WasapClip.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WasapClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Wasap;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6F399B002CF709E800E40C39 /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WasapClip/WasapClip.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WasapClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Wasap;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Test;
+		};
+		6F399B012CF709E800E40C39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WasapClip/WasapClip.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WasapClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Wasap;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
 		};
 		6FAE7AB92CAD9F5700A1D1CE /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -717,6 +901,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6F399B022CF709E800E40C39 /* Build configuration list for PBXNativeTarget "WasapClip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F399AFF2CF709E800E40C39 /* Debug */,
+				6F399B002CF709E800E40C39 /* Test */,
+				6F399B012CF709E800E40C39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6FAE7AA02CAD9F5600A1D1CE /* Build configuration list for PBXProject "Wasap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
