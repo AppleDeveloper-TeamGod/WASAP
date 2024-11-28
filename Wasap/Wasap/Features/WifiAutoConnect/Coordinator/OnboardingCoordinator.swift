@@ -7,6 +7,11 @@
 
 import UIKit
 
+public protocol OnboardingCoordinatorController: AnyObject {
+    func performTransition(to flow: OnboardingCoordinator.Flow)
+    func performStartSplash()
+}
+
 public class OnboardingCoordinator: NavigationCoordinator {
 
     public var parentCoordinator: (any Coordinator)? = nil

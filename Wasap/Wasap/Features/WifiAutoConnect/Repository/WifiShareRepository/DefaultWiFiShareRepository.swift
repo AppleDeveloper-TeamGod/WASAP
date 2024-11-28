@@ -1,21 +1,12 @@
 //
-//  WifiShareRepository.swift
+//  DefaultWiFiShareRepository.swift
 //  Wasap
 //
-//  Created by Chang Jonghyeon on 11/9/24.
+//  Created by chongin on 11/28/24.
 //
 
 import RxSwift
 import MultipeerConnectivity
-
-public protocol WiFiShareRepository {
-    func startAdvertising(ssid: String, password: String) -> Observable<Void>
-    func startBrowsing() -> Observable<Void>
-    func stopAdvertising()
-    func stopBrowsing()
-    func getConnectedPeerCount() -> Observable<Int>
-    func getReceivedWiFiInfo() -> Observable<(ssid: String, password: String)>
-}
 
 final public class DefaultWiFiShareRepository: NSObject, WiFiShareRepository {
     /// multipeer 연결을 구분하기 위해 설정하는 고유 문자열 - 동일 serviceType 기기끼리 연결
