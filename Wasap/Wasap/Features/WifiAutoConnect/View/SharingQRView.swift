@@ -74,14 +74,14 @@ class SharingQRView: BaseView {
 
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(qrCodeView.snp.top).offset(-34)
+            $0.top.equalToSuperview().offset(147)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(25)
         }
 
         qrCodeView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(closeButton.snp.top).offset(-153)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(34)
             $0.width.equalTo(287)
             $0.height.equalTo(287)
         }
