@@ -46,7 +46,11 @@ final public class WifiAutoConnectDIContainer {
     }
 
     public func makeWiFiShareRepository() -> WiFiShareRepository {
+        #if APPCLIP
         return DefaultWiFiShareRepository()
+        #else
+        return EmptyWifiShareRepository()
+        #endif
     }
 
     // MARK: UseCase
@@ -71,9 +75,9 @@ final public class WifiAutoConnectDIContainer {
     }
 
     // MARK: ViewModel
-    public func makeScanViewModel(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
-        return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
-    }
+//    public func makeScanViewModel(imageAnalysisUseCase: ImageAnalysisUseCase, coordinatorcontroller: ScanCoordinatorController, image: UIImage) -> ScanViewModel {
+//        return ScanViewModel(imageAnalysisUseCase: imageAnalysisUseCase, coordinatorController: coordinatorcontroller, previewImage: image)
+//    }
 
     public func makeWifiReConnectViewModel(wifiConnectUseCase: WiFiConnectUseCase, coordinatorcontroller: WifiReConnectCoordinatorController, imageData: UIImage, ssid: String, password: String) -> WifiReConnectViewModel {
         return WifiReConnectViewModel(wifiConnectUseCase: wifiConnectUseCase, coordinatorController: coordinatorcontroller, image: imageData, ssid: ssid, password: password)
@@ -110,9 +114,9 @@ final public class WifiAutoConnectDIContainer {
     }
 
     // MARK: ViewController
-    public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {
-        return ScanViewController(viewModel: viewModel)
-    }
+//    public func makeScanViewController(_ viewModel: ScanViewModel) -> ScanViewController {
+//        return ScanViewController(viewModel: viewModel)
+//    }
 
     public func makeConnectingViewController(_ viewModel: ConnectingViewModel) -> ConnectingViewController {
         return ConnectingViewController(viewModel: viewModel)

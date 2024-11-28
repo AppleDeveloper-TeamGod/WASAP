@@ -21,6 +21,12 @@
 		0742D4332CDC5B60009BCA85 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 0742D4322CDC5B60009BCA85 /* FirebaseStorage */; };
 		6F342CDB2CB8D0680023C159 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 6F342CDA2CB8D0680023C159 /* RxBlocking */; };
 		6F399AFD2CF709E800E40C39 /* WasapClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 6F399AE92CF709E600E40C39 /* WasapClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6F399B142CF70F8900E40C39 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6F399B132CF70F8900E40C39 /* RxSwift */; };
+		6F399B162CF70F9500E40C39 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 6F399B152CF70F9500E40C39 /* RxCocoa */; };
+		6F399B192CF70FE400E40C39 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 6F399B182CF70FE400E40C39 /* Moya */; };
+		6F399B1B2CF70FEB00E40C39 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 6F399B1A2CF70FEB00E40C39 /* Lottie */; };
+		6F399B1D2CF70FF500E40C39 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6F399B1C2CF70FF500E40C39 /* SnapKit */; };
+		6F399B6F2CF7F42300E40C39 /* RxGesture in Frameworks */ = {isa = PBXBuildFile; productRef = 6F399B6E2CF7F42300E40C39 /* RxGesture */; };
 		6FAE7AC22CADA1B600A1D1CE /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC12CADA1B600A1D1CE /* Moya */; };
 		6FAE7AC42CADA1B600A1D1CE /* ReactiveMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC32CADA1B600A1D1CE /* ReactiveMoya */; };
 		6FAE7AC62CADA1B600A1D1CE /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = 6FAE7AC52CADA1B600A1D1CE /* RxMoya */; };
@@ -86,14 +92,94 @@
 			);
 			target = 6FB475E92CB0181700886498 /* WasapTests */;
 		};
-		6F399B032CF709E800E40C39 /* Exceptions for "WasapClip" folder in "WasapClip" target */ = {
+		6F399B0A2CF70DC000E40C39 /* Exceptions for "Wasap" folder in "WasapClip" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				DesignSystem/Animation/connectAni.json,
+				DesignSystem/Animation/DONE.json,
+				DesignSystem/ColorAssets.xcassets,
+				DesignSystem/Colors.swift,
+				DesignSystem/Font/GmarketSansBold.otf,
+				DesignSystem/Font/GmarketSansMedium.otf,
+				"DesignSystem/Font/RobotoMono-Medium.ttf",
+				"DesignSystem/Font/RobotoMono-Regular.ttf",
+				DesignSystem/Fonts.swift,
+				DesignSystem/GradientView.swift,
+				DIContainer/AppDIContainer.swift,
+				Entity/CameraErrors.swift,
+				Entity/ImageAnalysisErrors.swift,
+				Entity/ImageAnalysisResult.swift,
+				Entity/WifiConnectErrors.swift,
+				Entity/WifiShareErrors.swift,
+				Features/WifiAutoConnect/Coordinator/CameraCoordinator.swift,
+				Features/WifiAutoConnect/Coordinator/ConnectingCoordinator.swift,
+				Features/WifiAutoConnect/Coordinator/GoToSettingCoordinator.swift,
+				Features/WifiAutoConnect/Coordinator/ReceivingCoordinator.swift,
+				Features/WifiAutoConnect/Coordinator/SharingCoordinator.swift,
+				Features/WifiAutoConnect/Coordinator/SharingQRCoordinator.swift,
+				Features/WifiAutoConnect/Coordinator/TipCoordinator.swift,
+				Features/WifiAutoConnect/Coordinator/WifiReConnectCoordinator.swift,
+				Features/WifiAutoConnect/Repository/CameraRepository.swift,
+				Features/WifiAutoConnect/Repository/GoToSettingRepository.swift,
+				Features/WifiAutoConnect/Repository/ImageAnalysisRepository.swift,
+				Features/WifiAutoConnect/Repository/WifiConnectRepository.swift,
+				Features/WifiAutoConnect/Repository/WifiShareRepository/EmptyWifiShareRepository.swift,
+				Features/WifiAutoConnect/Repository/WifiShareRepository/WifiShareRepository.swift,
+				Features/WifiAutoConnect/UseCase/CameraUseCase.swift,
+				Features/WifiAutoConnect/UseCase/GoToSettingUseCase.swift,
+				Features/WifiAutoConnect/UseCase/ImageAnalysisUseCase.swift,
+				Features/WifiAutoConnect/UseCase/WifiConnectUseCase.swift,
+				Features/WifiAutoConnect/UseCase/WifiShareUseCase.swift,
+				Features/WifiAutoConnect/View/CameraView.swift,
+				Features/WifiAutoConnect/View/ConnectingView.swift,
+				Features/WifiAutoConnect/View/GoToSettingView.swift,
+				Features/WifiAutoConnect/View/ReceivingView.swift,
+				Features/WifiAutoConnect/View/SharingQRView.swift,
+				Features/WifiAutoConnect/View/SharingView.swift,
+				Features/WifiAutoConnect/View/TipView.swift,
+				Features/WifiAutoConnect/View/WifiReConnectView.swift,
+				Features/WifiAutoConnect/ViewController/CameraViewController.swift,
+				Features/WifiAutoConnect/ViewController/ConnectingViewController.swift,
+				Features/WifiAutoConnect/ViewController/GoToSettingViewController.swift,
+				Features/WifiAutoConnect/ViewController/ReceivingViewController.swift,
+				Features/WifiAutoConnect/ViewController/SharingQRViewController.swift,
+				Features/WifiAutoConnect/ViewController/SharingViewController.swift,
+				Features/WifiAutoConnect/ViewController/TipViewController.swift,
+				Features/WifiAutoConnect/ViewController/WifiReConnectViewController.swift,
+				Features/WifiAutoConnect/ViewModel/CameraViewModel.swift,
+				Features/WifiAutoConnect/ViewModel/ConnectingViewModel.swift,
+				Features/WifiAutoConnect/ViewModel/GoToSettingViewModel.swift,
+				Features/WifiAutoConnect/ViewModel/ReceivingViewModel.swift,
+				Features/WifiAutoConnect/ViewModel/SharingQRViewModel.swift,
+				Features/WifiAutoConnect/ViewModel/SharingViewModel.swift,
+				Features/WifiAutoConnect/ViewModel/TipViewModel.swift,
+				Features/WifiAutoConnect/ViewModel/WifiReConnectViewModel.swift,
+				Global/Assets.xcassets,
+				Global/Base/BaseView.swift,
+				Global/Base/BaseViewController.swift,
+				Global/Base/BaseViewModel.swift,
+				Global/Base/Coordinator.swift,
+				Log/Log.swift,
+				Network/APIClient.swift,
+				"Utility/CGRect+insetBy.swift",
+				Utility/LocalizationUtill.swift,
+				Utility/SplashController.swift,
+				Utility/Toast/Toaster.swift,
+				Utility/Toast/ToastView.swift,
+				"Utility/UIView+Extension.swift",
+				"Utility/UIViewController+Rx.swift",
+			);
+			target = 6F399AE82CF709E600E40C39 /* WasapClip */;
+		};
+		6F399B102CF70E7000E40C39 /* Exceptions for "WasapClip" folder in "WasapClip" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Main.storyboard",
 				Info.plist,
 			);
 			target = 6F399AE82CF709E600E40C39 /* WasapClip */;
 		};
-		6FAE7AB72CAD9F5700A1D1CE /* Exceptions for "Wasap" folder in "Wasap" target */ = {
+		6F399B122CF70F6F00E40C39 /* Exceptions for "Wasap" folder in "Wasap" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Global/Info.plist,
@@ -106,7 +192,7 @@
 		6F399AEA2CF709E600E40C39 /* WasapClip */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6F399B032CF709E800E40C39 /* Exceptions for "WasapClip" folder in "WasapClip" target */,
+				6F399B102CF70E7000E40C39 /* Exceptions for "WasapClip" folder in "WasapClip" target */,
 			);
 			path = WasapClip;
 			sourceTree = "<group>";
@@ -114,8 +200,9 @@
 		6FAE7AA72CAD9F5600A1D1CE /* Wasap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6FAE7AB72CAD9F5700A1D1CE /* Exceptions for "Wasap" folder in "Wasap" target */,
+				6F399B122CF70F6F00E40C39 /* Exceptions for "Wasap" folder in "Wasap" target */,
 				0742D4372CDC61A9009BCA85 /* Exceptions for "Wasap" folder in "WasapTests" target */,
+				6F399B0A2CF70DC000E40C39 /* Exceptions for "Wasap" folder in "WasapClip" target */,
 			);
 			path = Wasap;
 			sourceTree = "<group>";
@@ -132,6 +219,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F399B162CF70F9500E40C39 /* RxCocoa in Frameworks */,
+				6F399B142CF70F8900E40C39 /* RxSwift in Frameworks */,
+				6F399B192CF70FE400E40C39 /* Moya in Frameworks */,
+				6F399B1B2CF70FEB00E40C39 /* Lottie in Frameworks */,
+				6F399B6F2CF7F42300E40C39 /* RxGesture in Frameworks */,
+				6F399B1D2CF70FF500E40C39 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +314,12 @@
 			);
 			name = WasapClip;
 			packageProductDependencies = (
+				6F399B132CF70F8900E40C39 /* RxSwift */,
+				6F399B152CF70F9500E40C39 /* RxCocoa */,
+				6F399B182CF70FE400E40C39 /* Moya */,
+				6F399B1A2CF70FEB00E40C39 /* Lottie */,
+				6F399B1C2CF70FF500E40C39 /* SnapKit */,
+				6F399B6E2CF7F42300E40C39 /* RxGesture */,
 			);
 			productName = WasapClip;
 			productReference = 6F399AE92CF709E600E40C39 /* WasapClip.app */;
@@ -552,16 +651,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = WasapClip/WasapClip.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WasapClip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wasap;
+				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -572,6 +676,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = WasapClip_Development;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -583,16 +689,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = WasapClip/WasapClip.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WasapClip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wasap;
+				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -603,6 +714,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = WasapClip_Development;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -614,16 +727,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = WasapClip/WasapClip.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 8U8S6CBZ9D;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WasapClip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Wasap;
+				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -634,6 +752,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = WasapClip_Development;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1059,6 +1179,36 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6FAE7AC72CADA1CB00A1D1CE /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxBlocking;
+		};
+		6F399B132CF70F8900E40C39 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FAE7AC72CADA1CB00A1D1CE /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		6F399B152CF70F9500E40C39 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FAE7AC72CADA1CB00A1D1CE /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		6F399B182CF70FE400E40C39 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FAE7AC02CADA1B600A1D1CE /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		6F399B1A2CF70FEB00E40C39 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BFEBE0352CBD08F7005E6616 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		6F399B1C2CF70FF500E40C39 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FAE7ACE2CADA1DB00A1D1CE /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		6F399B6E2CF7F42300E40C39 /* RxGesture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0700F8842CC41D2500362418 /* XCRemoteSwiftPackageReference "RxGesture" */;
+			productName = RxGesture;
 		};
 		6FAE7AC12CADA1B600A1D1CE /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
