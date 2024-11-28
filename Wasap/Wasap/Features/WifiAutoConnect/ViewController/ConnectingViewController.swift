@@ -68,7 +68,25 @@ public class ConnectingViewController: RxBaseViewController<ConnectingViewModel>
                 UIView.animate(withDuration: 0.1, delay: 0.55, options: [.curveEaseIn], animations: {
                     self?.connectingView.shareButton.alpha = 1.0
                 })
+#if APPCLIP
+                self?.displayOverlay()
+#endif
             }
             .disposed(by: disposeBag)
     }
 }
+
+#if APPCLIP
+import StoreKit
+
+extension ConnectingViewController {
+    public func displayOverlay() {
+        guard let scene = view.window?.windowScene else { return }
+
+
+        let config = SKOverlay.AppClipConfiguration(position: .bottom)
+        let overlay = SKOverlay(configuration: config)
+        overlay.present(in: scene)
+    }
+}
+#endif
