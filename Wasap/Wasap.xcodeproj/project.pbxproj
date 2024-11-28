@@ -247,11 +247,10 @@
 				};
 			};
 			buildConfigurationList = 6FAE7AA02CAD9F5600A1D1CE /* Build configuration list for PBXProject "Wasap" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 				ko,
 				ja,
 				vi,
@@ -405,6 +404,7 @@
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "네트워크에서 다른 기기와의 통신을 허용합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -472,6 +472,7 @@
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "네트워크에서 다른 기기와의 통신을 허용합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -515,6 +516,7 @@
 				INFOPLIST_FILE = Wasap/Global/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "와이파이를 잡기 위해 카메라 사용이 필요합니다.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "네트워크에서 다른 기기와의 통신을 허용합니다.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "와이파이 SSID를 추출하기 위해 필요합니다";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

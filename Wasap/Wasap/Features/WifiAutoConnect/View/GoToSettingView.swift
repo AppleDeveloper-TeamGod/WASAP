@@ -4,6 +4,7 @@
 //
 //  Created by 김상준 on 10/15/24.
 //
+
 import UIKit
 import SnapKit
 
@@ -32,7 +33,7 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.font = .tg22
         label.addLabelSpacing(fontStyle: .tg22)
-        label.text = "인식된 정보를 확인하고,"
+        label.text = "인식된 정보를 확인하고,".localized()
         label.textColor = .gray200
         label.textAlignment = .left
         return label
@@ -42,7 +43,7 @@ class GoToSettingView: BaseView {
         let label = UILabel()
         label.font = .tg22
         label.addLabelSpacing(fontStyle: .tg22)
-        label.text = "설정에서 시도하세요."
+        label.text = "설정에서 시도하세요.".localized()
         label.textColor = .green300
         label.textAlignment = .left
         return label
@@ -52,7 +53,7 @@ class GoToSettingView: BaseView {
         let stackView = UIStackView(arrangedSubviews: [titleLabel1, titleLabel2])
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.spacing = 4
+        stackView.spacing = 0
         return stackView
     }()
 
@@ -250,11 +251,17 @@ class GoToSettingView: BaseView {
             $0.width.equalTo(32/393 * screenWidth)
             $0.height.equalTo(32/852 * screenHeight)
         }
+        titleLabel1.snp.makeConstraints {
+            $0.height.equalTo(26/852 * screenHeight)
+        }
+        titleLabel2.snp.makeConstraints {
+            $0.height.equalTo(26/852 * screenHeight)
+        }
 
         titleStackView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(116/852 * screenHeight)
             $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
-            $0.height.equalTo(59/852 * screenHeight)
+            $0.height.equalTo(60/852 * screenHeight)
         }
 
         memoView.snp.makeConstraints {
