@@ -4,6 +4,7 @@
 //
 //  Created by Chang Jonghyeon on 10/18/24.
 //
+
 import UIKit
 
 // FontProperty 구조체
@@ -132,7 +133,7 @@ extension UILabel {
             attributes: [
                 .font: currentFont,
                 .kern: letterSpacing, // 자간 설정
-                .paragraphStyle: paragraphStyle
+                .paragraphStyle: paragraphStyle,
             ]
         )
     }
