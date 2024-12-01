@@ -76,18 +76,10 @@ final class CameraView: BaseView {
         return button
     }()
 
-    public lazy var tipButtonView: UIStackView = {
+    public lazy var tipButtonView: UIImageView = {
         let tipImageView = UIImageView(image: UIImage(named: "HelpCircle"))
         tipImageView.contentMode = .scaleAspectFit
-
-        let tipLabel = UILabel()
-        tipLabel.text = "사용 팁".localized()
-        tipLabel.font = .tg12
-        tipLabel.textColor = .gray200
-
-        let stackView = UIStackView(arrangedSubviews: [tipImageView, tipLabel])
-        stackView.axis = .vertical
-        return stackView
+        return tipImageView
     }()
 
     private lazy var minusImage: UIImageView = {
@@ -194,8 +186,8 @@ final class CameraView: BaseView {
 
         tipButtonView.snp.makeConstraints {
             $0.centerY.equalTo(self.takePhotoButton)
-            $0.width.equalTo(40)
-            $0.height.equalTo(60)
+            $0.width.equalTo(30)
+            $0.height.equalTo(30)
             $0.centerX.equalToSuperview().offset(superViewWidth * 0.3)
         }
 
