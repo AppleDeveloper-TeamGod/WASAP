@@ -38,7 +38,7 @@ public enum FontStyle {
         case .font26:
             return FontProperty(font: .gmarketSansBold, size: 26, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font24:
-            return FontProperty(font: .gmarketSansMedium, size: 24, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
+            return FontProperty(font: .gmarketSansBold, size: 24, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font22:
             return FontProperty(font: .gmarketSansBold, size: 22, lineHeightMultiple: 1.0, letterSpacingMultiiple: 0)
         case .font20:
