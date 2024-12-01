@@ -12,7 +12,7 @@ final class ToastView: BaseView {
     public lazy var toastLabel: UILabel = {
         let label = UILabel()
         label.textColor = .textPrimaryHigh
-        label.font = .tg16
+        label.font = .tg14
         label.textAlignment = .center
         return label
     }()
@@ -39,7 +39,7 @@ extension ToastView {
             $0.horizontalEdges.equalToSuperview()
                 .inset(30)
             $0.verticalEdges.equalToSuperview()
-                .inset(18)
+                .inset(9)
         }
     }
 }

@@ -43,7 +43,7 @@ public final class Toaster {
                     $0.top.equalTo(connectedViewController.view.safeAreaLayoutGuide).offset(24)
                     $0.centerX.equalToSuperview()
 
-                    $0.height.greaterThanOrEqualToSuperview().multipliedBy(0.06)
+                    $0.height.greaterThanOrEqualToSuperview().multipliedBy(0.05)
                 }
 
                 UIView.animate(withDuration: duration, delay: delay) {
@@ -81,7 +81,7 @@ public final class Toaster {
                     $0.top.equalTo(connectedViewController.view.safeAreaLayoutGuide).offset(top)
                     $0.centerX.equalToSuperview()
 
-                    $0.height.greaterThanOrEqualToSuperview().multipliedBy(0.06)
+                    $0.height.greaterThanOrEqualToSuperview().multipliedBy(0.05)
                 }
 
                 UIView.animate(withDuration: duration, delay: delay) {
