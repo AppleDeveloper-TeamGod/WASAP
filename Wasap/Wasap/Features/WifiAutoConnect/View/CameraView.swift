@@ -37,24 +37,29 @@ final class CameraView: BaseView {
         return view
     }()
 
+    private lazy var photoFrameBorderLayer: CAShapeLayer = {
+        let borderLayer = CAShapeLayer()
+        borderLayer.fillColor = UIColor.clear.cgColor
+        borderLayer.strokeColor = UIColor.gray400.withAlphaComponent(0.4).cgColor
+        borderLayer.lineWidth = 2
+        return borderLayer
+    }()
+
     private lazy var photoFrameLayer: CAShapeLayer = {
         let borderLayer = CAShapeLayer()
-        borderLayer.strokeColor = UIColor.white.cgColor
+        borderLayer.strokeColor = UIColor.green200.cgColor
         borderLayer.fillColor = UIColor.clear.cgColor
         borderLayer.lineWidth = 5
         return borderLayer
     }()
 
-    private lazy var photoCrossFrameLayer: CAShapeLayer = {
-        let borderLayer = CAShapeLayer()
-        borderLayer.strokeColor = UIColor.white.cgColor
-        borderLayer.fillColor = UIColor.clear.cgColor
-        borderLayer.lineWidth = 1
-        return borderLayer
-    }()
-
     public lazy var bottomBackgroundView: UIView = {
         let view = UIView()
+        let border = UIView()
+        border.backgroundColor = .gray450
+        border.autoresizingMask = [.flexibleWidth, .flexibleBottomMargin]
+        border.frame = CGRect(x: 0, y: 0 , width: view.frame.width, height: 1)
+        view.addSubview(border)
         view.backgroundColor = .gray500
         return view
     }()
@@ -157,8 +162,8 @@ final class CameraView: BaseView {
         self.previewContainerView.layer.addSublayer(ssidRectLayer)
         self.previewContainerView.layer.addSublayer(passwordRectLayer)
 
+        self.photoFrameView.layer.addSublayer(photoFrameBorderLayer)
         self.photoFrameView.layer.addSublayer(photoFrameLayer)
-        self.photoFrameView.layer.addSublayer(photoCrossFrameLayer)
 
         self.layer.addSublayer(dimmingLayer)
     }
@@ -266,20 +271,8 @@ final class CameraView: BaseView {
         )
         path.addLine(to: CGPoint(x: 0, y: bounds.height - cornerRadius - lineLength))
 
-        let crossPath = UIBezierPath()
-        crossPath.lineWidth = 1
-
-        // 가운데 십자가 가로
-        crossPath.move(to: CGPoint(x: bounds.width / 2 - lineLength / 2, y: bounds.height / 2))
-        crossPath.addLine(to: CGPoint(x: bounds.width / 2 + lineLength / 2, y: bounds.height / 2))
-
-
-        // 가운데 십자가 세로
-        crossPath.move(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 - lineLength / 2))
-        crossPath.addLine(to: CGPoint(x: bounds.width / 2, y: bounds.height / 2 + lineLength / 2))
-
         photoFrameLayer.path = path.cgPath
-        photoCrossFrameLayer.path = crossPath.cgPath
+        photoFrameBorderLayer.path = UIBezierPath(roundedRect: photoFrameView.bounds.insetBy(dx: -1.0, dy: -1.0), cornerRadius: 24).cgPath
     }
 }
 
