@@ -44,7 +44,7 @@ class WifiReConnectView: BaseView {
     lazy var labelStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [titleLabel, subLabel])
         stackView.axis = .vertical
-        stackView.spacing = 12
+        stackView.spacing = 4
         stackView.alignment = .leading
         return stackView
     }()
@@ -183,6 +183,10 @@ class WifiReConnectView: BaseView {
             $0.leading.trailing.equalToSuperview().inset(24/393 * screenWidth)
             $0.bottom.equalTo(photoImageView.snp.top).offset(-50/852 * screenHeight)
             $0.height.equalTo(60/852 * screenHeight)
+        }
+
+        titleLabel.snp.makeConstraints {
+            $0.height.equalTo(30/852 * screenHeight)
         }
 
         subLabel.snp.makeConstraints {
