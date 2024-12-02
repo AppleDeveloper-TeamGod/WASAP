@@ -110,6 +110,13 @@ final class CameraView: BaseView {
         return slider
     }()
 
+    private var translucentLayer: CAShapeLayer = {
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.fillRule = .evenOdd
+        shapeLayer.fillColor = UIColor.black.withAlphaComponent(0.3).cgColor
+        return shapeLayer
+    }()
+
     public var qrRectLayer: CALayer = {
         let layer = CALayer()
         layer.backgroundColor = UIColor.green200.withAlphaComponent(0.3).cgColor
@@ -150,6 +157,7 @@ final class CameraView: BaseView {
 
         self.bottomBackgroundView.addSubViews(takePhotoButton, tipButtonView)
 
+        self.previewContainerView.layer.addSublayer(translucentLayer)
         self.previewContainerView.layer.addSublayer(qrRectLayer)
         self.previewContainerView.layer.addSublayer(ssidRectLayer)
         self.previewContainerView.layer.addSublayer(passwordRectLayer)
@@ -212,6 +220,16 @@ final class CameraView: BaseView {
         let lineLength: CGFloat = 32.0
         let bounds = self.photoFrameView.frame
 
+
+        let fullPath = UIBezierPath(rect: self.bounds)
+        let holePath = UIBezierPath(roundedRect: self.photoFrameView.frame.insetBy(dx: -1.0, dy: -1.0), cornerRadius: cornerRadius)
+
+        // 뚫린 부분을 결합
+        fullPath.append(holePath)
+        fullPath.usesEvenOddFillRule = true
+
+        self.translucentLayer.path = fullPath.cgPath
+
         let path = UIBezierPath()
 
         // 왼쪽 상단 모서리
@@ -264,7 +282,9 @@ final class CameraView: BaseView {
         path.addLine(to: CGPoint(x: 0, y: bounds.height - cornerRadius - lineLength))
 
         photoFrameLayer.path = path.cgPath
-        photoFrameBorderLayer.path = UIBezierPath(roundedRect: photoFrameView.bounds.insetBy(dx: -1.0, dy: -1.0), cornerRadius: 24).cgPath
+        photoFrameBorderLayer.path = UIBezierPath(roundedRect: photoFrameView.bounds.insetBy(dx: -1.0, dy: -1.0), cornerRadius: cornerRadius).cgPath
+
+
     }
 }
 
