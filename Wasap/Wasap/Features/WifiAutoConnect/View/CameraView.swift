@@ -113,8 +113,14 @@ final class CameraView: BaseView {
     private var translucentLayer: CAShapeLayer = {
         let shapeLayer = CAShapeLayer()
         shapeLayer.fillRule = .evenOdd
-        shapeLayer.fillColor = UIColor.black.withAlphaComponent(0.3).cgColor
         return shapeLayer
+    }()
+
+    private var blurView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.backgroundColor = .clear
+        return blurView
     }()
 
     public var qrRectLayer: CALayer = {
@@ -157,7 +163,8 @@ final class CameraView: BaseView {
 
         self.bottomBackgroundView.addSubViews(takePhotoButton, tipButtonView)
 
-        self.previewContainerView.layer.addSublayer(translucentLayer)
+        self.previewContainerView.addSubview(blurView)
+//        self.previewContainerView.layer.addSublayer(translucentLayer)
         self.previewContainerView.layer.addSublayer(qrRectLayer)
         self.previewContainerView.layer.addSublayer(ssidRectLayer)
         self.previewContainerView.layer.addSublayer(passwordRectLayer)
@@ -177,6 +184,10 @@ final class CameraView: BaseView {
             $0.horizontalEdges.equalToSuperview().inset(32)
             $0.top.equalTo(safeAreaLayoutGuide).inset(92)
             $0.bottom.equalTo(zoomSlider.snp.top).offset(-16)
+        }
+
+        blurView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
 
         bottomBackgroundView.snp.makeConstraints {
@@ -218,17 +229,18 @@ final class CameraView: BaseView {
     private func updatePhotoFrameLayerPath() {
         let cornerRadius: CGFloat = 20.0
         let lineLength: CGFloat = 32.0
-        let bounds = self.photoFrameView.frame
+        let frame = self.photoFrameView.frame
 
 
         let fullPath = UIBezierPath(rect: self.bounds)
-        let holePath = UIBezierPath(roundedRect: self.photoFrameView.frame.insetBy(dx: -1.0, dy: -1.0), cornerRadius: cornerRadius)
+        let holePath = photoFrameMaskPath(cornerRadius: cornerRadius, frame: frame)
 
         // 뚫린 부분을 결합
         fullPath.append(holePath)
         fullPath.usesEvenOddFillRule = true
 
         self.translucentLayer.path = fullPath.cgPath
+        self.blurView.layer.mask = translucentLayer
 
         let path = UIBezierPath()
 
@@ -245,46 +257,48 @@ final class CameraView: BaseView {
         path.addLine(to: CGPoint(x: cornerRadius + lineLength, y: 0))
 
         // 오른쪽 상단 모서리
-        path.move(to: CGPoint(x: bounds.width - cornerRadius - lineLength, y: 0))
-        path.addLine(to: CGPoint(x: bounds.width - cornerRadius, y: 0))
+        path.move(to: CGPoint(x: frame.width - cornerRadius - lineLength, y: 0))
+        path.addLine(to: CGPoint(x: frame.width - cornerRadius, y: 0))
         path.addArc(
-            withCenter: CGPoint(x: bounds.width - cornerRadius, y: cornerRadius),
+            withCenter: CGPoint(x: frame.width - cornerRadius, y: cornerRadius),
             radius: cornerRadius,
             startAngle: .pi * 1.5,
             endAngle: 0,
             clockwise: true
         )
-        path.addLine(to: CGPoint(x: bounds.width, y: cornerRadius + lineLength))
+        path.addLine(to: CGPoint(x: frame.width, y: cornerRadius + lineLength))
 
 
         // 오른쪽 하단 모서리
-        path.move(to: CGPoint(x: bounds.width, y: bounds.height - cornerRadius - lineLength))
-        path.addLine(to: CGPoint(x: bounds.width, y: bounds.height - cornerRadius))
+        path.move(to: CGPoint(x: frame.width, y: frame.height - cornerRadius - lineLength))
+        path.addLine(to: CGPoint(x: frame.width, y: frame.height - cornerRadius))
         path.addArc(
-            withCenter: CGPoint(x: bounds.width - cornerRadius, y: bounds.height - cornerRadius),
+            withCenter: CGPoint(x: frame.width - cornerRadius, y: frame.height - cornerRadius),
             radius: cornerRadius,
             startAngle: 0,
             endAngle: .pi * 0.5,
             clockwise: true
         )
-        path.addLine(to: CGPoint(x: bounds.width - cornerRadius - lineLength, y: bounds.height))
+        path.addLine(to: CGPoint(x: frame.width - cornerRadius - lineLength, y: frame.height))
 
         // 왼쪽 하단 모서리
-        path.move(to: CGPoint(x: cornerRadius + lineLength, y: bounds.height))
-        path.addLine(to: CGPoint(x: cornerRadius, y: bounds.height))
+        path.move(to: CGPoint(x: cornerRadius + lineLength, y: frame.height))
+        path.addLine(to: CGPoint(x: cornerRadius, y: frame.height))
         path.addArc(
-            withCenter: CGPoint(x: cornerRadius, y: bounds.height - cornerRadius),
+            withCenter: CGPoint(x: cornerRadius, y: frame.height - cornerRadius),
             radius: cornerRadius,
             startAngle: .pi * 0.5,
             endAngle: .pi,
             clockwise: true
         )
-        path.addLine(to: CGPoint(x: 0, y: bounds.height - cornerRadius - lineLength))
+        path.addLine(to: CGPoint(x: 0, y: frame.height - cornerRadius - lineLength))
 
         photoFrameLayer.path = path.cgPath
         photoFrameBorderLayer.path = UIBezierPath(roundedRect: photoFrameView.bounds.insetBy(dx: -1.0, dy: -1.0), cornerRadius: cornerRadius).cgPath
+    }
 
-
+    private func photoFrameMaskPath(cornerRadius: CGFloat, frame: CGRect) -> UIBezierPath {
+        UIBezierPath(roundedRect: frame.insetBy(dx: -1.0, dy: -1.0), cornerRadius: cornerRadius)
     }
 }
 
