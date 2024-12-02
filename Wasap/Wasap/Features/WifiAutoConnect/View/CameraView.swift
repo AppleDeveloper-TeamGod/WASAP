@@ -113,14 +113,8 @@ final class CameraView: BaseView {
     private var translucentLayer: CAShapeLayer = {
         let shapeLayer = CAShapeLayer()
         shapeLayer.fillRule = .evenOdd
+        shapeLayer.fillColor = UIColor.black.withAlphaComponent(0.3).cgColor
         return shapeLayer
-    }()
-
-    private var blurView: UIVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.backgroundColor = .clear
-        return blurView
     }()
 
     public var qrRectLayer: CALayer = {
@@ -163,8 +157,7 @@ final class CameraView: BaseView {
 
         self.bottomBackgroundView.addSubViews(takePhotoButton, tipButtonView)
 
-        self.previewContainerView.addSubview(blurView)
-//        self.previewContainerView.layer.addSublayer(translucentLayer)
+        self.previewContainerView.layer.addSublayer(translucentLayer)
         self.previewContainerView.layer.addSublayer(qrRectLayer)
         self.previewContainerView.layer.addSublayer(ssidRectLayer)
         self.previewContainerView.layer.addSublayer(passwordRectLayer)
@@ -184,10 +177,6 @@ final class CameraView: BaseView {
             $0.horizontalEdges.equalToSuperview().inset(32)
             $0.top.equalTo(safeAreaLayoutGuide).inset(92)
             $0.bottom.equalTo(zoomSlider.snp.top).offset(-16)
-        }
-
-        blurView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
         }
 
         bottomBackgroundView.snp.makeConstraints {
@@ -220,9 +209,9 @@ final class CameraView: BaseView {
 
         zoomSlider.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(takePhotoButton.snp.top).offset(-32)
+            $0.bottom.equalTo(bottomBackgroundView.snp.top).offset(-16)
             $0.width.equalToSuperview().multipliedBy(0.7)
-            $0.height.equalTo(84)
+            $0.height.equalTo(24)
         }
     }
 
@@ -240,7 +229,6 @@ final class CameraView: BaseView {
         fullPath.usesEvenOddFillRule = true
 
         self.translucentLayer.path = fullPath.cgPath
-        self.blurView.layer.mask = translucentLayer
 
         let path = UIBezierPath()
 
