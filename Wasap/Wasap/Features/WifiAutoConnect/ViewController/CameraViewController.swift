@@ -18,6 +18,8 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
         super.init(viewModel: viewModel)
         bind(viewModel)
         setupModalNotifications()
+
+        self.view.backgroundColor = .black
     }
 
     @MainActor required init?(coder: NSCoder) {
@@ -60,7 +62,7 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
             .drive { [weak self] previewLayer in
                 Log.debug("preview layer on VC : \(previewLayer)")
                 self?.cameraView.previewLayer = previewLayer
-                self?.cameraView.previewContainerView.layer.addSublayer(previewLayer)
+                self?.cameraView.previewContainerView.layer.insertSublayer(previewLayer, at: 0)
                 self?.cameraView.previewLayer?.frame = (self?.cameraView.previewContainerView.bounds)!
             }
             .disposed(by: disposeBag)
