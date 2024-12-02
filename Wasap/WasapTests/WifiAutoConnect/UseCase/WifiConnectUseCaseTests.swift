@@ -55,6 +55,10 @@ class MockWifiConnectRepository: WiFiConnectRepository {
     func getCurrentWiFiSSID() -> RxSwift.Single<String?> {
         return .just(nil)
     }
+
+    func getConnectedSSID() -> String? {
+        return nil
+    }
 }
 
 class MockWiFiConnectUseCase: WiFiConnectUseCase {
@@ -66,6 +70,10 @@ class MockWiFiConnectUseCase: WiFiConnectUseCase {
     
     func connectToWiFi(ssid: String, password: String) -> Single<Bool> {
         return repository.connectToWiFi(ssid: ssid, password: password)
+    }
+
+    func getConnectedSSID() -> String? {
+        return nil
     }
 }
 
