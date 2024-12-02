@@ -18,6 +18,8 @@ public class CameraViewController: RxBaseViewController<CameraViewModel> {
         super.init(viewModel: viewModel)
         bind(viewModel)
         setupModalNotifications()
+
+        self.view.backgroundColor = .black
     }
 
     @MainActor required init?(coder: NSCoder) {
