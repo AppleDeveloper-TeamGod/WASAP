@@ -61,6 +61,7 @@ final class RegexManager {
                         #/\(?KEY\)?/#
                         #/암호키/#
                         #/암호/#
+                        #/Zone|zone|ZONE/#
                     }
                 }
             }
