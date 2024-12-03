@@ -24,8 +24,8 @@ public struct KeywordBox {
     let label: String
     let content: String
     let contentBox: CGRect
-    let labelBox: CGRect
-    let index: Int?
+    let keyword: String?
+    let keywordBox: CGRect?
 }
 
 struct ExtractedBoxes {
