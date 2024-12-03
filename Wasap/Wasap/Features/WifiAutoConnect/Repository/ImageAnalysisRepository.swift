@@ -14,8 +14,8 @@ public protocol ImageAnalysisRepository {
 }
 
 public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
-    let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "1.D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
-    let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
+//    let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "1.D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
+//    let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
 
     public init() {}
 
@@ -79,7 +79,7 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         var ssidBox: (CGRect, String)?
         if let firstIDBox = extractedBoxes.idBoxes.first {
             if firstIDBox.content.isEmpty {
-                ssidBox = findClosestRightText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+                ssidBox = findClosestRightText(for: extractedBoxes.idBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
             } else {
                 ssidBox = (firstIDBox.contentBox, firstIDBox.content)
             }
@@ -88,18 +88,29 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         var passwordBox: (CGRect, String)?
         if let firstPWBox = extractedBoxes.pwBoxes.first {
             if firstPWBox.content.isEmpty {
-                passwordBox = findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+                passwordBox = findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
             } else {
                 passwordBox = (firstPWBox.contentBox, firstPWBox.content)
             }
+        } else if ssidBox != nil && ssidBox?.1 != "" {
+            passwordBox = findClosestBelowText(for: [ssidBox!.0], in: extractedBoxes.otherBoxes)
+            print("other:\(extractedBoxes.otherBoxes.first?.1)")
+            print("🐰ssidBox1:\(ssidBox?.1)")
+            print("🐰ssidBox0:\(ssidBox?.0)")
+            print("🥝passwordBox:\(passwordBox?.1)")
         }
 
         // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
         if (ssidBox == nil) || (ssidBox?.1 == "") {
-            ssidBox = findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            ssidBox = findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
         }
         if (passwordBox == nil) || (passwordBox?.1 == "") {
-            passwordBox = findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.labelBox }, in: extractedBoxes.otherBoxes)
+            passwordBox = findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
+            if let ssidBox = ssidBox {
+                if (passwordBox == nil || passwordBox?.1 == "") && ssidBox.1 != "" {
+                    passwordBox = findClosestBelowText(for: [ssidBox.0], in: extractedBoxes.otherBoxes)
+                }
+            }
         }
 
         let delimiters = CharacterSet(charactersIn: "/,")
@@ -129,81 +140,149 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             let originalText = topCandidate.string
             let boundingBox = observation.boundingBox
 
-            let keywordBox = self.identifyKeyword(originalText: originalText, boundingBox: boundingBox)
+            let keywordBoxes = self.identifyKeyword(originalText: originalText, boundingBox: boundingBox)
 
-            switch keywordBox.label {
-            case "ID":
-                idBoxes.append(keywordBox)
-            case "PW":
-                pwBoxes.append(keywordBox)
-            default:
-                otherBoxes.append((keywordBox.contentBox, keywordBox.content))
-
+            for keywordBox in keywordBoxes {
+                switch keywordBox.label {
+                case "ID":
+                    idBoxes.append(keywordBox)
+                case "PW":
+                    pwBoxes.append(keywordBox)
+                default:
+                    otherBoxes.append((keywordBox.contentBox, keywordBox.content))
+                }
             }
         }
 
-        idBoxes.sort { $0.index! < $1.index! }
-        pwBoxes.sort { $0.index! < $1.index! }
+//        idBoxes.sort { $0.keyword! < $1.keyword! }
+//        pwBoxes.sort { $0.keyword! < $1.keyword! }
+
+        idBoxes.sort {
+            if $0.keyword! == $1.keyword! {
+                return !$0.content.isEmpty && $1.content.isEmpty
+            }
+            let isFirstWiFi = $0.keyword!.wholeMatch(of: RegexManager.shared.wifiRegex) != nil
+            let isSecondWiFi = $1.keyword!.wholeMatch(of: RegexManager.shared.wifiRegex) != nil
+            if isFirstWiFi != isSecondWiFi {
+                // Wi-Fi 관련 키워드가 있으면 뒤로 보냄
+                return !isFirstWiFi
+            }
+            return $0.keyword! < $1.keyword!
+        }
+
+        pwBoxes.sort {
+            if $0.keyword! == $1.keyword! {
+                return !$0.content.isEmpty && $1.content.isEmpty
+            }
+            return $0.keyword! < $1.keyword!
+        }
 
         return ExtractedBoxes(idBoxes: idBoxes, pwBoxes: pwBoxes, otherBoxes: otherBoxes)
     }
 
-    private func identifyKeyword(originalText: String, boundingBox: CGRect) -> KeywordBox {
+    private func identifyKeyword(originalText: String, boundingBox: CGRect) -> [KeywordBox] {
+        let regexManager = RegexManager.shared
+        var keywordBoxes: [KeywordBox] = []
 
+        if let match = originalText.wholeMatch(of: regexManager.ktWifiRegex) ??
+                       originalText.wholeMatch(of: regexManager.skWifiRegex) ??
+                       originalText.wholeMatch(of: regexManager.lgWifiRegex) {
+            let value = String(match.1)
+                .trimmingCharacters(in: .whitespaces)
+                .replacing(/[\-.\s]/, with: "_")
+                .replacing(/_+/, with: "_")
+            let valueBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(String(match.1).count) / Double(originalText.count)))
+
+            keywordBoxes.append(KeywordBox(label: "ID", content: value, contentBox: valueBox, keyword: "", keywordBox: nil))
+
+        } else if let match = originalText.wholeMatch(of: regexManager.idRegex) {
+            let keyword = String(match.1)
+            let value = String(match.2).trimmingCharacters(in: .whitespaces)
+            let valueBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(String(match.2).count) / Double(originalText.count)))
+            let keywordBox = CGRect(
+                x: boundingBox.minX,
+                y: boundingBox.minY,
+                width: boundingBox.width - valueBox.width,
+                height: boundingBox.height
+            )
+
+            keywordBoxes.append(KeywordBox(label: "ID", content: value, contentBox: valueBox, keyword: keyword, keywordBox: keywordBox))
+        }
+
+        if let match = originalText.wholeMatch(of: regexManager.pwRegex) {
+            let keyword = String(match.1)
+            let value = String(match.2).trimmingCharacters(in: .whitespaces)
+            let valueBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(String(match.2).count) / Double(originalText.count)))
+            let keywordBox = CGRect(
+                x: boundingBox.minX,
+                y: boundingBox.minY,
+                width: boundingBox.width - valueBox.width,
+                height: boundingBox.height
+            )
+
+            keywordBoxes.append(KeywordBox(label: "PW", content: value, contentBox: valueBox, keyword: keyword, keywordBox: keywordBox))
+        }
+
+        if !keywordBoxes.isEmpty {
+            return keywordBoxes
+        }
+
+
+        /**
         let (keyword, cleanedText, index) = replaceDelimiterAfterKeyword(in: originalText, keywords: idKeywords + pwKeywords)
 
-        // ID or PW 키워드가 없는 경우 처리
-        guard let keyword = keyword else {
-//            Log.print("원본텍스트:\(originalText), 기타텍스트:\(cleanedText)")
-            return KeywordBox(label: "", content: cleanedText, contentBox: boundingBox, labelBox: boundingBox, index: nil)
-        }
-
         // ID or PW 키워드가 있는 경우 처리
-        let value = cleanedText
-        let valueBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(value.count) / Double(originalText.count)))
+        if let keyword = keyword {
+            let value = cleanedText
+            let valueBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(value.count) / Double(originalText.count)))
 
-        let keywordBox = CGRect(
-            x: boundingBox.minX,
-            y: boundingBox.minY,
-            width: boundingBox.width - valueBox.width,
-            height: boundingBox.height
-        )
+            let keywordBox = CGRect(
+                x: boundingBox.minX,
+                y: boundingBox.minY,
+                width: boundingBox.width - valueBox.width,
+                height: boundingBox.height
+            )
 
-        // ID와 PW 구분에 따라 처리
-        if idKeywords.contains(keyword) {
-//            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-            return KeywordBox(label: "ID", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
+            // ID와 PW 구분에 따라 처리
+            if idKeywords.contains(keyword) {
+                //            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
+                return KeywordBox(label: "ID", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
 
-        } else if pwKeywords.contains(keyword) {
-//            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-            return KeywordBox(label: "PW", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
-        }
-
-        // 컴파일러 요구 사항에 따른 디폴트 반환값
-        return KeywordBox(label: "", content: cleanedText, contentBox: boundingBox, labelBox: boundingBox, index: nil)
-    }
-
-    private func replaceDelimiterAfterKeyword(in text: String, keywords: Array<String>) -> (String?, String, Int?) {
-        // 각 키워드를 순회하며 해당 키워드가 있는 위치를 찾습니다.
-        for (index, keyword) in keywords.enumerated() {
-            if let range = text.range(of: "\\b\(keyword)\\b", options: .regularExpression) {
-                // 키워드 뒤의 텍스트 추출
-                var modifiedSuffix = text[range.upperBound...].trimmingCharacters(in: .whitespaces)
-
-                // 첫 번째 문자가 특수 문자일 경우, 알파벳이나 숫자가 나올 때까지 공백으로 대체
-                while let firstChar = modifiedSuffix.first, ":-._\\/|)]}".contains(firstChar) {
-                    modifiedSuffix.replaceSubrange(modifiedSuffix.startIndex...modifiedSuffix.startIndex, with: " ")
-
-                    modifiedSuffix = modifiedSuffix.trimmingCharacters(in: .whitespaces)
-                }
-                return (keyword, modifiedSuffix.trimmingCharacters(in: .whitespaces), index)
-
+            } else if pwKeywords.contains(keyword) {
+                //            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
+                return KeywordBox(label: "PW", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
             }
         }
+         */
 
-        // 키워드가 발견되지 않은 경우
-        return (nil, text, nil)
+        // ID or PW 키워드가 없는 경우 처리
+
+        let cleanedText = originalText.trimmingCharacters(in: .whitespaces)
+
+        return [KeywordBox(label: "", content: cleanedText, contentBox: boundingBox, keyword: nil, keywordBox: nil)]
     }
+
+//    private func replaceDelimiterAfterKeyword(in text: String, keywords: Array<String>) -> (String?, String, Int?) {
+//        // 각 키워드를 순회하며 해당 키워드가 있는 위치를 찾습니다.
+//        for (index, keyword) in keywords.enumerated() {
+//            if let range = text.range(of: "\\b\(keyword)\\b", options: .regularExpression) {
+//                // 키워드 뒤의 텍스트 추출
+//                var modifiedSuffix = text[range.upperBound...].trimmingCharacters(in: .whitespaces)
+//
+//                // 첫 번째 문자가 특수 문자일 경우, 알파벳이나 숫자가 나올 때까지 공백으로 대체
+//                while let firstChar = modifiedSuffix.first, ":-._\\/|)]}".contains(firstChar) {
+//                    modifiedSuffix.replaceSubrange(modifiedSuffix.startIndex...modifiedSuffix.startIndex, with: " ")
+//
+//                    modifiedSuffix = modifiedSuffix.trimmingCharacters(in: .whitespaces)
+//                }
+//                return (keyword, modifiedSuffix.trimmingCharacters(in: .whitespaces), index)
+//
+//            }
+//        }
+//
+//        // 키워드가 발견되지 않은 경우
+//        return (nil, text, nil)
+//    }
 
     private func splitBoundingBox(originalBox: CGRect, splitFactor: CGFloat) -> CGRect {
         let newWidth = originalBox.width * (1 - splitFactor)
@@ -285,7 +364,7 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 }
 
 
-
+/**
 public final class QuickImageAnalysisRepository: ImageAnalysisRepository {
     let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "1.D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
     let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
@@ -578,3 +657,4 @@ public final class QuickImageAnalysisRepository: ImageAnalysisRepository {
         return CGImagePropertyOrientation(rawValue: orientationValue) ?? .up
     }
 }
+ */
