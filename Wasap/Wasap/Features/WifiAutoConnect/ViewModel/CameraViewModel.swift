@@ -227,10 +227,20 @@ public class CameraViewModel: BaseViewModel {
                 }
 
                 let convertedSSIDRect = ocrResult.ssidBoundingBox.map { box in
-                    videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: box)
+                    let rotatedX = box.minY
+                    let rotatedY = 1.0 - box.maxX
+                    let rotatedWidth = box.height
+                    let rotatedHeight = box.width
+                    let rect = CGRect(x: rotatedX, y: rotatedY, width: rotatedWidth, height: rotatedHeight)
+                    return videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: rect)
                 }
                 let convertedPasswordRect = ocrResult.passwordBoundingBox.map { box in
-                    videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: box)
+                    let rotatedX = box.minY
+                    let rotatedY = 1.0 - box.maxX
+                    let rotatedWidth = box.height
+                    let rotatedHeight = box.width
+                    let rect = CGRect(x: rotatedX, y: rotatedY, width: rotatedWidth, height: rotatedHeight)
+                    return videoPreviewLayer.layerRectConverted(fromMetadataOutputRect: rect)
                 }
 
                 ssidRelay.accept(convertedSSIDRect)
