@@ -14,8 +14,6 @@ public protocol ImageAnalysisRepository {
 }
 
 public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
-//    let idKeywords: [String] = ["ssid", "SSID", "ID", "Id", "iD", "id", "I/D", "I.D", "1D", "1.D", "아이디", "1b", "이름", "무선랜 이름", "무선랜이름", "1.0", "10", "Network", "NETWORK", "network", "네트워크",  "WIFI", "Wifi", "WiFi", "wifi", "Wi-Fi", "와이파이"]
-//    let pwKeywords: [String] = ["PW", "Pw", "pW", "pw", "pass", "Pass", "PASS", "password", "Password", "PASSWORD", "패스워드", "암호", "무선랜 암호", "무선랜암호", "P.W", "PV", "P/W", "P\\A", "P1A", "비밀번호", "비번"]
 
     public init() {}
 
@@ -99,10 +97,6 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         } else if ssidBox != nil && ssidBox?.1 != "" {
             passwordBox = findClosestBelowText(for: [ssidBox!.0], in: extractedBoxes.otherBoxes)
             print("pass findClosestBelowText in ssid O & pass X @first: \(passwordBox?.1)")
-//            print("other:\(extractedBoxes.otherBoxes.first?.1)")
-//            print("🐰ssidBox1:\(ssidBox?.1)")
-//            print("🐰ssidBox0:\(ssidBox?.0)")
-//            print("🥝passwordBox:\(passwordBox?.1)")
         }
 
         // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
@@ -161,9 +155,6 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                 }
             }
         }
-
-//        idBoxes.sort { $0.keyword! < $1.keyword! }
-//        pwBoxes.sort { $0.keyword! < $1.keyword! }
 
         idBoxes.sort {
             if $0.keyword! == $1.keyword! {
@@ -235,36 +226,7 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
             return keywordBoxes
         }
 
-
-        /**
-        let (keyword, cleanedText, index) = replaceDelimiterAfterKeyword(in: originalText, keywords: idKeywords + pwKeywords)
-
-        // ID or PW 키워드가 있는 경우 처리
-        if let keyword = keyword {
-            let value = cleanedText
-            let valueBox = self.splitBoundingBox(originalBox: boundingBox, splitFactor: CGFloat(1 - Double(value.count) / Double(originalText.count)))
-
-            let keywordBox = CGRect(
-                x: boundingBox.minX,
-                y: boundingBox.minY,
-                width: boundingBox.width - valueBox.width,
-                height: boundingBox.height
-            )
-
-            // ID와 PW 구분에 따라 처리
-            if idKeywords.contains(keyword) {
-                //            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-                return KeywordBox(label: "ID", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
-
-            } else if pwKeywords.contains(keyword) {
-                //            Log.print("원본텍스트:\(originalText), 분리된텍스트:'\(keyword)' + '\(value)'")
-                return KeywordBox(label: "PW", content: value, contentBox: valueBox, labelBox: keywordBox, index: index)
-            }
-        }
-         */
-
         // ID or PW 키워드가 없는 경우 처리
-
         let cleanedText = originalText.trimmingCharacters(in: .whitespaces)
 
         return [KeywordBox(label: "", content: cleanedText, contentBox: boundingBox, keyword: nil, keywordBox: nil)]
