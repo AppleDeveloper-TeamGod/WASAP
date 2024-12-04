@@ -80,8 +80,10 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         if let firstIDBox = extractedBoxes.idBoxes.first {
             if firstIDBox.content.isEmpty {
                 ssidBox = findClosestRightText(for: extractedBoxes.idBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
+                print("ssid findClosestRightText:\(ssidBox?.1)|| \(ssidBox?.0)||\(extractedBoxes.idBoxes.first?.keyword)||\(extractedBoxes.idBoxes.first?.keywordBox)")
             } else {
                 ssidBox = (firstIDBox.contentBox, firstIDBox.content)
+                print("ssid in!! @first: \(ssidBox?.1)")
             }
         }
 
@@ -89,26 +91,32 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
         if let firstPWBox = extractedBoxes.pwBoxes.first {
             if firstPWBox.content.isEmpty {
                 passwordBox = findClosestRightText(for: extractedBoxes.pwBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
+                print("pass findClosestRightText: \(passwordBox?.1)|| \(passwordBox?.0)||\(extractedBoxes.pwBoxes.first?.keyword)||\(extractedBoxes.pwBoxes.first?.keywordBox)")
             } else {
                 passwordBox = (firstPWBox.contentBox, firstPWBox.content)
+                print("pass in!! @first: \(passwordBox?.1)")
             }
         } else if ssidBox != nil && ssidBox?.1 != "" {
             passwordBox = findClosestBelowText(for: [ssidBox!.0], in: extractedBoxes.otherBoxes)
-            print("other:\(extractedBoxes.otherBoxes.first?.1)")
-            print("🐰ssidBox1:\(ssidBox?.1)")
-            print("🐰ssidBox0:\(ssidBox?.0)")
-            print("🥝passwordBox:\(passwordBox?.1)")
+            print("pass findClosestBelowText in ssid O & pass X @first: \(passwordBox?.1)")
+//            print("other:\(extractedBoxes.otherBoxes.first?.1)")
+//            print("🐰ssidBox1:\(ssidBox?.1)")
+//            print("🐰ssidBox0:\(ssidBox?.0)")
+//            print("🥝passwordBox:\(passwordBox?.1)")
         }
 
         // 2. ID(또는 PW) key와 value가 세로로 나란한 경우
         if (ssidBox == nil) || (ssidBox?.1 == "") {
             ssidBox = findClosestBelowText(for: extractedBoxes.idBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
+            print("ssid findClosestBelowText: \(ssidBox?.1)")
         }
         if (passwordBox == nil) || (passwordBox?.1 == "") {
             passwordBox = findClosestBelowText(for: extractedBoxes.pwBoxes.map { $0.keywordBox ?? $0.contentBox }, in: extractedBoxes.otherBoxes)
+            print("pass findClosestBelowText: \(passwordBox?.1)")
             if let ssidBox = ssidBox {
                 if (passwordBox == nil || passwordBox?.1 == "") && ssidBox.1 != "" {
                     passwordBox = findClosestBelowText(for: [ssidBox.0], in: extractedBoxes.otherBoxes)
+                    print("pass findClosestBelowText in ssid O & pass X @Last: \(passwordBox?.1)")
                 }
             }
         }
@@ -292,7 +300,6 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
 
     private func findClosestRightText(for sourceBoxes: [CGRect], in otherBoxes: [(CGRect, String)]) -> (CGRect, String)? {
         guard let sourceBox = sourceBoxes.first else { return nil }
-
         let yWeight: CGFloat = 1.0
 
         var closestRightText: String = ""
