@@ -8,23 +8,10 @@
 import Foundation
 import RegexBuilder
 
-final class RegexManager {
-    static let shared = RegexManager()
-
-    // MARK: - Regex Patterns
-    let idRegex: Regex<(Substring, Substring, Substring)>
-    let pwRegex: Regex<(Substring, Substring, Substring)>
-
-    let ktWifiRegex: Regex<(Substring, Substring)>
-    let skWifiRegex: Regex<(Substring, Substring)>
-    let lgWifiRegex: Regex<(Substring, Substring)>
-
-    let wifiRegex: Regex<Substring>
-
-    // MARK: - Initialization
-    private init() {
-
-        idRegex = Regex {
+extension Regex where Output == (Substring, Substring, Substring) {
+    /// ID 관련 키워드 매칭
+    public static var idRegex: Regex<RegexOutput> {
+        Regex {
             Optionally {
                 ChoiceOf {
                     #/\(?[Ww][Ii][-_]?[Ff][Ii]\)?/#
@@ -88,8 +75,11 @@ final class RegexManager {
                 ZeroOrMore(.any)
             }
         }
+    }
 
-        pwRegex = Regex {
+    /// PW 관련 키워드 매칭
+    public static var pwRegex: Regex<RegexOutput> {
+        Regex {
             Optionally {
                 ChoiceOf {
                     #/\(?[Ww][Ii][-_]?[Ff][Ii]\)?/#
@@ -124,8 +114,13 @@ final class RegexManager {
                 #/[•\-\s]*/#
             }
         }
+    }
+}
 
-        ktWifiRegex = Regex {
+extension Regex where Output == (Substring, Substring) {
+    /// KT 통신사 SSID 매칭
+    public static var ktWifiRegex: Regex<RegexOutput> {
+        Regex {
             ZeroOrMore(.any, .reluctant)
             Capture {
                 "KT"
@@ -153,8 +148,11 @@ final class RegexManager {
                 ZeroOrMore(.any)
             }
         }
+    }
 
-        skWifiRegex = Regex {
+    /// SKT 통신사 SSID 매칭
+    public static var skWifiRegex: Regex<RegexOutput> {
+        Regex {
             ZeroOrMore(.any, .reluctant)
             Capture {
                 "SK"
@@ -166,8 +164,11 @@ final class RegexManager {
                 ZeroOrMore(.any)
             }
         }
+    }
 
-        lgWifiRegex = Regex {
+    /// LG UPlus 통신사 SSID 매칭
+    public static var lgWifiRegex: Regex<RegexOutput> {
+        Regex {
             ZeroOrMore(.any, .reluctant)
             Capture {
                 "U+"
@@ -176,9 +177,11 @@ final class RegexManager {
                 ZeroOrMore(.any)
             }
         }
-
-        wifiRegex = #/\(?[Ww][Ii1Í]\s?[-_]?\s?[Fft][Ii1Í]\)?/#
-
     }
 }
 
+extension Regex where Output == Substring {
+    public static var wifiRegex: Regex<RegexOutput> {
+        #/\(?[Ww][Ii1Í]\s?[-_]?\s?[Fft][Ii1Í]\)?/#
+    }
+}
