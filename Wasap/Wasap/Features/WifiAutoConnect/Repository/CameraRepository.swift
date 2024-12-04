@@ -303,9 +303,29 @@ extension DefaultCameraRepository: AVCaptureVideoDataOutputSampleBufferDelegate 
             return
         }
 
+        let orientation = self.imageOrientation(from: UIDevice.current.orientation)
+
         // CVPixelBuffer를 CIImage로 변환
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
-        self.capturedVideoDataStream.onNext(UIImage(ciImage: ciImage))
+
+        self.capturedVideoDataStream.onNext(UIImage(ciImage: ciImage, scale: 1.0, orientation: orientation))
+    }
+
+    private func imageOrientation(from deviceOrientation: UIDeviceOrientation) -> UIImage.Orientation {
+        switch deviceOrientation {
+        case .portrait:
+            return .right
+        case .portraitUpsideDown:
+            return .left
+        case .landscapeLeft:
+            return .up
+        case .landscapeRight:
+            return .down
+        case .faceUp, .faceDown, .unknown:
+            return .up // 기본값
+        @unknown default:
+            return .up
+        }
     }
 }
 
