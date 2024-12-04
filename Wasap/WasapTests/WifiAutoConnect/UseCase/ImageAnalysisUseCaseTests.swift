@@ -51,8 +51,8 @@ class ImageAnalysisUseCaseTests {
     let bundle: Bundle
     
     init() {
-//        repository = DefaultImageAnalysisRepository()
-        repository = QuickImageAnalysisRepository()
+        repository = DefaultImageAnalysisRepository()
+//        repository = QuickImageAnalysisRepository()
         useCase = DefaultImageAnalysisUseCase(imageAnalysisRepository: repository)
         bundle = Bundle(for: type(of: self))
     }
