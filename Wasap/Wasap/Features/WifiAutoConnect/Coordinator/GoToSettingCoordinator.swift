@@ -34,7 +34,6 @@ public class GoToSettingCoordinator: NavigationCoordinator {
 
     public enum FinishFlow {
         case popToRoot
-        case popToRetry
     }
 
     public func start() {
@@ -49,7 +48,7 @@ public class GoToSettingCoordinator: NavigationCoordinator {
         viewControllers.append(viewController)
         self.navigationController.setViewControllers(viewControllers, animated: true)
     }
-
+    
     public func finish() {
         self.navigationController.popViewController(animated: true)
     }
@@ -64,8 +63,6 @@ extension GoToSettingCoordinator: GoToSettingCoordinatorController {
         switch flow {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
-        case .popToRetry:
-            navigationController.popViewController(animated: true)
         }
     }
 }
