@@ -171,7 +171,6 @@ final public class DefaultCameraRepository: NSObject, CameraRepository {
             
             return Disposables.create()
         }
-
     }
 
     public func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {

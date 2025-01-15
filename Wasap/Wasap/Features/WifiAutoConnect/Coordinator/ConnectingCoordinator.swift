@@ -7,10 +7,6 @@
 
 import UIKit
 
-public protocol ConnectingCoordinatorController: AnyObject {
-    func performFinish(to flow: ConnectingCoordinator.FinishFlow)
-    func performTransition(to flow: ConnectingCoordinator.Flow)
-}
 
 public class ConnectingCoordinator: NavigationCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
@@ -74,14 +70,20 @@ extension ConnectingCoordinator: ConnectingCoordinatorController {
         switch flow {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
+
         case .finishWithError:
+
             if parentCoordinator is CameraCoordinator, image != nil {
                 let coordinator = WifiReConnectCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image!, ssid: ssid ?? "", password: password ?? "")
                 self.switch(childCoordinator: coordinator)
-            } else if parentCoordinator is WifiReConnectCoordinator, image != nil {
+            }
+
+            else if parentCoordinator is WifiReConnectCoordinator, image != nil {
                 let coordinator = GoToSettingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: wifiAutoConnectDIContainer, image: image!, ssid: ssid ?? "", password: password ?? "")
-                self.switch(childCoordinator: coordinator)
-            } else if let parentCoordinator = parentCoordinator as? ReceivingCoordinator {
+                self.start(childCoordinator: coordinator)
+            }
+
+            else if let parentCoordinator = parentCoordinator as? ReceivingCoordinator {
                 finishCurrentCoordinator()
                 parentCoordinator.performFinish(to: .popToRoot)
             } else {

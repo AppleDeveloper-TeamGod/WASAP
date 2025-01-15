@@ -7,10 +7,6 @@
 
 import UIKit
 
-public protocol ReceivingCoordinatorController: AnyObject {
-    func performFinish(to flow: ReceivingCoordinator.FinishFlow)
-    func performTransition(to flow: ReceivingCoordinator.Flow)
-}
 
 public class ReceivingCoordinator: NSObject, NavigationCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil

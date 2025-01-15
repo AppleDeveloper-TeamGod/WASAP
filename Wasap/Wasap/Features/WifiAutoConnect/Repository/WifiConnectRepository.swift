@@ -50,7 +50,6 @@ class DefaultWiFiConnectRepository: WiFiConnectRepository {
                         single(.failure(err))  // 기타 에러 처리
                     }
                 }
-
                 // 에러가 없을 경우 와이파이에 접속이 되었는지 판단 하는 과정이 필요
                 else {
                     Log.print("Alert - 연결버튼 터치 완료")

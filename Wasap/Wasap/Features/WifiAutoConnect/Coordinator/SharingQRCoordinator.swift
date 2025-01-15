@@ -7,10 +7,6 @@
 
 import UIKit
 
-public protocol SharingQRCoordinatorController: AnyObject {
-    func performFinish(to flow: SharingQRCoordinator.FinishFlow)
-}
-
 public class SharingQRCoordinator: NSObject, SheetCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []

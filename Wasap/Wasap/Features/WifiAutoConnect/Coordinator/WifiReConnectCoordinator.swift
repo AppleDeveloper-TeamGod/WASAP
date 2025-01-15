@@ -5,8 +5,8 @@
 //  Created by 김상준 on 10/7/24.
 //
 
-import Foundation
 import UIKit
+
 
 public class WifiReConnectCoordinator: NavigationCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
@@ -73,6 +73,7 @@ extension WifiReConnectCoordinator: WifiReConnectCoordinatorController {
 
         case .connecting(image: let image, ssid: let ssid, password: let password):
             let coordinator = ConnectingCoordinator(navigationController: self.navigationController, wifiAutoConnectDIContainer: self.wifiAutoConnectDIContainer, image: image, ssid: ssid, password: password)
+            print(parentCoordinator)
             start(childCoordinator: coordinator)
         }
     }

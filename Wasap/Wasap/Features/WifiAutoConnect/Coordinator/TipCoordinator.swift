@@ -7,10 +7,6 @@
 
 import UIKit
 
-public protocol TipCoordinatorController: AnyObject {
-    func performFinish(to finishFlow: TipCoordinator.FinishFlow)
-}
-
 public final class TipCoordinator: NSObject, SheetCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
