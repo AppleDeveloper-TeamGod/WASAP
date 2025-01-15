@@ -65,7 +65,7 @@ extension GoToSettingCoordinator: GoToSettingCoordinatorController {
         case .popToRoot:
             finishUntil(CameraCoordinator.self)
         case .popToRetry:
-            finishUntil(WifiReConnectCoordinator.self)
+            navigationController.popViewController(animated: true)
         }
     }
 }

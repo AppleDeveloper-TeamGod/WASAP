@@ -124,3 +124,29 @@ public protocol OnboardingCoordinatorController: AnyObject {
     func performStartSplash()
 }
 
+public protocol TipCoordinatorController: AnyObject {
+    func performFinish(to finishFlow: TipCoordinator.FinishFlow)
+}
+
+public protocol SharingQRCoordinatorController: AnyObject {
+    func performFinish(to flow: SharingQRCoordinator.FinishFlow)
+}
+
+public protocol SharingCoordinatorController: AnyObject {
+    func performFinish(to flow: SharingCoordinator.FinishFlow)
+    func performTransition(to flow: SharingCoordinator.Flow)
+}
+
+public protocol ConnectingCoordinatorController: AnyObject {
+    func performFinish(to flow: ConnectingCoordinator.FinishFlow)
+    func performTransition(to flow: ConnectingCoordinator.Flow)
+}
+
+public protocol ReceivingCoordinatorController: AnyObject {
+    func performFinish(to flow: ReceivingCoordinator.FinishFlow)
+    func performTransition(to flow: ReceivingCoordinator.Flow)
+}
+
+public protocol ScanCoordinatorController: AnyObject {
+    func performTransition(to flow: ScanCoordinator.Flow)
+}

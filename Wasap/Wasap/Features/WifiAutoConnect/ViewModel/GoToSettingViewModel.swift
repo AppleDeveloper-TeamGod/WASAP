@@ -51,7 +51,7 @@ public class GoToSettingViewModel: BaseViewModel {
 
         backButtonTapped
             .subscribe(onNext: { [weak self] in
-                self?.coordinatorController?.performPop()
+                self?.coordinatorController?.performFinish(to: .popToRetry)
             })
             .disposed(by: disposeBag)
 

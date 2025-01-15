@@ -7,10 +7,6 @@
 
 import UIKit
 
-public protocol ScanCoordinatorController: AnyObject {
-    func performTransition(to flow: ScanCoordinator.Flow)
-}
-
 public class ScanCoordinator: NavigationCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []

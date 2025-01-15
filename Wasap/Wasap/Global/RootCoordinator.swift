@@ -19,9 +19,7 @@ public class RootCoordinator: Coordinator {
         self.appDIContainer = appDIContainer
     }
 
-    public enum Flow {
-
-    }
+    public enum Flow {}
 
     public func start() {
         let navigationController = UINavigationController()
@@ -29,6 +27,7 @@ public class RootCoordinator: Coordinator {
         if let isFirstLaunch: Bool = UserDefaultsManager.shared.get(.isFirstLaunch), isFirstLaunch == false {
             let cameraCoordinator = CameraCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())
             start(childCoordinator: cameraCoordinator)
+
         } else {
             UserDefaultsManager.shared.set(value: false, forKey: .isFirstLaunch)
             let onboardingCoordinator = OnboardingCoordinator(navigationController: navigationController, wifiAutoConnectDIContainer: appDIContainer.makeWifiAutoConnectDIContainer())

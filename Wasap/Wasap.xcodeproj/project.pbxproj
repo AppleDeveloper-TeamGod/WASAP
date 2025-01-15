@@ -250,12 +250,8 @@
 			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				ko,
-				ja,
-				vi,
-				"zh-Hans",
-				"zh-Hant",
+				en,
 			);
 			mainGroup = 6FAE7A9C2CAD9F5600A1D1CE;
 			minimizedProjectReferenceProxies = 1;
@@ -462,6 +458,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Wasap/Global/Wasap.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;

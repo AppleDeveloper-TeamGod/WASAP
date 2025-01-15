@@ -7,11 +7,6 @@
 
 import UIKit
 
-public protocol SharingCoordinatorController: AnyObject {
-    func performFinish(to flow: SharingCoordinator.FinishFlow)
-    func performTransition(to flow: SharingCoordinator.Flow)
-}
-
 public class SharingCoordinator: NavigationCoordinator {
     public var parentCoordinator: (any Coordinator)? = nil
     public var childCoordinators: [any Coordinator] = []
