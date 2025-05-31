@@ -38,9 +38,9 @@ public final class DefaultImageAnalysisRepository: ImageAnalysisRepository {
                                                        orientation: orientation,
                                                        options: [:])
             do {
-                try requestHandler.perform([englishRequest/*, koreanRequest*/])
+                try requestHandler.perform([englishRequest, koreanRequest])
 
-                if let result = self.handleOCRResults([englishRequest/*, koreanRequest*/]) {
+                if let result = self.handleOCRResults([englishRequest, koreanRequest]) {
                     single(.success(result))
                 } else {
                     single(.failure(ImageAnalysisError.ocrFailed("Failed to process OCR results")))
