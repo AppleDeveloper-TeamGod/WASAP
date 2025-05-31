@@ -413,7 +413,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 1.2.5;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -482,7 +482,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 1.2.5;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -527,7 +527,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 1.2.5;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.teamGOD.Wasap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
